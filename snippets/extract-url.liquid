@@ -1,0 +1,8 @@
+{% assign content = extract-url %}
+{% assign url = blank %}
+{% if content contains 'https://' %}
+	{% assign url = content | split: 'https://' | last | split: ' ' | first | prepend: 'https://' %}
+{% elsif content contains 'http://' %}
+	{% assign url = content | split: 'https://' | last | split: ' ' | first | prepend: 'http://' %}
+{% endif %}
+{{ url }}

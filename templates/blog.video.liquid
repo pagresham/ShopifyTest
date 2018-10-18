@@ -1,0 +1,301 @@
+<!-- /templates/blog.liquid -->
+{% comment %} Markup based on Timber 2.1.2 {% endcomment %}
+
+
+{% paginate blog.articles by 48 %}
+{% assign image_size = 'large' %}
+
+<div class="container">
+  <header class="page-header">
+    <h1 class="page-title">
+      {% if current_tags %}
+        {{ blog.title | link_to: blog.url }} &mdash; {{ current_tags.first }}
+      {% else %}
+        {{ blog.title }}
+      {% endif %}
+    </h1>
+  </header>
+  
+  <div class="row">
+
+    <div class="col-lg-9 m-b-3">
+      <div id="VideoPlayer" class="embed-responsive embed-responsive-16by9"></div>
+    </div>
+
+    <div class="col-lg-3 m-b-3">
+      <h2 id="VideoTitle"></h2>
+      <div id="VideoContent" class="rte"></div>
+    </div>
+  </div> <!-- .row -->
+  <hr>
+  <div>
+    {% if blog.all_tags.size > 0 %}
+      {% if settings.video_categories_linklist %}
+        {% assign categories = linklists[settings.video_categories_linklist] %}
+      
+        <div class="card">
+          <div class="card-block">
+            
+            <ul class="nav nav-tags">
+              <li class="nav-item">
+                <h4 class="nav-header">{{ 'blogs.videos.categories' | t }}</h4>
+              </li>
+              {% if current_tags %}
+                <li class="nav-item">
+                  <a href="{{ blog.url }}" class="nav-link btn btn-secondary">View All</a>
+                </li>
+              {% endif %}
+              {% for link in categories.links %}
+                {% assign tag_handle = link.url | replace: '#','' | handle %}
+                {% comment %} Make sure there are posts in cateogry to prevent outputting 404 link {% endcomment %}
+                {% assign has_posts = false %}
+                {% for t in blog.all_tags %}
+                  {% capture t_handle %}{{ t | handleize }}{% endcapture %}
+                  {% if tag_handle == t_handle %}
+                    {% assign tag = t %}
+                    {% assign has_posts = true %}
+                    {% break %} 
+                  {% endif %}
+                {% endfor %}
+                {% if has_posts %}
+                  <li class="nav-item">
+                    <a href="{{ blog.url }}/tagged/{{ tag_handle }}" class="nav-link btn btn-secondary {% if current_tags contains tag %}active{% endif %}">{{ link.title }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %} 
+    {% endif %}
+  </div>
+  <ul class="list-unstyled row" >
+      {% for article in blog.articles %}
+        {% assign video_url = article.metafields.c_f.video_url %}
+          {% if video_url != blank %}
+          <li class="col-xl-3 col-md-4 col-sm-6">
+            
+            <div class="card article-grid-item">
+              {% assign have_image = false %}
+              {% if article.image %}
+                {% assign have_image = true %}
+                {% assign src = article.image.src | img_url: image_size %}
+              {% elsif article.content contains '<img' %}
+                {% assign have_image = true %}
+                {% assign src = article.content | split: '<img ' %}
+                {% assign src = src[1] | split: 'src="' %}
+                {% assign src = src[1] | split: '"' | first %}
+                {% capture image_suffix %}_{{ image_size }}.{% endcapture %}
+                {% assign src = src | replace: '_small.', image_suffix | replace: '_compact.', image_suffix | replace: '_medium.', image_suffix | replace: '_large.', image_suffix | replace: '_grande.', image_suffix %}
+              {% endif %}
+              <a href="{{ video_url }}" class="card article-grid-item" data-video-url="{{ video_url }}">
+                <div class="card-img card-img-hover" {% if have_image %}style="background-image: url('{{ src }}');"{% endif %}>
+                  {% if have_image %}
+                    <img src="{{ src }}" alt="" />
+                  {% else %}
+                    {% include 'placeholder' %}
+                  {% endif %}
+                  <div class="card-img-overlay">
+                    <div class="card-text">
+                      <h2 class="card-title video-title">{{ article.title }}</h2>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <div class="rte video-content d-none">{{ article.content }}</div>
+            </div>
+          </li>
+
+          {% cycle 'clear-4': '', '', '', '<li class="clearfix hidden-lg-down"></li>' %}
+          {% cycle 'clear-3': '', '', '<li class="clearfix hidden-xl-up hidden-sm-down"></li>' %}
+          {% cycle 'clear-2': '', '<li class="clearfix hidden-sm-up"></li>' %}
+        {% endif %}
+
+      {% endfor %} 
+    </ul>
+
+    {% if paginate.pages > 1 %}
+      <hr>
+      {% include 'pagination' %}
+    {% endif %}
+
+</div> <!-- /.container -->
+
+{% endpaginate %}
+
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+
+<script>
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  var YouTubeReady = false;
+  var YouTubePreloadId = null;
+  function onYouTubeIframeAPIReady() {
+  YouTubeReady = true; 
+  if(YouTubePreloadId) {
+    VideoPlayer.loadYouTube(YouTubePreloadId); 
+  }
+  }
+</script>
+<script> 
+
+window.VideoPlayer = window.VideoPlayer || {};
+
+VideoPlayer.runtime = {
+  videos : [],
+  currentIndex : -1,
+  current : null // current video
+};
+
+VideoPlayer.init = function(options) {
+  return this.each(function() {
+    var url = $(this).data('video-url');
+    var platform = url.match(/vimeo|youtu/i);
+    $(this).on('click', function(e) {
+      e.preventDefault();
+      VideoPlayer.load($(this).data('video-url')); 
+    });
+
+    if(platform) {
+      platform = platform[0] == 'youtu' ? 'youtube' : 'vimeo'
+      var videoId = false;
+
+      if(platform == 'youtube') {
+        re_youtube = /youtube.*watch\?v=([a-zA-Z0-9\-]+)/i;
+        re_youtu = /yout\u.be\/([a-zA-Z0-9\-]+)/i;
+        if(re_youtube.test(url)) {
+          match = re_youtube.exec(url)
+          videoId = match[1];
+        } else if (re_youtu.test(url)) {
+          match = re_youtu.exec(url);
+          videoId = match[1];
+        }
+      } else if (platform == 'vimeo') {
+        re_vimeo = /vimeo.*\/(\d+)/i
+        if(re_vimeo.test(url)) {
+          match = re_vimeo.exec(url); 
+          videoId = match[1];
+        }
+      }
+      if(videoId) {
+        VideoPlayer.runtime.videos.push({
+          handle: $(this),
+          platform: platform,
+          videoUrl: url,
+          videoId: videoId
+        });
+        if(VideoPlayer.runtime.videos.length == 1) {
+          VideoPlayer.autoplay();
+        }
+      }
+    }
+  
+  });
+};
+VideoPlayer.load = function(url) {
+  var videoIndex = -1;
+  for(i = 0; i < VideoPlayer.runtime.videos.length; i++) {
+    if(VideoPlayer.runtime.videos[i].videoUrl == url) {
+      videoIndex = i;
+      break;
+    }
+  }
+  if(videoIndex >= 0) {
+    VideoPlayer.play(videoIndex);
+  }
+};
+VideoPlayer.autoplay = function() {
+  VideoPlayer.next()
+};
+VideoPlayer.next = function() {
+  next = VideoPlayer.runtime.currentIndex+1;
+  if(next >= VideoPlayer.runtime.videos.length) {
+    next = 0;
+  }
+  VideoPlayer.play(next);
+};
+VideoPlayer.play = function(index) {
+
+  if(index >= 0 && index < VideoPlayer.runtime.videos.length) {
+    var video = VideoPlayer.runtime.videos[index];
+    $('[data-video-url]').removeClass('active'); 
+    video.handle.addClass('active');
+    $('#VideoTitle').html(video.handle.find('.video-title').html());
+    $('#VideoContent').html(video.handle.siblings('.video-content').html());
+
+
+    // todo: unload current video
+    VideoPlayer.runtime.current = video;
+    VideoPlayer.runtime.currentIndex = index;
+    switch(video.platform) {
+      case 'vimeo':
+        VideoPlayer.loadVimeo(video.videoId);
+        break;
+      case 'youtube':
+        VideoPlayer.loadYouTube(video.videoId);
+        break;
+    }
+  }
+};
+VideoPlayer.loadVimeo = function(id) {
+  $('#VideoPlayer').html($('<div id="VimeoPlayer">'));
+  var options = {
+    id: id,
+    width: '720',
+    height: '360',
+    autoplay: '1'
+  };
+  var player = new Vimeo.Player('VimeoPlayer', options);
+  
+  player.on('ended', function() {
+  this.off('ended');
+  VideoPlayer.next();
+  });
+
+};
+VideoPlayer.loadYouTube = function(id) {
+  $('#VideoPlayer').html($('<div id="YouTubePlayer">'));
+  if(!YouTubeReady) {
+    // YouTube APi not loaded yet (happens when Youtube embeded first), wait and preload... 
+    YouTubePreloadId = id;
+  } else {
+    var player = new YT.Player('YouTubePlayer', {
+    height: '360',
+    width: '720',
+    videoId: id,
+    playerVars: { 'autoplay': 1 },
+    events: {
+    // 'onReady': onPlayerReady,
+    'onStateChange': function(event) {
+        if(event.data == 0) {
+          // ended 
+          VideoPlayer.next();
+        }
+        }
+    }
+  });
+  }
+};
+
+(function( $ ) {
+  
+  $.fn.videoPlayer = function(options) {
+    if ( VideoPlayer[options] ) {
+    return VideoPlayer[ options ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+  } else if ( typeof options === 'object' || ! options ) {
+    // Default to "init"
+    return VideoPlayer.init.apply( this, arguments );
+  } 
+  };
+
+  $(function() {
+    $('[data-video-url]').videoPlayer();
+  });
+}( jQuery ));
+
+
+</script>
+

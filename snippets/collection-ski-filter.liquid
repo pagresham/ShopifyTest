@@ -1,0 +1,116 @@
+<!-- snippets/collection-ski-filter.liquid -->
+
+{% capture help_links %}
+<a href="/pages/compare">Compare Skis</a>
+<p>Can't decide? <a href="/pages/ski-finder">Ask me</a></p>
+{% endcapture %}
+
+<div class="row" id="collection-ski-filter">
+  <div class="col-md-4 filter-left">
+    <div class="filter-content">
+        <div>
+          <a href="/collections/skis" class="btn j-btn {% if collection.handle == 'skis' %}active {% endif %}">View All Skis</a><br>
+          {{ help_links }}
+        </div>
+    </div>
+  </div>
+  <div class="col-md-8 filter-right">
+    <div class="filter-content">
+      {% for link in linklists['ski-filter'].links %}
+        <div class="filter">
+          <h3>{{ link.title }}</h3>
+          <div class="filter-options">
+            {% for filter_option in link.links %}
+              <a href="{{ filter_option.url }}" class="btn j-btn {% if filter_option.active %}active {% endif %}{% if filter_option.url contains '#' %}js-filter below{% endif %}">
+                 {{ filter_option.title }}
+                <span class="clear-filter">×<span class="sr-only">Remove filter</span></span>
+                {% if filter_option.links.size > 0 %}
+                  <div class="j-chat-bubble">
+                    {{ filter_option.links[0].title }}
+                  </div>
+                {% endif %}
+               </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-md-12 mobile-filter">
+    <label>Filter Skis
+      <select class="form-control" onchange="window.location.href = this.value;">
+        <option value="/collections/skis/">All Skis</option>
+        {% for link in linklists['ski-filter'].links %}
+            {% for option in link.links %}
+              {% unless option.url contains '#' %}
+                <option value="{{ option.url }}" {% if option.active %}selected {% endif %}>{{ option.title }}</option>
+              {% endunless %}
+            {% endfor %}
+        {% endfor %}
+      </select>
+    </label>
+    {{ help_links }}
+  </div>
+  <div class="col-md-12">
+    <hr>
+  </div>
+</div>
+
+<script type="text/javascript">
+  jQuery(function($) {
+    'use strict';
+    $('.filter-options .btn.js-filter').each(function() {
+      var waistWidth = $(this).attr('href').replace('#', '');
+      var foundOption = false;
+      $('.cli').each(function() {
+        if ($(this).find('.waist-dimension').length <= 0) {
+          return true;
+        }
+        var $waistElement = $(this).find('.waist-dimension').first();
+        if ($waistElement.data('waist') == waistWidth) {
+          foundOption = true;
+        }
+      });
+      if (!foundOption) {
+        $(this).addClass('disabled');
+      }
+    });
+    $('.filter-options .btn.js-filter').on('click', function(event) {
+      event.preventDefault();
+      var $button = $(this);
+      var waistWidth = $button.attr('href').replace('#', '');
+      $('.cli').each(function() {
+        if ($(this).find('.waist-dimension').length <= 0) {
+          return true;
+        }
+        var $waistElement = $(this).find('.waist-dimension').first();
+        if ($waistElement.data('waist') == waistWidth) {
+          $(this).css('display', 'block');
+        } else {
+          $(this).css('display', 'none');
+        }
+      });
+      $('.filter-options .btn.js-filter').each(function() {
+        $(this).removeClass('active');
+      });
+      $button.addClass('active');
+    });
+    $('.filter-options .clear-filter').on('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var $button = $(this).closest('a.btn');
+      if ($button.hasClass('js-filter')) {
+        $('.cli').each(function() {
+          $(this).css('display', 'block');
+        });
+        $button.removeClass('active');
+        $button.blur();
+      } else {
+        window.location = $('.filter-left a.j-btn').first().attr('href');
+        $button.removeClass('active');
+        $button.addClass('disabled');
+        $button.blur();
+      }
+    })
+  });
+</script>

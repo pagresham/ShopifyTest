@@ -1,0 +1,11 @@
+<!-- snippets/share-this.liquid -->
+
+<div class="nav nav-sharing">
+	<span class="nav-link">Share</span>
+	<a class="nav-link" target="_blank" href="https://www.reddit.com/submit?url={{ canonical_url | escape }}"><img class="reddit" src="{{ 'social-reddit-outline.png' | asset_url }}" alt="reddit logo"/> <span class="sr-only">Reddit</span></a>
+	<a class="nav-link" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url | escape }}"><img class="facebook" src="{{ 'facebook-f-brands.svg' | asset_url }}" alt="facebook logo"/> <span class="sr-only">Share on Facebook</span></a>
+	<a class="nav-link" target="_blank" href="https://twitter.com/home?status={{ canonical_url | escape }}"><img class="twitter" src="{{ 'twitter-brands.svg' | asset_url }}" alt="twitter logo"/> <span class="sr-only">Share on Twitter</span></a>
+	{% if product.featured_image %}
+		<a class="nav-link"  target="_blank" href="https://pinterest.com/pin/create/button/?url={{ canonical_url | escape }}&media={{ product.featured_image.src | img_url: '1024x1024' | escape}}&description={{ product.title | escape }}" class="pin-it-button" count-layout="horizontal"><img class="pinterest" src="{{ 'pinterest-p-brands.svg' | asset_url }}" alt="pinterest logo"/> <span class="sr-only">Pin this</span></a>
+	{% endif %}
+</div>

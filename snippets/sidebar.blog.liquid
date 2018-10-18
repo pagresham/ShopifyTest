@@ -1,0 +1,84 @@
+<!-- /snippets/blog-sidebar.liquid -->
+{% capture here %}{{ blog.url }} {{ article.url }}{% endcapture %}
+
+{% if article %}
+	{% assign current_tags = article.tags %}
+{% endif %}
+
+<div class="sidebar">
+	{% comment %}
+		Recent blog posts
+	{% endcomment %}
+
+	{% if blog.all_tags.size > 0 %}
+		{% if settings.blog_categories_linklist %}
+			{% assign categories = linklists[settings.blog_categories_linklist] %}
+		
+			<div class="card">
+				<div class="card-block">
+					<h4 class="card-title">{{ 'blogs.sidebar.categories' | t }}</h4>
+					<ul class="nav nav-list">
+
+					{% for link in categories.links %}
+						{% assign tag_handle = link.url | replace: '#','' | handle %}
+
+						{% comment %} Make sure there are posts in cateogry to prevent outputting 404 link {% endcomment %}
+						{% assign has_posts = false %}
+						{% for t in blog.all_tags %}
+							{% capture t_handle %}{{ t | handleize }}{% endcapture %}
+							{% if tag_handle == t_handle %}
+								{% assign tag = t %}
+								{% assign has_posts = true %}
+								{% break %} 
+							{% endif %}
+						{% endfor %}
+						{% if has_posts %}
+							<li class="nav-item">
+								<a href="{{ blog.url }}/tagged/{{ tag_handle }}" class="nav-link {% if current_tags contains tag %}active{% endif %}">{{ link.title }}</a>
+							</li>
+						{% endif %}
+					{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %} 
+	{% endif %}
+
+	<div class="card">
+		<div class="card-block">
+			<h4 class="card-title">{{ 'blogs.sidebar.recent_articles' | t }}</h4>
+			<ul class="nav nav-list rte-list">
+				{% for article in blogs[blog.handle].articles limit:20 %}
+					<li class="nav-item">
+						<a href="{{ article.url }}" title="{{ article.title | strip_html | escape }}" class="text-truncate nav-link {% if here contains article.url %}active{% endif %}">{{ article.title }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+
+	
+
+
+
+	{% comment %}
+		Blog tags
+	{% endcomment %}
+	{% if blog.all_tags.size > 0 %}
+		<div class="card">
+			<div class="card-block">
+				<h4 class="card-title">{{ 'blogs.article.tags' | t }}</h4>
+				<ul class="nav nav-inline tag-list">
+					{% for tag in blog.all_tags %}
+						{% if current_tags contains tag %}
+							<li class="nav-item">{{ tag | link_to_tag: tag | replace: '<a ', '<a class="nav-link active" ' }}</li>
+						{% else %}
+							<li class="nav-item">{{ tag | link_to_tag: tag | replace: '<a ', '<a class="nav-link" ' }}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
+</div>

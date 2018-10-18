@@ -1,0 +1,26 @@
+{% comment %}
+Global Rich Text Editor Output
+- Add support for basic wordpress style short tags
+- Add video embed support
+{% endcomment %}
+
+{% unless rte == blank %}
+
+	{% comment %} [snippet] tag replacement {% endcomment %}
+
+  {% assign snippets = rte | split: "[snippet '" %}
+  {% assign output = '' %}
+  {% for snippet in snippets %}
+    {% unless forloop.first %}
+      {% assign filename = snippet | strip_html | split: "']" | first %}
+      {% capture output %}{{output}}{% include filename %}{{ snippet | split: "']" | last }}{% endcapture %}
+    {% else %}
+      {% capture output %}{{ snippet }}{% endcapture %}
+    {% endunless %}
+  {% endfor %}
+
+  <div class="rte">
+    {{ output }}
+  </div>
+
+{% endunless %}

@@ -1,0 +1,86 @@
+{% paginate collection.products by 48 %}
+
+<div class="container">
+	<div class="sidebar-container">
+		<div class="has-sidebar">
+
+			{% include 'collection-header', model:model %}
+
+			{% unless model == blank %}
+				<h2 class="collection-title">{{ collection.title }} Limited Edition Graphics</h2>
+			{% endunless %}
+
+
+			{% if collection.products.size > 0 %}
+
+				{% assign group = '' %}
+				{% assign count = 0 %}
+				{% assign static_types = settings.static_product_types | split: ',' %}
+				<div class="row product-grid">
+					{% for product in collection.products %}
+						{% capture card_snippet %}{% if static_types contains product.type %}card-banner{% else %}card-product{% endif %}{% endcapture %}
+						{% assign grid_item_class = 'grid-item grid-item-product' %}
+						{% if card_snippet contains 'static' %}
+							{% assign grid_item_class = grid_item_class | append: ' grid-item-static' %}
+						{% endif %}
+
+                    	{% comment %}
+                    						{% if product.handle != 'first' and collections[product.handle].products.size > 0 %}
+
+                    remove double product on featured ski collection page
+							<div class="cli col-xs-12 {{ grid_item_class }}">
+								{% include 'collection-list-item', collection: collections[product.handle] %}
+                                test
+
+							</div>						{% else %}						{% endif %}
+
+
+                                      {% endcomment %}
+
+						 	{% comment %}Some special spacing for different collections and lengths{% endcomment %}
+							{% if forloop.length == 1 %}
+								<div class="col-md-4 offset-md-4 {{ grid_item_class }}">
+									{% include card_snippet %}
+								</div>
+							{% elsif forloop.length == 2 %}
+								<div class="col-md-6 {{ grid_item_class }}">
+									{% include card_snippet %}
+								</div>
+							{% else %}
+								<div class="col-lg-3 col-sm-4 col-xs-6 {{ grid_item_class }}">
+									{% include card_snippet %}
+								</div>
+							{% endif %}
+
+					{% endfor %}
+				</div>
+
+			{% else %}
+				<div class="alert alert-warning text-center" role="alert">
+					{{ 'collections.general.no_matches' | t }}
+				</div>
+
+			{% endif %}
+
+
+			<hr>
+			{% include 'pagination' %}
+		</div>
+		<div class="sidebar">
+
+            {% assign thecollection = collection.handle  | prepend: 'collection-sidebar-' %}
+
+        {% if model.handle == collection.handle %}
+            {% include 'collection-sidebar-skis' %}
+        {% elsif thecollection contains 'gear' or  thecollection contains 'bindings'  or  thecollection contains 'clothing'  or  thecollection contains 'accessories' %}
+            {% include thecollection %}
+        {% else %}
+            {% include 'collection-sidebar'%}
+        {% endif %}
+		</div>
+	</div> <!-- .sidebar-container -->
+
+</div> <!-- /.container -->
+{% endpaginate %}
+
+{% include 'product-restricted' %}

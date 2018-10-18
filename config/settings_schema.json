@@ -1,0 +1,1779 @@
+[
+  {
+    "name": "Welcome",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Timber Theme Framework by [Shopify](http:\/\/www.shopify.com)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Theme settings allow designers to provide an easy way for any user to customize the look and feel of their shop without having to delve into HTML or CSS code. Please see our [help page on theme settings](http:\/\/docs.shopify.com\/themes\/theme-templates\/settings) to learn more about how you can make the theme customizable."
+      },
+      {
+        "type": "paragraph",
+        "content": "If you require any support for Timber, please review the [documentation](http:\/\/shopify.github.io\/Timber\/) or contact us at [timber@shopify.com](mailto:timber@shopify.com)"
+      }
+    ]
+  },
+  {
+    "name": "Inventory",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Sell Out Risk"
+      },
+      {
+        "type": "text",
+        "id": "sell_out_risk_danger",
+        "label": "High Threshold",
+        "default": "30",
+        "info": "Total quantity of products remaining, all variants combined."
+      },
+      {
+        "type": "text",
+        "id": "sell_out_risk_warning",
+        "label": "Medium Threshold",
+        "default": "50",
+        "info": "Total quantity of products remaining, all variants combined."
+      }
+    ]
+  },
+  {
+    "name": "Maps",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Google Maps"
+      },
+      {
+        "type": "image",
+        "id": "map-marker.png",
+        "label": "Map Icon",
+        "info": "Maximum size 64x64",
+        "max-width": 64,
+        "max-height": 64
+      },
+      {
+        "type": "text",
+        "id": "map_icon_width",
+        "label": "Map Icon Width"
+      },
+      {
+        "type": "text",
+        "id": "map_icon_height",
+        "label": "Map Icon Height"
+      },
+      {
+        "type": "text",
+        "id": "gmaps_api_key",
+        "label": "Google Maps API Key",
+        "info": "Get this from the Google Developer Console - http:\/\/console.developers.google.com"
+      }
+    ]
+  },
+  {
+    "name": "Magic 360",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Magic 360 Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "magic360_enable",
+        "label": "Enabled"
+      }
+    ]
+  },
+  {
+    "name": "Feeds",
+    "settings": [
+      {
+        "type": "text",
+        "id": "feed_exclude_types",
+        "label": "Exclude Product Types",
+        "info": "Comma separated list of product types to exclude from 3rd party data feeds.",
+        "placeholder": "Banner,Stickers",
+        "default": "Banner"
+      },
+      {
+        "type": "header",
+        "content": "AvantLink"
+      },
+      {
+        "type": "checkbox",
+        "id": "avantlink_enable",
+        "label": "Enabled"
+      },
+      {
+        "type": "text",
+        "id": "avantlink_site_id",
+        "label": "Your AvantLink Site ID"
+      },
+      {
+        "type": "collection",
+        "id": "avantlink_collection",
+        "label": "Product Collection",
+        "info": "Products in this Collection will be available on AvantLink."
+      },
+      {
+        "type": "header",
+        "content": "Google Merchant Center"
+      },
+      {
+        "type": "checkbox",
+        "id": "gmc_enable",
+        "label": "Enabled"
+      },
+      {
+        "type": "collection",
+        "id": "gmc_collection",
+        "label": "Product Collection",
+        "info": "Product in this Collection will be available in the Google Merchant Center. http:\/\/google.com\/merchants"
+      }
+    ]
+  },
+  {
+    "name": "Google Tag Manager",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "gtm_enable",
+        "label": "Enabled"
+      },
+      {
+        "type": "textarea",
+        "id": "gtm_snippet",
+        "label": "Code Snippet",
+        "info": "Copy \/ paste your Google Tag Manager snippet here. See [google.com\/tagmanager](http:\/\/google.com\/tagmanager) for details."
+      }
+    ]
+  },
+  {
+    "name": "Affirm",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Affirm Setup"
+      },
+      {
+        "type": "checkbox",
+        "id": "affirm_enable",
+        "label": "Enabled"
+      },
+      {
+        "type": "text",
+        "id": "affirm_api_key",
+        "label": "Your Affirm public API key"
+      },
+      {
+        "type": "select",
+        "id": "affirm_apr",
+        "label": "Default APR Calculation",
+        "options": [
+          {
+            "value": "0.00",
+            "label": "0%"
+          },
+          {
+            "value": "0.10",
+            "label": "10%"
+          },
+          {
+            "value": "0.20",
+            "label": "20%"
+          },
+          {
+            "value": "0.30",
+            "label": "30%"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "affirm_months",
+        "label": "Default Term Length",
+        "options": [
+          {
+            "value": "3",
+            "label": "3 Months"
+          },
+          {
+            "value": "6",
+            "label": "6 Months"
+          },
+          {
+            "value": "12",
+            "label": "12 Months"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Banners - Home",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_banners_fp",
+        "label": "Show Banners on Homepage"
+      },
+      {
+        "type": "text",
+        "id": "banners_fp_sequence",
+        "label": "Sequence",
+        "default": "1,2,3,4",
+        "info": "Change the order that banners appear. Enter a comma separated list."
+      },
+      {
+        "type": "header",
+        "content": "Banner #1"
+      },
+      {
+        "type": "image",
+        "id": "banner1.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "banner1_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "banner1_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "banner1_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "banner1_url",
+        "label": "Link"
+      },
+      {
+        "type": "header",
+        "content": "Banner #2"
+      },
+      {
+        "type": "image",
+        "id": "banner2.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "banner2_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "banner2_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "banner2_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "banner2_url",
+        "label": "Link"
+      },
+      {
+        "type": "header",
+        "content": "Banner #3"
+      },
+      {
+        "type": "image",
+        "id": "banner3.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "banner3_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "banner3_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "banner3_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "banner3_url",
+        "label": "Link"
+      },
+      {
+        "type": "header",
+        "content": "Banner #4"
+      },
+      {
+        "type": "image",
+        "id": "banner4.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "banner4_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "banner4_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "banner4_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "banner4_url",
+        "label": "Link"
+      }
+    ]
+  },
+  {
+    "name": "Banners - Product",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Optionss"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_banners_product",
+        "label": "Show product banners"
+      },
+      {
+        "type": "text",
+        "id": "banners_product_sequence",
+        "label": "Sequence",
+        "default": "1,2,3",
+        "info": "Change the order that banners appear. Enter a comma separated list."
+      },
+      {
+        "type": "header",
+        "content": "Banner #1"
+      },
+      {
+        "type": "image",
+        "id": "product1.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "product1_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "product1_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "product1_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "product1_url",
+        "label": "Link"
+      },
+      {
+        "type": "header",
+        "content": "Banner #2"
+      },
+      {
+        "type": "image",
+        "id": "product2.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "product2_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "product2_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "product2_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "product2_url",
+        "label": "Link"
+      },
+      {
+        "type": "header",
+        "content": "Banner #3"
+      },
+      {
+        "type": "image",
+        "id": "product3.jpg",
+        "label": "Image",
+        "max-width": 600,
+        "max-height": 400
+      },
+      {
+        "type": "text",
+        "id": "product3_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "product3_caption",
+        "label": "Caption"
+      },
+      {
+        "type": "text",
+        "id": "product3_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "product3_url",
+        "label": "Link"
+      }
+    ]
+  },
+  {
+    "name": "Homepage",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Homepage Widgets"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_fp_blog",
+        "label": "Enable blog",
+        "info": "These articles will be displayed at the bottom of the homepage."
+      },
+      {
+        "type": "blog",
+        "id": "fp_blog",
+        "label": "Blog"
+      },
+      {
+        "type": "text",
+        "id": "fp_blog_limit",
+        "label": "Recent Posts",
+        "info": "Enter the number of recent posts to show. Default is 3.",
+        "default": "3"
+      },
+      {
+        "type": "paragraph",
+        "content": "If an article has an Excerpt, it will be displayed in a left column next to the article content. Otherwise, the article content is 100% width."
+      }
+    ]
+  },
+  {
+    "name": "Homepage Slideshow",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_slides_fp",
+        "label": "Enable Homepage Slideshow"
+      },
+      {
+        "type": "text",
+        "id": "slides_sequence",
+        "label": "Sequence",
+        "default": "1,2,3,4,5",
+        "info": "Change the order that slides appear. Enter a comma separated list."
+      },
+      {
+        "type": "header",
+        "content": "Slide 1"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_slide1",
+        "label": "Enable Slide 1"
+      },
+      {
+        "type": "image",
+        "id": "slide1.jpg",
+        "label": "Image",
+        "max-width": 1600,
+        "max-height": 1200
+      },
+      {
+        "type": "select",
+        "id": "slide1_align",
+        "label": "Horizontal Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide1_valign",
+        "label": "Vertical Alignment",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "middle",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "slide1_title",
+        "label": "Headline"
+      },
+      {
+        "type": "text",
+        "id": "slide1_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "slide1_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "slide1_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "slide1_theme",
+        "label": "Color Scheme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light (White)"
+          },
+          {
+            "value": "dark",
+            "label": "Dark (Black)"
+          },
+          {
+            "value": "highlight",
+            "label": "Highlight (Yellow)"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide1_text_transform",
+        "label": "Text Transform",
+        "options": [
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "default",
+            "label": "None"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Slide 2"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_slide2",
+        "label": "Enable Slide 2"
+      },
+      {
+        "type": "image",
+        "id": "slide2.jpg",
+        "label": "Image",
+        "max-width": 1600,
+        "max-height": 1200
+      },
+      {
+        "type": "select",
+        "id": "slide2_align",
+        "label": "Horizontal Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide2_valign",
+        "label": "Vertical Alignment",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "middle",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "slide2_title",
+        "label": "Headline"
+      },
+      {
+        "type": "text",
+        "id": "slide2_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "slide2_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "slide2_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "slide2_theme",
+        "label": "Color Scheme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light (White)"
+          },
+          {
+            "value": "dark",
+            "label": "Dark (Black)"
+          },
+          {
+            "value": "highlight",
+            "label": "Highlight (Yellow)"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide2_text_transform",
+        "label": "Text Transform",
+        "options": [
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "default",
+            "label": "None"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Slide 3"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_slide3",
+        "label": "Enable Slide 3"
+      },
+      {
+        "type": "image",
+        "id": "slide3.jpg",
+        "label": "Image",
+        "max-width": 1600,
+        "max-height": 1200
+      },
+      {
+        "type": "select",
+        "id": "slide3_align",
+        "label": "Horizontal Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide3_valign",
+        "label": "Vertical Alignment",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "middle",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "slide3_title",
+        "label": "Headline"
+      },
+      {
+        "type": "text",
+        "id": "slide3_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "slide3_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "slide3_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "slide3_theme",
+        "label": "Color Scheme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light (White)"
+          },
+          {
+            "value": "dark",
+            "label": "Dark (Black)"
+          },
+          {
+            "value": "highlight",
+            "label": "Highlight (Yellow)"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide3_text_transform",
+        "label": "Text Transform",
+        "options": [
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "default",
+            "label": "None"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Slide 4"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_slide4",
+        "label": "Enable Slide 4"
+      },
+      {
+        "type": "image",
+        "id": "slide4.jpg",
+        "label": "Image",
+        "max-width": 1600,
+        "max-height": 1200
+      },
+      {
+        "type": "select",
+        "id": "slide4_align",
+        "label": "Horizontal Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide4_valign",
+        "label": "Vertical Alignment",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "middle",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "slide4_title",
+        "label": "Headline"
+      },
+      {
+        "type": "text",
+        "id": "slide4_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "slide4_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "slide4_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "slide4_theme",
+        "label": "Color Scheme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light (White)"
+          },
+          {
+            "value": "dark",
+            "label": "Dark (Black)"
+          },
+          {
+            "value": "highlight",
+            "label": "Highlight (Yellow)"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide4_text_transform",
+        "label": "Text Transform",
+        "options": [
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "default",
+            "label": "None"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Slide 5"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_slide5",
+        "label": "Enable Slide 5"
+      },
+      {
+        "type": "image",
+        "id": "slide5.jpg",
+        "label": "Image",
+        "max-width": 1600,
+        "max-height": 1200
+      },
+      {
+        "type": "select",
+        "id": "slide5_align",
+        "label": "Horizontal Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide5_valign",
+        "label": "Vertical Alignment",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "middle",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "slide5_title",
+        "label": "Headline"
+      },
+      {
+        "type": "text",
+        "id": "slide5_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "slide5_cta",
+        "label": "Call To Action"
+      },
+      {
+        "type": "text",
+        "id": "slide5_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "slide5_theme",
+        "label": "Color Scheme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light (White)"
+          },
+          {
+            "value": "dark",
+            "label": "Dark (Black)"
+          },
+          {
+            "value": "highlight",
+            "label": "Highlight (Yellow)"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "slide5_text_transform",
+        "label": "Text Transform",
+        "options": [
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "default",
+            "label": "None"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_logo",
+        "label": "Use Custom Logo"
+      },
+      {
+        "type": "image",
+        "id": "logo.png",
+        "label": "Custom Logo",
+        "max-width": 100,
+        "max-height": 100,
+        "info": "Logo should be 100x100"
+      },
+      {
+        "type": "header",
+        "content": "Favicon"
+      },
+      {
+        "type": "checkbox",
+        "id": "favicon_enable",
+        "label": "Use custom icon?"
+      },
+      {
+        "type": "image",
+        "id": "favicon.png",
+        "label": "16px x 16px png",
+        "max-width": 16,
+        "max-height": 16
+      },
+      {
+        "type": "checkbox",
+        "id": "header_icon-links_enable",
+        "label": "Show quick links"
+      },
+      {
+        "type": "page",
+        "id": "header_icon-page_01",
+        "label": "page to link 01"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-icon_01",
+        "label": "choose fa icon 01"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-link-name_01",
+        "label": "link name 01"
+      },
+      {
+        "type": "page",
+        "id": "header_icon-page_02",
+        "label": "page to link 02"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-icon_02",
+        "label": "choose fa icon 02"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-link-name_02",
+        "label": "link name 02"
+      },
+      {
+        "type": "page",
+        "id": "header_icon-page_03",
+        "label": "page to link 03"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-icon_03",
+        "label": "choose fa icon 03"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-link-name_03",
+        "label": "link name 03"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-icon_04",
+        "label": "choose fa icon 04"
+      },
+      {
+        "type": "text",
+        "id": "header_icon-link-name_04",
+        "label": "link name 04"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_quicklinks_enable",
+        "label": "Show quick links"
+      },
+      {
+        "type": "link_list",
+        "id": "header_quicklinks_linklist",
+        "label": "Quick links menu"
+      },
+      {
+        "type": "header",
+        "content": "Site-wide Callout"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_callout",
+        "label": "Enable Callout Message in Header"
+      },
+      {
+        "type": "text",
+        "id": "callout_text",
+        "label": "Message"
+      },
+      {
+        "type": "text",
+        "id": "callout_url",
+        "placeholder": "http:\/\/",
+        "label": "Link URL"
+      },
+      {
+        "type": "text",
+        "id": "callout_cta",
+        "placeholder": "Learn More",
+        "label": "Anchor Text"
+      },
+      {
+        "type": "select",
+        "id": "callout_theme",
+        "label": "Color Scheme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light"
+          },
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "highlight",
+            "label": "Highlight (Yellow)"
+          },
+          {
+            "value": "alternate",
+            "label": "Alternate (Red)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "footer_quicklinks_enable",
+        "label": "Show quick links"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_quicklinks_linklist",
+        "label": "Quick links menu"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_social_enable",
+        "label": "Show social media links"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_blog_enable",
+        "label": "Show blog post"
+      },
+      {
+        "type": "blog",
+        "id": "footer_blog",
+        "label": "Blog"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_newsletter_enable",
+        "label": "Show Newsletter Field"
+      },
+      {
+        "type": "text",
+        "id": "newsletter_form_action",
+        "label": "MailChimp Form Action URL",
+        "info": "[Where do I find my MailChimp form action URL?](http:\/\/docs.shopify.com\/support\/configuration\/store-customization\/where-do-i-get-my-mailchimp-form-action)"
+      }
+    ]
+  },
+  {
+    "name": "Blog",
+    "settings": [
+      {
+        "type": "blog",
+        "id": "blog_primary",
+        "label": "Primary Blog"
+      },
+      {
+        "type": "link_list",
+        "id": "blog_categories_linklist",
+        "label": "Blog Categories",
+        "info": "Create a menu with links to the featured tags that you want to promote as blog 'Categories'. Links on the menu should look like: #blog-category."
+      }
+    ]
+  },
+  {
+    "name": "Video Blog",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "video_categories_linklist",
+        "label": "Categories (Menu)",
+        "info": "Create a menu with links to the featured tags that you want to promote as blog 'Categories'. Links on the menu should look like: #blog-category."
+      }
+    ]
+  },
+  {
+    "name": "Sidebars",
+    "icon": "sidebar",
+    "settings": [
+      {
+        "type": "header",
+        "content": "About Us"
+      },
+      {
+        "type": "link_list",
+        "id": "about_linklist",
+        "label": "Sidebar Menu",
+        "info": "Select a menu for links in the left nav on 'About' pages."
+      }
+    ]
+  },
+  {
+    "name": "Collections",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "collection_all_products",
+        "label": "All Products Collection"
+      },
+      {
+        "type": "collection",
+        "id": "collection_grouped_products",
+        "label": "Grouped Products Collection"
+      }
+    ]
+  },
+  {
+    "name": "reviews on product page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "usestamped",
+        "label": "use stamped review instead of regular reviews"
+      }
+    ]
+  },
+  {
+    "name": "Restricted Products",
+    "settings": [
+      {
+        "type": "image",
+        "id": "restricted-badge.png",
+        "label": "Team Only Badge",
+        "max-width": 600,
+        "max-height": 600
+      }
+    ]
+  },
+  {
+    "name": "Related Products",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Related Products",
+        "info": "Related products are set per product TYPE, with an optional default collection."
+      },
+      {
+        "type": "collection",
+        "id": "collection_related",
+        "label": "Default",
+        "info": "This is the default related products collection when no better option exists for the given product type."
+      },
+      {
+        "type": "collection",
+        "id": "collection_related_skis",
+        "label": "Skis",
+        "info": "Related products for skis."
+      },
+      {
+        "type": "collection",
+        "id": "collection_related_bindings",
+        "label": "Bindings",
+        "info": "Related products for bindings."
+      },
+      {
+        "type": "collection",
+        "id": "collection_related_clothing",
+        "label": "Clothing",
+        "info": "Related products for clothing."
+      },
+      {
+        "type": "collection",
+        "id": "collection_related_accessories",
+        "label": "Accessories",
+        "info": "Related products for accessories."
+      },
+      {
+        "type": "header",
+        "content": "Cross Sells"
+      },
+      {
+        "type": "collection",
+        "id": "collection_cross_sells",
+        "label": "Default",
+        "info": "Products in this collection will be shown on the shopping cart."
+      }
+    ]
+  },
+  {
+    "name": "International",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Default Store"
+      },
+      {
+        "type": "text",
+        "id": "shop1_title",
+        "label": "Region"
+      },
+      {
+        "type": "text",
+        "id": "shop1_url",
+        "label": "URL"
+      },
+      {
+        "type": "text",
+        "id": "shop1_country_code",
+        "label": "Country Code - [ISO 3166-1 alpha-2](https:\/\/en.wikipedia.org\/wiki\/ISO_3166-1_alpha-2)"
+      },
+      {
+        "type": "text",
+        "id": "shop1_language_code",
+        "label": "Language Code - [ISO 639-1](https:\/\/en.wikipedia.org\/wiki\/List_of_ISO_639-1_codes)"
+      },
+      {
+        "type": "text",
+        "id": "shop1_currency_code",
+        "label": "Currency Code - [ISO 4217](https:\/\/en.wikipedia.org\/wiki\/ISO_4217)"
+      },
+      {
+        "type": "header",
+        "content": "Alternate Store"
+      },
+      {
+        "type": "checkbox",
+        "id": "shop2_enable",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "shop2_title",
+        "label": "Region"
+      },
+      {
+        "type": "text",
+        "id": "shop2_url",
+        "label": "URL"
+      },
+      {
+        "type": "text",
+        "id": "shop2_country_code",
+        "label": "Country Code - [ISO 3166-1 alpha-2](https:\/\/en.wikipedia.org\/wiki\/ISO_3166-1_alpha-2)"
+      },
+      {
+        "type": "text",
+        "id": "shop2_language_code",
+        "label": "Language Code - [ISO 639-1](https:\/\/en.wikipedia.org\/wiki\/List_of_ISO_639-1_codes)"
+      },
+      {
+        "type": "text",
+        "id": "shop2_currency_code",
+        "label": "Currency Code - [ISO 4217](https:\/\/en.wikipedia.org\/wiki\/ISO_4217)"
+      },
+      {
+        "type": "header",
+        "content": "Alternate Store"
+      },
+      {
+        "type": "checkbox",
+        "id": "shop3_enable",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "shop3_title",
+        "label": "Region"
+      },
+      {
+        "type": "text",
+        "id": "shop3_url",
+        "label": "URL"
+      },
+      {
+        "type": "text",
+        "id": "shop3_country_code",
+        "label": "Country Code - [ISO 3166-1 alpha-2](https:\/\/en.wikipedia.org\/wiki\/ISO_3166-1_alpha-2)"
+      },
+      {
+        "type": "text",
+        "id": "shop3_language_code",
+        "label": "Language Code - [ISO 639-1](https:\/\/en.wikipedia.org\/wiki\/List_of_ISO_639-1_codes)"
+      },
+      {
+        "type": "text",
+        "id": "shop3_currency_code",
+        "label": "Currency Code - [ISO 4217](https:\/\/en.wikipedia.org\/wiki\/ISO_4217)"
+      }
+    ]
+  },
+  {
+    "name": "Product Banners",
+    "icon": "product",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Product Banners"
+      },
+      {
+        "type": "text",
+        "id": "static_product_types",
+        "label": "Product Types",
+        "info": "Comma separated list of product types to be displayed as static banners. No spaces or special characters.",
+        "placeholder": "Banner,Ad"
+      }
+    ]
+  },
+  {
+    "name": "Product ALT Text Modifiers",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "You can add special #tag keywords to image ALT text to enabled additional functionality in this theme."
+      },
+      {
+        "type": "header",
+        "content": "Product Page",
+        "info": "Images for product pages"
+      },
+      {
+        "type": "text",
+        "id": "alt_tag_product_featured",
+        "label": "Featured Photo",
+        "info": "Alt #tag for featured photo shown to the right of the product description",
+        "default": "#featured",
+        "placeholder": "#featured"
+      },
+      {
+        "type": "text",
+        "id": "alt_tag_product_cover",
+        "label": "Cover Photo",
+        "info": "Alt #tag for product cover image, displayed at 100% width below the product description",
+        "default": "#profile",
+        "placeholder": "#cover"
+      },
+      {
+        "type": "text",
+        "id": "alt_tag_product_specs",
+        "label": "Specs Photo",
+        "info": "Alt #tag for product technical drawing. For skis you can upload to the parent product \/ model also.",
+        "placeholder": "#specs",
+        "default": "#specs"
+      },
+      {
+        "type": "header",
+        "content": "Collection Images",
+        "info": "Alt #tag modifiers for products in Collection pages"
+      },
+      {
+        "type": "text",
+        "id": "alt_tag_collection",
+        "label": "Collection Photo",
+        "default": "#collection",
+        "placeholder": "#collection",
+        "info": "Alt #tag for default product thumbnail image in a Collection"
+      },
+      {
+        "type": "text",
+        "id": "alt_tag_restricted",
+        "label": "Restricted \/ Preorder Photo",
+        "default": "#restricted",
+        "placeholder": "#restricted",
+        "info": "Alt #tag for special image for restricted \/ preorder products"
+      },
+      {
+        "type": "header",
+        "content": "Data Feeds",
+        "info": "Images for 3rd party data feeds."
+      },
+      {
+        "type": "text",
+        "id": "alt_tag_feed",
+        "label": "Alt #tag for data feed image",
+        "placeholder": "#feed",
+        "default": "#feed"
+      },
+      {
+        "type": "header",
+        "content": "Video Support"
+      },
+      {
+        "type": "paragraph",
+        "content": "Add a link to a YouTube or Vimeo video in the ALT text and it will automatically play the video when clicked. Use the URL of the video, not the embed code."
+      }
+    ]
+  },
+  {
+    "name": "Cart Page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_notes_enable",
+        "label": "Allow notes with orders"
+      },
+      {
+        "type": "select",
+        "id": "ajax_cart_method",
+        "label": "Cart type",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Free Shipping Progress"
+      },
+      {
+        "type": "checkbox",
+        "id": "free_ship_enable",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "free_ship_threshold",
+        "label": "Free Shipping Threshold",
+        "info": "Enter the minimum amount for free shipping, numbers only no currency or formatting.",
+        "default": "75.00",
+        "placeholder": "100.00"
+      },
+      {
+        "type": "image",
+        "id": "free_ship_icon.png",
+        "label": "Free Shipping Icon",
+        "info": "Recommended size 150x150",
+        "max-width": 600,
+        "max-height": 600
+      },
+      {
+        "type": "header",
+        "content": "Cart Alert Message"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_alert_enable",
+        "label": "Enable",
+        "info": "Edit the alert message under Theme Options > Language > Cart. Use this for shipping delays, special promitions, etc"
+      },
+      {
+        "type": "select",
+        "id": "cart_alert_type",
+        "label": "Alert type",
+        "options": [
+          {
+            "value": "success",
+            "label": "Great Success!"
+          },
+          {
+            "value": "info",
+            "label": "Info"
+          },
+          {
+            "value": "warning",
+            "label": "Warning"
+          },
+          {
+            "value": "danger",
+            "label": "Danger"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "cart_alert_url",
+        "label": "Link URL",
+        "info": "Append a link to this URL after the message",
+        "placeholder": "\/pages\/financing"
+      },
+      {
+        "type": "text",
+        "id": "cart_alert_anchor",
+        "label": "Link Anchor Text",
+        "info": "Anchor text for link",
+        "placeholder": "Learn More",
+        "default": "Learn More"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "twittercard_handle",
+        "label": "Twitter Handle",
+        "default": "@"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter link"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook link"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram link"
+      },
+      {
+        "type": "text",
+        "id": "social_vimeo_link",
+        "label": "Vimeo link"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube link"
+      },
+      {
+        "type": "text",
+        "id": "social_google_link",
+        "label": "Google+ link"
+      }
+    ]
+  },
+  {
+    "name": "Taxes & Shipping",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "tax_inclusive_enable",
+        "label": "Prices are tax inclusive?",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "Check this box if GST\/VAT is included in product prices. You can customize the tax related messages that will appear throughout the site under Theme Translations > General > Taxes."
+      },
+      {
+        "type": "checkbox",
+        "id": "free_shipping_enable",
+        "label": "Free Shipping?",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_over",
+        "label": "Free Shipping Over",
+        "info": "This is used outside of checkout to determine initially if a product qualifies for free shipping",
+        "placeholder": "0.00",
+        "default": "50.00"
+      }
+    ]
+  }
+]

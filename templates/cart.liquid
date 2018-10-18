@@ -1,0 +1,248 @@
+<!-- /templates/cart.liquid -->
+{% comment %} Markup based on Timber 2.1.2 {% endcomment %}
+{% comment %}
+	For info on test orders:
+		- General http://docs.shopify.com/manual/your-store/orders/test-orders
+		- Shopify Payments - http://docs.shopify.com/manual/more/shopify-payments/testing-shopify-payments
+
+{% endcomment %}
+
+{% comment %} Cart alerts {% endcomment %}
+
+{% assign hasPreOrders = false %}
+{% assign preOrderDate = false %}
+{% for lineItem in cart.items %}
+  {% assign variantId = lineItem.variant_id %}
+  {% assign product = lineItem.product %}
+  {% for variant in product.variants %}
+    {% if variant.id == variantId and variant.inventory_quantity <= 0 and variant.incoming %}
+      {% assign hasPreOrders = true %}
+      {% if preOrderDate %}
+        {% if variant.next_incoming_date > preOrderDate %}
+          {% assign preOrderDate = variant.next_incoming_date %}
+        {% endif %}
+      {% else %}
+        {% assign preOrderDate = variant.next_incoming_date %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% if hasPreOrders %}
+  <div class="modal modal-inverse modal-restricted fade in" id="PreOrderItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Heads up!</h4>
+            </div>
+            <div class="modal-body">
+                Your cart contains one or more items that are on preorder. All items will ship on {{ preOrderDate | date: "%B" }} <span class="ordinal-me">{{ preOrderDate | date: "%d" }}</span> when everything is in stock.
+            </div>
+            <div class="modal-footer">
+              <button type="button" name="button" class="btn btn-primary-outline continue-to-checkout">Continue</button>
+            </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  </div>
+  <script type="text/javascript">
+    (jQuery)(function($) {
+      'use strict';
+      $('#PreOrderItemModal').modal('show');
+      $('#PreOrderItemModal button.continue-to-checkout').on('click', function() {
+        $('#PreOrderItemModal').modal('hide');
+      });
+    });
+  </script>
+{% endif %}
+
+{% assign has_skis = false %}
+{% assign has_bindings = false %}
+{% for item in cart.items %}
+	{% if item.product.type == 'Bindings' %}{% assign has_bindings = true %}{% endif %}
+	{% if item.product.type == 'Skis' %}{% assign has_skis = true %}{% endif %}
+{% endfor %}
+
+<div class="container">
+{% if cart.item_count > 0 %}
+	{% if settings.affirm_enable %}
+		{% include 'affirm' %}
+	{% endif %}
+	<header class="page-header">
+		<h1 class="page-title">{{ 'cart.general.title' | t }}</h1>
+	</header>
+
+
+	{% if has_skis and has_bindings %}
+		<div class="alert alert-warning alert-dismissible fade in" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+				<strong>{{ 'general.alert.warning' | t }}</strong> {{ 'cart.alerts.skis_and_bindings' | t }}
+		</div>
+	{% endif %}
+	{% if settings.cart_alert_enable %}
+		<div class="alert alert-{{ settings.cart_alert_type }} alert-dismissible fade in" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+				<strong>{{ 'general.alert.' | append: settings.cart_alert_type | t }}</strong> {{ 'cart.alerts.custom' | t }}
+				{% unless settings.cart_alert_url == blank %}
+					<a class="alert-link" href="{{ settings.cart_alert_url }}">{{ settings.cart_alert_anchor | default: 'Learn more' }}</a>
+				{% endunless %}
+		</div>
+	{% endif %}
+	<form action="/cart" method="post" novalidate class="">
+		<div class="cart-table">
+			<div class="row">
+				<div class="col-md-4 text-center cart-header">{{ 'cart.label.product' | t }}</div>
+				<div class="col-md-2 text-center cart-header">{{ 'cart.label.price' | t }}</div>
+				<div class="col-md-2 text-center cart-header">{{ 'cart.label.quantity' | t }}</div>
+				<div class="col-md-2 text-right cart-header">{{ 'cart.label.total' | t }}</div>
+				<div class="col-md-2 text-right cart-header"> &nbsp; </div>
+			</div>
+			{% for item in cart.items %}
+				<div class="row cart-row">
+					<div class="col-md-4" data-label="{{ 'customer.order.product' | t }}">
+						<div class="row">
+							<div class="col-md-4">
+								<a href="{{ item.url }}" class="cart-image">
+									<img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}" class="img-fluid">
+								</a>
+							</div>
+							<div class="col-md-8">
+								<div class="cart-item-description">
+									<a href="{{ item.url }}" class="cart-item-title">
+										{{ item.product.title }}
+									</a>
+									{% unless item.variant.title contains 'Default' %}
+										<div class="cart-item-options">
+											{% for option_title in item.product.options %}
+												<p class="cart-item-option">
+													<span class="cart-option-title">{{ option_title }}: </span>
+													<span class="cart-option-value"> {{ item.variant.options[forloop.index0] }}</span>
+												</p>
+											{% endfor %}
+											<a href="{{ item.url }}" class="cart-edit">{{ 'cart.general.edit' | t }}</a>
+
+										</div>
+									{% endunless %}
+								</div>
+
+
+
+
+							</div>
+						</div> <!-- /.row -->
+					</div>
+
+					<div class="col-md-2 cart-item-price" data-label="{{ 'cart.label.price' | t }}">
+						<div class="row">
+							<div class="col-xs-4"><span class="cart-label">{{ 'cart.label.price' | t }}</span></div>
+							<div class="col-md-12 col-xs-8">{{ item.price | money }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 cart-item-qty" data-label="{{ 'cart.label.quantity' | t }}">
+						<div class="row">
+							<div class="col-xs-4"><label class="form-control-label cart-label">{{ 'cart.label.quantity' | t }}</label> </div>
+							<div class="col-md-12 col-xs-8"><input class="form-control" type="number" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" min="0" size="3" ></div>
+						</div>
+					</div>
+					<div class="col-md-2 cart-item-subtotal" data-label="{{ 'cart.label.total' | t }}">
+						<div class="row">
+							<div class="col-xs-4"><span class="cart-label">{{ 'cart.label.total' | t }}</span></div>
+							<div class="col-md-12 col-xs-8">{{ item.line_price | money }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 cart-remove">
+						<a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="cart-remove">
+							{{ 'cart.general.remove' | t }}
+						</a>
+					</div>
+				</div> <!-- /.cart-row .row -->
+			{% endfor %}
+		</div>
+		<div class="row">
+			{% if settings.cart_notes_enable %}
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="CartSpecialInstructions">{{ 'cart.general.note' | t }}</label>
+						<textarea name="note" class="form-control" rows="4" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+					</div>
+				</div>
+			{% endif %}
+			<div class="text-right{% if settings.cart_notes_enable %} col-md-6 {% else %} col-md-12 {% endif %}">
+				<table class="pull-right price-breakdown cart-total">
+					<tbody>
+						{% if settings.tax_inclusive_enable %}
+							{% assign tax = cart.total_price | divided_by: 11 %}
+							{% assign subtotal = cart.total_price | minus: tax %}
+							<tr>
+							<th>{{ 'cart.general.subtotal' | t }}:</th>
+							<td>{{ subtotal | money }}</td>
+							</tr>
+							<tr>
+							<th>{{ 'cart.general.tax' | t }}:</th>
+							<td>{{ tax | money }}</td>
+							</tr>
+							<tr>
+							<th>{{ 'cart.general.total' | t }}:</th>
+							<td>{{ cart.total_price | money_with_currency }}</td>
+							</tr>
+						{% else %}
+							<tr>
+							<th><span class="cart__subtotal-title">{{ 'cart.general.subtotal' | t }}</span></th>
+							<td><span class="h3 cart__subtotal">{{ cart.total_price | money }}</span></td>
+							</tr>
+						{% endif %}
+					</tbody>
+				</table>
+
+				<div class="text-xs-right" style="clear: both">
+					<input type="submit" name="update" class="btn btn-secondary btn-update" value="{{ 'cart.general.update' | t }}">
+					<input type="submit" name="checkout" class="btn btn-primary btn-checkout" value="{{ 'cart.general.checkout' | t }} &rarr;">
+					{% if settings.affirm_enable %}
+						<p class="affirm-price">
+							<a id="affirm-learn-more" style="visibility: none" href="#"></a>
+						</p>
+					{% endif %}
+                    <div style="width: 49%; height: 50px; display: inline-block; padding: 5px;">
+  									<div id="bread-checkout-btn" style="background-color:lightgrey; color: black;  border: 2px solid black;  text-align: center; height: 54px; font-weight: 600;"><div style="margin-top: 14px;">Get Financing</div></div>
+                                  </div>
+					<p><em>{{ 'cart.general.shipping_at_checkout' | t }}</em></p>
+
+				</div>
+			</div>
+		</div>
+	</form>
+{% else %}
+	{% comment %}
+		The cart is empty
+	{% endcomment %}
+	<header class="page-header">
+		<h1 class="page-title">{{ 'cart.general.title' | t }}</h1>
+	</header>
+	<p>{{ 'cart.general.empty' | t }}</p>
+	<p>{{ 'cart.general.continue_browsing_html' | t }}</p>
+{% endif %}
+</div>
+
+{% unless settings.collection_cross_sells == blank %}
+<aside class="related-products cross-sell">
+	<div class="container">
+		<header>
+			<h2>{{ 'products.general.cross_sells' | t }}</h2>
+		</header>
+		<ul class="list-unstyled row">
+		{% for product in collections[settings.collection_cross_sells].products limit:4 %}
+			<li class="col-md-3 grid-item grid-item-product">
+				{% include 'card-product' %}
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+
+</aside>
+{% endunless %}

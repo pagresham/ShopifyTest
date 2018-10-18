@@ -1,0 +1,67 @@
+<!-- /snippets/collection-skis-sidebar.liquid -->
+{% comment %}
+
+	Side navigation for skis.
+
+	id attributes are only added to <ul> elements for link attribution in Google Analytics, NOT USED FOR CSS
+
+{% endcomment %}
+
+
+{% comment %}
+	Ski models and limited edition graphics
+{% endcomment %}
+
+
+{% capture urls %}{{ product.url | within: collection }}|{{ product.url }}{% endcapture %}
+{% for tag in current_tags %}
+    {% assign urls = urls | append: '|/' | append: tag | downcase %}
+       {% assign noviewall = "yes" %} 
+        {% if noviewall %}active{% endif %}
+{% endfor %}
+{% if page %}
+     {% assign noviewall = True %} 
+	{% assign urls = urls | append: '|/pages/' | append: page.handle %}
+
+{% endif %}
+{% assign here = urls | split: '|' %}
+
+
+
+<nav class="sidebar-content">
+ 
+	
+	
+	<h3 class="h2 sidebar-title">clothing</h3>
+	<ul class="nav nav-list"  id="nav-left-clothing">
+        <li class="nav-item"><a class="nav-link {% if here contains collections['clothing'].url %}{% if noviewall  !=  'yes' %}active{% endif %}{% endif %}" href="{{ collections['clothing'].url }}">View All</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/t-shirts' %}active{% endif %}" href="/collections/clothing/T-Shirts">T-Shirts</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/headwear' %}active{% endif %}" href="/collections/clothing/Headwear">Headwear</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/sweatshirts' %}active{% endif %}" href="/collections/clothing/Sweatshirts">Sweatshirts</a></li>
+        <li class="nav-item"><a class="nav-link {% if here contains '/jackets' %}active{% endif %}" href="/collections/clothing/Jackets">Jackets</a></li>
+
+	</ul>
+
+      <div class="collection-sorting sidebar-sorting-option">
+		<div class="form-horizontal pull-right">
+			{% include 'collection-sorting' %}
+			{% include 'collection-filter' %}
+		</div>
+	</div>
+
+</nav> 
+     {{ here }}
+<!-- {{ here }} -->
+
+{% comment %}
+<button class="sidebar-handle" data-toggle="sidebar"><span>Browse Skis <i class="fa fa-lg fa-bars"></i></span></button>
+
+<script type="text/javascript">
+(function($) {
+	$('[data-toggle="sidebar"]').click(function(e) {
+		$('body').toggleClass('sidebar-open');
+	});
+
+})(jQuery);
+</script>
+{% endcomment %}

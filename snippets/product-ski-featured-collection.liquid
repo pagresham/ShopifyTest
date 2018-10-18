@@ -1,0 +1,19 @@
+<!-- snippets/product-ski-featured-collection.liquid -->
+
+<div class="offer product-related-collection">
+  <header class="offer-header">
+    <h3 class="offer-title">{{ collections[featured_collection].title }}</h3>
+    <a class="offer-link" href="{{ collections[featured_collection].url }}" class="pull-right">View All <i class="fa fa-chevron-circle-right"></i></a>
+  </header>
+  <ul class="list-unstyled j-related-products">
+    {% assign related_count = 0 %}
+    {% for related_product in collections[featured_collection].products limit: 5 %}
+      {% unless settings.static_product_types contains related_product.type or related_count > 4 %}
+        {% assign related_count = related_count | plus: 1 %}
+        <li class="j-related-product j-4 {% if related_count > 4 %}hidden-lg-down {% endif %} grid-item grid-item-product {{ related_product.type }}">
+          {% include 'card-product', product: related_product, image_only: true %}
+        </li>
+      {% endunless %}
+    {% endfor %}
+  </ul>
+</div>

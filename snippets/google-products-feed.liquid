@@ -1,0 +1,26 @@
+{% if google-products-feed %}<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+	<channel>
+		<title><![CDATA[{{ shop.name }}]]></title>
+		<link><![CDATA[{{ shop.url }}]]></link>
+		<description><![CDATA[{{ shop.description }}]]></description>
+		{% paginate collections[google-products-feed].products by 1000 %}
+		{% for product in collections.[google-products-feed].products %}
+			{% assign excluded = settings.feed_exclude_types | split: ',' %}
+			{% unless excluded contains product.type %}
+				{% assign preorder = false %}
+				{% if product.metafields.c_f.ship_date %}
+					{% assign now = 'now' | date: '%Y-%m-%d' %}
+					{% assign ship_date = product.metafields.c_f.ship_date | date: '%Y-%m-%d' %}
+					{% if now < ship_date %}
+						{% assign preorder = true %}
+					{% endif %}
+				{% endif %}
+				{% for variant in product.variants %}
+					{% include 'google-products-feed-item', product: product, variant: variant %}
+				{% endfor %}
+			{% endunless %}
+		{% endfor %}
+		{% endpaginate %}
+	</channel>
+</rss>{% endif %}

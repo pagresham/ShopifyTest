@@ -1,0 +1,28 @@
+{% assign related = 'collection_related_' | append: product.type | downcase %}
+
+{% unless settings[related] %}
+	{% assign related = 'collection_related' %}
+{% endunless %}
+
+{% unless settings[related] == blank %}
+	{% unless collection and collection.handle == settings[related] %}
+		<aside class="related-products cross-sell">
+			<div class="container">
+				<header>
+					{% capture related_title %}{{ 'products.' | append: product.type | append: '.related_products' | downcase | t }}{% endcapture %}
+					{% if related_title contains 'translation missing:' %}
+						{% capture related_title %}{{ 'products.general.related_products' | downcase | t }}{% endcapture %}
+					{% endif %}
+					<h2 class="related-products-title">{{ related_title }}</h2>
+				</header>
+				<ul class="list-unstyled row">
+				{% for product in collections[settings[related]].products limit:4 %}
+					<li class="col-md-3 grid-item grid-item-product">
+						{% include 'card-product' %}
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</aside>
+	{% endunless %}
+{% endunless %}

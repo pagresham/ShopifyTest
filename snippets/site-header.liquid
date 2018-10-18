@@ -1,0 +1,194 @@
+{% comment %}
+	A word on drop-down menus: Shopify has no concept of them.
+	Drop-down menus in Shopify themes are a hack that relies on a naming convention.
+	To create a drop-down menu, the merchant must create a link list that has the same name as the link he wants the drop-down for.
+	For example, if he wants a drop-down under a 'Shop by brand' link (say, he has such link in his Main Menu), he needs to create a linklist called 'Shop by brand', and populate it with links. Once he has done that, there'll be a drop-down under 'Shop by brand'.
+	Shopify has a visual how-to guide here: http://docs.shopify.com/manual/your-website/navigation/create-drop-down-menu.
+	The naming convention hack won't work well if a shop's navigation uses non-English characters. There's a much more verbose coding solution that handles non-English characters here: http://docs.shopify.com/manual/configuration/store-customization/currencies-and-translations/translations/can-i-have-drop-down-menus-that-use-non-english-characters.
+	A word on sub-categories: Shopify manages sub-categories using product tags: http://docs.shopify.com/manual/configuration/store-customization/page-specific/collections/subcategories
+{% endcomment %}
+
+<div class="site-header">
+	{% if settings.use_callout %}
+	<div class="site-callout site-callout-{{ settings.callout_theme }}">
+			<p>
+				{{ settings.callout_text | strip_html | escape }}
+				{% if settings.callout_url and settings.callout_cta %}
+					<a href="{{ settings.callout_url }}">{{ settings.callout_cta }}</a>
+				{% endif %}
+			</p>
+	</div>
+	{% endif %}
+
+	<nav class="navbar navbar-light navbar-utility">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8">
+					{% if settings.header_icon-links_enable %}
+						<ul class="nav navbar-nav clearfix" id="nav-top">
+							{% if settings.header_icon-link-name_01 != blank %}
+								<li class="nav-item">
+										<a class="nav-link header-callout" href="/pages/{{ settings.header_icon-page_01 }}">
+											<i class="fa {{settings.header_icon-icon_01}} header-icons" aria-hidden="true"></i>
+											<span class="menu-content">{{ settings.header_icon-link-name_01 }}</span>
+										</a>
+								</li>
+							{% endif %}
+							{% if settings.header_icon-link-name_02 != blank %}
+								<li class="nav-item">
+									<a class="nav-link header-callout" href="/pages/{{ settings.header_icon-page_02 }}">
+										<i class="fa {{settings.header_icon-icon_02}} header-icons" aria-hidden="true"></i>
+										<span class="menu-content">{{ settings.header_icon-link-name_02 }}</span>
+									</a>
+								</li>
+							{% endif %}
+							{% if settings.header_icon-link-name_03 != blank %}
+								<li class="nav-item">
+									<a class="nav-link header-callout" href="/pages/{{ settings.header_icon-page_03 }}">
+											<i class="fa {{settings.header_icon-icon_03}} header-icons" aria-hidden="true"></i>
+											<span class="menu-content">{{ settings.header_icon-link-name_03 }}</span>
+									</a>
+								</li>
+							{% endif %}
+							{% if settings.header_icon-link-name_04 != blank %}
+								<li class="nav-item header-callout">
+									<a class="nav-link header-callout">
+										<i class="fa {{settings.header_icon-icon_04}} header-icons" aria-hidden="true"></i>
+										<span class="menu-content">{{ settings.header_icon-link-name_04 }}</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					{% endif %}
+				</div>
+				<div class="col-md-4 {% if settings.header_quicklinks_enable == blank %} push-md-6 {% endif %}">
+					<ul class="nav navbar-nav pull-right">
+						{% if shop.customer_accounts_enabled %}
+							{% if customer %}
+								<li class="nav-item">
+									<a href="/account" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+										<i class="fa fa-cog"></i>
+										{% unless customer.first_name == blank %}{{ customer.first_name }}{% else %}{{'layout.customer.account' | t }}{% endunless %} <span class="caret"></span>
+									</a>
+									<div class="dropdown-menu dropdown-menu-right" role="menu">
+										{% if customer.first_name != blank %}
+											<h6 class="dropdown-header">{{ customer.first_name }} {{ customer.last_name}}</h6>
+										{% endif %}
+										<a href="/account" class="dropdown-item">{{ 'customer.account.details' | t }}</a>
+										<a class="dropdown-item" href="/account">{{ 'customer.account.view_orders' | t }}</a>
+										<a class="dropdown-item" href="/account/addresses">{{ 'customer.account.view_addresses' | t }}</a>
+										{% if linklists.account.links.size > 0 %}
+											<div class="dropdown-divider">&nbsp;</div>
+											{% for link in linklists.account.links %}
+												<a class="dropdown-item" href="{{ link.url }}">{{ link.title }}</a>
+											{% endfor %}
+										{% endif %}
+										<div class="dropdown-divider">&nbsp;</div>
+										{{ 'layout.customer.log_out' | t | customer_logout_link | replace_first: '>', ' class="dropdown-item">' }}
+									</div>
+								</li>
+							{% else %}
+								<li class="nav-item">{{ 'layout.customer.log_in' | t | customer_login_link | replace_first: '>', ' class="nav-link">' }}</li>
+							{% endif %}
+						{% endif %}
+						{% if settings.shop2_enable or settings.shop3_enable %}
+							<li class="nav-item">
+								<a href="{{ shop.secure_url }}" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="flag-{{ settings.shop1_country_code | downcase }}"></i> {{ settings.shop1_title }} <span class="caret"></span></a>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu">
+									<li>
+										<a class="dropdown-item" href="{{ shop.secure_url }}{{ request_uri }}"><i class="flag-{{ settings.shop1_country_code | downcase }}"></i> {{ settings.shop1_title }}</a>
+									</li>
+									{% for i in (2..3) %}
+										{% capture enabled %}shop{{i}}_enable{% endcapture %}
+										{% capture title %}shop{{i}}_title{% endcapture %}
+										{% capture url %}shop{{i}}_url{% endcapture %}
+										{% capture cc %}shop{{i}}_country_code{% endcapture %}
+										{% if settings[enabled] %}
+										<li>
+											<a class="dropdown-item" href="{{ settings[url] }}{{ request_uri }}"><i class="flag-{{ settings[cc] | downcase }}"></i> {{ settings[title] }}</a>
+										</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
+							</li>
+						{% endif %}
+						<li class="nav-item">
+							<a class="nav-link js-drawer-open-right" href="/cart" aria-controls="CartDrawer" aria-expanded="false"><span id="CartCost">{{ cart.total_price | money_with_currency }}</span> <i class="fa fa-shopping-cart"></i> <span id="CartCount">{{ cart.item_count }}</span><span class="sr-only">{{ cart.item_count | pluralize: 'item', 'items' }}</span></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<nav role="navigation" class="navbar navbar-toggleable navbar-light navbar-primary">
+		<div class="container">
+			<button class="navbar-toggler hidden-md-up pull-right" type="button" data-toggle="collapse" data-target="#PrimaryNavigation">
+					&#9776;
+			</button>
+			<a href="/" itemprop="url" class="navbar-brand {% if settings.use_logo %} logo{% endif %}">
+				{% if settings.use_logo %}
+					<img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" itemprop="logo">
+				{% else %}
+					{{ shop.name }}
+				{% endif %}
+			</a>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-toggleable-sm" id="PrimaryNavigation">
+				<ul class="nav navbar-nav">
+					{% for link in linklists.main-menu-v2.links %}
+						<li class="nav-item {% if link.links != blank %}dropdown {% endif %}">
+							<a href="{{ link.url }}"
+								 class="nav-link {% if link.links != blank %}dropdown-toggle {% endif %}{% if link.active or link.child_active %}active {% endif %}"
+								 {% if link.links != blank %}data-toggle="dropdown" role="button" aria-expanded="false" {% endif %}>
+								 {{ link.title }}
+							</a>
+							{% if link.links != blank %}
+								<ul class="dropdown-menu" role="menu">
+									{% for sub_link in link.links %}
+										<li class="{% if sub_link.active %}active {% endif %}">
+											<a href="{{ sub_link.url }}" class="dropdown-item">{{ sub_link.title }}</a>
+										</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</li>
+					{% endfor %}
+					<span class="header-search-box">
+						<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+							<symbol xmlns="http://www.w3.org/2000/svg" id="sbx-icon-search-13" viewBox="0 0 40 40">
+								<path d="M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z"
+								fill-rule="evenodd" />
+							</symbol>
+							<symbol xmlns="http://www.w3.org/2000/svg" id="sbx-icon-clear-2" viewBox="0 0 20 20">
+								<path d="M8.96 10L.52 1.562 0 1.042 1.04 0l.522.52L10 8.96 18.438.52l.52-.52L20 1.04l-.52.522L11.04 10l8.44 8.438.52.52L18.96 20l-.522-.52L10 11.04l-8.438 8.44-.52.52L0 18.96l.52-.522L8.96 10z" fill-rule="evenodd" />
+							</symbol>
+									 </svg>
+
+						<form action="/search" novalidate="novalidate" method="get" class="searchbox sbx-medium">
+							<div role="search" class="sbx-medium__wrapper">
+								<input type="hidden" name="type" value="product">
+								<input type="search" name="q" placeholder="Search" autocomplete="off" required="required" class="sbx-medium__input">
+								<button type="submit" title="Submit your search query." class="sbx-medium__submit">
+									<svg role="img" aria-label="Search">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sbx-icon-search-13"></use>
+									</svg>
+								</button>
+								<button type="reset" title="Clear the search query." class="sbx-medium__reset">
+									<svg role="img" aria-label="Reset">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sbx-icon-clear-2"></use>
+									</svg>
+								</button>
+							</div>
+						</form>
+						<script type="text/javascript">
+							document.querySelector('.searchbox [type="reset"]').addEventListener('click', function() {  this.parentNode.querySelector('input').focus();});
+						</script>
+					</span>
+				</ul>
+
+			</div><!-- /.collapse -->
+			</div><!-- /.container -->
+	</nav>
+</div>

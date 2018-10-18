@@ -1,0 +1,54 @@
+<script type="text/javascript">
+	{% if template contains 'product' %}
+		var google_tag_params = {
+		ecomm_prodid: 'shopify_{{ settings.shop1_country_code | upcase }}_{{ product.id }}_{{ product.variants.first.id }}',
+		ecomm_pagetype: 'product',
+		ecomm_totalvalue: {{ product.price | money_without_currency | replace: ',','' }}
+		};
+	{% elsif template contains 'cart' %}
+		var google_tag_params = {
+		{% if cart.item_count > 1 %} 
+			ecomm_prodid: [{% for item in cart.items %}'shopify_{{ settings.shop1_country_code | upcase }}_{{ item.product_id }}_{{ item.variant.id }}'{% if forloop.last != true %},{% endif %}{% endfor %}],
+		{% elsif cart.item_count == 1 %}
+			ecomm_prodid: {% for item in cart.items %}'shopify_{{ settings.shop1_country_code | upcase }}_{{ item.product_id }}_{{ item.variant.id }}'{% endfor %},
+		{% else %}
+			ecomm_prodid: '',
+		{% endif %}
+			ecomm_pagetype: 'cart',
+			ecomm_totalvalue: {{ cart.total_price | money_without_currency | replace: ',','' }}
+		};
+	{% elsif template contains 'search' %}
+		var google_tag_params = {
+		ecomm_prodid: '',
+		ecomm_pagetype: 'searchresults',
+		ecomm_totalvalue: null
+		};
+	{% elsif template contains 'index' %}
+		var google_tag_params = {
+		ecomm_prodid: '',
+		ecomm_pagetype: 'home',
+		ecomm_totalvalue: null
+		};
+	{% else %}
+		var google_tag_params = {
+		ecomm_prodid: '',
+		ecomm_pagetype: 'other',
+		ecomm_totalvalue: null
+		};
+	{% endif %}
+</script>
+<script type="text/javascript">
+
+/* <![CDATA[ */
+var google_conversion_id = 993129976;
+var google_custom_params = window.google_tag_params;
+var google_remarketing_only = true;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/993129976/?value=0&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>

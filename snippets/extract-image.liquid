@@ -1,0 +1,44 @@
+{% comment %} 
+
+Extract an image from some text, 3 different output types:
+- tag: outputs <img> html tag [default]
+- src: outputs src only
+- content: outputs content with image removed
+
+{% endcomment %}
+{% unless output %}
+  {% assign output = 'tag' %}
+{% endunless %}
+
+{% assign content = extract-image %}
+{% assign parts = content | split: '<img' %}
+{% if parts.size > 1 %}
+	{% assign img_tag = parts[1] | split: '>' | first | prepend: '<img' | append: '>' | strip %}
+	{% assign img_src = img_tag | split: 'src="' | last | split: '"' | first | strip %}
+
+	{% if img_tag contains "alt=" %}
+		{% assign img_alt = img_tag | split: 'alt=' | last %}
+		
+		{% comment %} Alt tag may be single quote escaped or double quoted {% endcomment %}	
+		{% assign img_alt_delim = img_alt | trim | slice: 0,1 %}
+
+		{% comment %} Trim off first character (quote) {% endcomment %}
+		{% assign img_alt = img_alt | remove_first: img_alt_delim %}
+
+		{% comment %} Find ending delimiter using next attribute - sketchy - relies on delimited with a space to close, could break {% endcomment %}
+		{% assign img_alt_delim = img_alt_delim | append: ' ' %}
+
+		{% assign img_alt = img_alt | split: img_alt_delim | first %}
+	
+	{% endif %}
+
+	{% if output == 'src' %}
+		{{ img_src }}
+	{% elsif output == 'alt' %}
+		{{ img_alt }}
+	{% elsif output == 'content' %}
+		{{ content | replace_first: img_tag, '' }}
+	{% else %}
+		{{ img_tag }}
+	{% endif %}
+{% endif %}

@@ -1,0 +1,131 @@
+<!-- /snippets/collection-list-item.liquid -->
+{% comment %}
+
+  This snippet is used to showcase each collection during the loop,
+  'for product in collection.products' in list-collections.liquid.
+
+{% endcomment %}
+{% capture collection_title %}{{ collection.title | escape }}{% endcapture %}
+{% for ski_model in collections[settings.collection_grouped_products].products %}
+  {% if ski_model.handle == collection.handle %}
+  {% assign model = ski_model %}
+  {% endif %}
+{% endfor %}
+
+<div class="collection-list-item">
+  <div class="section-header">
+    <h2>{{ collection.title }}</h2>
+    {% if model.metafields.c_f.dimensions != blank or model.metafields.c_f.dimensions_2018 != blank %}
+      {% assign dimensions = model.metafields.c_f.dimensions | split: '-' %}
+      {% if model.metafields.c_f.dimensions_2018 != blank %}
+        {% assign dimensions = model.metafields.c_f.dimensions_2018 | split: '-' %}
+      {% endif %}
+      {% assign waist = "fat" %}
+      {% assign waist_dimension = dimensions[1] | times: 1 %}
+      {% if waist_dimension < 100 %}
+        {% assign waist = "skinny" %}
+      {% endif %}
+      <div class="waist-dimension" data-waist="{{ waist }}">
+        <p>
+          <span class="waist-number">{{ waist_dimension }}</span>
+          <span class="waist-word">waist</span>
+        </p>
+      </div>
+      {% if collection.description != blank %}
+        {% assign copy = collection.description %}
+        {% if copy contains '</p>' %}
+          {% assign lead = copy | split: '</p>' | first | append: '</p>' %}
+        {% endif %}
+        <div class="collection-description lead">
+          {{ lead | strip_html }}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+  <div class="row">
+    {% assign static_types = settings.static_product_types | split: ',' %}
+    {% assign product_count = 0 %}
+    {% capture ad %}
+      {% for product in collection.products %}
+        {% if static_types contains product.type %}
+          <div class="grid-item grid-item-product banner">
+            {% include 'card-banner' %}
+          </div>
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endcapture %}
+    <div class="owl-carousel owl-theme">
+      {% for product in collection.products limit:10 %}
+        {% if ad_first and forloop.index0 == 1 %}
+          {{ ad }}
+        {% endif %}
+        {% unless static_types contains product.type %}
+            <div class="grid-item grid-item-product">
+              {% include 'card-product' %}
+            </div>
+          {% assign product_count = product_count | plus: 1 %}
+        {% endunless %}
+      {% endfor %}
+      {% unless ad_first %}
+        {{ ad }}
+      {% endunless %}
+      <div class="grid-item grid-item-product last">
+        <a href="{{ collection.url }}">
+          View all {{ collection.products.size }}
+          {% if model %}
+            {{ model.title | replace: "The ", "" }} Limited Edition Graphics
+          {% else %}
+            {{ collection.title }}
+          {% endif %}
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="row show-all-row">
+    <div class="col-sm-12 text-center">
+      <a href="{{ collection.url }}">
+        View all {{ collection.products.size }}
+        {% if model %}
+          {{ model.title | replace: "The ", "" }} Limited Edition Graphics
+        {% else %}
+          {{ collection.title }}
+        {% endif %}
+        <i class="fa fa-chevron-right"></i>
+      </a>
+    </div>
+  </div>
+  <hr>
+</div>
+<script>
+  $(document).ready(function(){
+    var owl = $('.owl-carousel');
+    owl.owlCarousel({
+      loop:false,
+      items:'.grid-item-product',
+      nav:true,
+      autoplayHoverPause:true,
+      responsive:{
+        0:{
+          items:1,
+          slideBy: 1
+        },
+        476:{
+          items:2,
+          slideBy: 2
+        },
+        767:{
+          items:3,
+          slideBy: 2
+        },
+        991:{
+          items:4,
+          slideBy: 2
+        }
+      }
+    });
+    $( ".owl-next").html('<button type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button" style="display: block;"><i class="fa fa-chevron-right"></i> <span class="sr-only">Next</span></button>');
+    $( ".owl-prev").html('<button type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button" style="display: block;"><i class="fa fa-chevron-left"></i> <span class="sr-only">Previous</span></button>');
+  });
+</script>

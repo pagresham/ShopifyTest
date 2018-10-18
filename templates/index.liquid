@@ -1,0 +1,216 @@
+
+{% unless settings.use_slides_fp == blank %}
+<section class="fp-section fp-carousel">
+	<div class="container">
+		{% comment %}
+			Slick carousel - http://kenwheeler.github.io/slick/
+		{% endcomment %}
+
+		<div class="carousel">
+			<div class="slick-carousel">
+				{% assign sequence = settings.slides_sequence | split: ',' %}
+				{% for count in sequence %}
+					{% assign slide = "slide" | append:count %}
+					{% include 'slide' %}
+				{% endfor %}
+			</div>
+		</div>
+
+	</div>
+</section>
+{% endunless %}
+
+{% unless settings.use_banners_fp == blank %}
+<section class="fp-section fp-banners">
+	<div class="container">
+		<div class="row">
+			{% assign sequence = settings.banners_fp_sequence | split: ',' %}
+			{% for count in sequence %}
+				<div class="col-sm-3 col-xs-6">
+					{% assign title = "banner" | append: count | append: "_title" %}
+					{% assign caption = "banner" | append: count | append: "_caption" %}
+					{% assign cta = "banner" | append: count | append: "_cta" %}
+					{% assign url = "banner" | append: count | append: "_url" %}
+					{% assign image = "banner" | append: count | append: ".jpg" | asset_url %}
+					{% include 'banner' with image, title: settings[title], caption: settings[caption], cta: settings[cta], url: settings[url] %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+{% endunless %}
+	{% assign carouselitems = "12" %}
+<section class="fp-section fp-carousel">
+ <div class="container">
+     <h1 style="text-align: center;"><a href="{{collections.skis.url}}" ><strong>{{collections.skis.title}}</strong></a></h1>
+   <div id="owl-carousel" class="row owl-carousel owl-theme">
+
+      {% for product in collections.homepage.products limit:[carouselitems] %}
+
+
+   {% include 'card-product' %}
+
+
+
+
+ {% endfor %}
+   </div>
+  </div>
+</section>
+
+
+{% if settings.use_fp_blog %}
+<section class="fp-section fp-news">
+	<div class="container">
+        <h1 style="text-align: center;"><a href="https://jskis.com/pages/about" ><strong>My Story</strong></a></h1>
+
+		{% for article in blogs[settings.fp_blog].articles limit:settings.fp_blog_limit %}
+		<div class="row">
+			{% unless article.excerpt == blank %}
+			<div class="col-md-4">
+				<div class="rte">
+					{{ article.excerpt }}
+				</div>
+			</div>
+			{% endunless %}
+			<div class="{% unless article.excerpt == blank %}col-md-8 {% else %} col-md-12 {% endunless %}">
+				<div class="rte">
+					{{ article.content }}
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+{% endif %}
+
+<section class="fp-section fp-blog">
+	<div class="container">
+        <h1 style="text-align: center;"><a href="https://jskis.com/blogs/its-just-skiing" ><strong>Read our blog</strong></a></h1>
+
+      <div class="row">
+		{% for article in blogs.its-just-skiing.articles limit:settings.fp_blog_limit %}
+
+              {% unless article.excerpt == blank %}
+              <div class="col-md-4">
+               {{ article.title}}
+               <img src="{{ article.image.src  }}">
+                  <div class="rte">
+                      {{ article.excerpt }}
+                  </div>
+              </div>
+              {% endunless %}
+              <div class="col-xl-4 col-md-6 col-sm-6">
+				<div class="card-img card-img-hover" style="background-image: url({{ article.image.src | img_url: 'large' }});">
+				</div>
+                <div class="article-title">
+              		{{ article.title}}
+                </div>
+                <div class="read-more-text">
+                  <a href="{{ article.url }}"> Read > </a>
+                </div>
+              </div>
+			{% endfor %}
+        </div>
+	</div>
+</section>
+
+<section class="fp-section fp-insta">
+	<div class="container">
+      <div class="row">
+<h1 style="text-align: center;"><a href="http://deeplink.me/https://instagram.com/j_skis" target="_blank" rel="noopener noreferrer"><strong>FOLLOW @J_SKIS ON INSTAGRAM</strong></a></h1>
+<div data-is="" data-is-source="@j_skis" data-is-rows="1" data-is-gutter="2" data-is-free-mode="true"></div>
+   </div>
+	</div>
+</section>
+
+<script>
+$(document).ready(function(){
+
+
+
+var owl = $('#owl-carousel');
+owl.owlCarousel({
+    loop:true,
+  items:{{carouselitems}},
+    nav:true,
+    autoplayHoverPause:true,
+    responsive:{
+        0:{
+            items:2
+        },
+        476:{
+            items:2
+        },
+        767:{
+            items:4
+        },
+        919:{
+            items:5
+        }
+    }
+});
+
+ $( ".owl-next").html('<button type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button" style="display: block;"><i class="fa fa-chevron-right"></i> <span class="sr-only">Next</span></button>');
+ $( ".owl-prev").html('<button type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button" style="display: block;"><i class="fa fa-chevron-left"></i> <span class="sr-only">Previous</span></button>');
+
+//$(".owl-item").attr("style","width:33vw;" );
+
+});
+
+</script>
+
+
+
+<style>
+.owl-theme .owl-dots {display:none;}
+.owl-carousel .owl-nav .owl-prev {
+    float: left;
+    margin: 10px 20px 20px 20px;
+    background-color: hsla(0, 0%, 0%, 0);
+}
+
+.owl-theme .owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin-top: -41px;
+}
+
+.owl-carousel .owl-nav .owl-next{
+    float: right;
+    margin: 10px 20px 20px 20px;
+    background-color: hsla(0, 0%, 0%, 0);
+}
+
+.owl-carousel .owl-nav .owl-next:hover, .owl-carousel .owl-nav .owl-prev:hover{
+    background-color: hsla(0, 0%, 0%, 0);
+    opacity: 1;
+}
+
+.owl-theme .owl-controls {
+    text-align: center;
+    position: relative;
+    top: -32px;
+    height: 0px;
+    float: right;
+}
+
+.owl-theme .owl-dots {
+
+    position: absolute;
+    bottom: 1%;
+    width: 100%;
+}
+
+.owl-carousel .owl-nav.disabled, .owl-carousel .owl-dots.disabled {
+    display: inherit !important;
+}
+
+  .home-carousel-item{
+  padding: 40px;
+  }
+
+</style>
+
+{% include 'product-restricted' %}

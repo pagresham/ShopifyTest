@@ -1,0 +1,33 @@
+<!-- snippets/product-main-information.liquid -->
+<header>
+  <h1 itemprop="name" class="product-title">
+    {% if model %}
+      {{ model.title }} "{{ edition }}"
+    {% else %}
+      {{ product.title }}
+    {% endif %}
+  </h1>
+</header>
+<div class="product-offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+  {% assign variant = product.selected_or_first_available_variant %}
+  <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+  <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+  <form action="/cart/add" method="post" enctype="multipart/form-data" id="AddToCartForm">
+    <div class="product-pricing">
+      {% include 'product-price' %}
+    </div>
+    <div class="product-reviews-badge">
+      <a href="#reviews"><span class="shopify-product-reviews-badge" data-id="{% if model %}{{ model.id }}{% else %}{{ product.id }}{% endif %}"></span></a>
+    </div>
+    <div class="offer product-options">
+      <header class="offer-header">
+        {% if product.metafields.jskis.size_chart %}
+          <a class="offer-link pull-right" href="#sizechart" data-toggle="modal" role="button" data-target="#sizechart">Size Chart <i class="fa fa-chevron-circle-right"></i></a>
+        {% endif %}
+      </header>
+      {% include 'product-option-selectors' %}
+    </div>
+    {% include 'add-to-cart-buttons' %}
+    {% include 'questions-contact-us' %}
+  </form>
+</div> <!-- /.product-offers -->

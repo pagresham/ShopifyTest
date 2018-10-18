@@ -1,0 +1,183 @@
+<!-- product-option-selectors.liquid -->
+
+
+{% assign current_availability = '' %}
+{% assign current_shipping = '' %}
+
+
+<div class="product-options-selects">
+  <div id="productSelectBtns"></div>
+	<label for="productSelect">{{ product.options.first }}</label>
+	<select name="id" id="productSelect">
+		{% for variant in product.variants %}
+			{% if variant.available %}
+				{% if variant.inventory_quantity > 0 %}
+					{% if variant.inventory_quantity < 30 %}
+						{% capture availability %}{{ 'products.product.low_inventory' | t: qty: variant.inventory_quantity }}{% endcapture %}
+					{% else %}
+						{% capture availability %}{{ variant.inventory_quantity }} left!{% endcapture %}
+					{% endif %}
+				{% elsif variant.incoming %}
+					{% comment %}Incoming inventory on Transfer{% endcomment %}
+					{% assign ship_date = variant.next_incoming_date | date: '%B %e' %}
+					{% capture availability %}{{ 'products.product.ships_on' | t: date: ship_date }}{% endcapture %}
+				{% endif %}
+			{% else %}
+				{% capture availability %}Sold Out{% endcapture %}
+			{% endif %}
+
+
+
+			{% comment %} Shipping message logic {% endcomment %}
+			{% if variant.inventory_quantity > 0 %}
+				{% if settings.free_shipping_enable %}
+					{% assign free_shipping_total = settings.free_shipping_over | times: 100 %}
+					{% assign subtotal = variant.price | plus: cart.total_price %}
+					{% if variant.price >= free_shipping_total %}
+					 	{% capture shipping %}{{ 'cart.shipping.free_shipping' | t }}{% endcapture %}
+					{% else %}
+						{% capture shipping %}{{ 'cart.shipping.free_shipping_over' | t: price: settings.free_shipping_over }}{% endcapture %}
+					{% endif %}
+					{% assign shipping = shipping | append: ' and ' %}
+				{% else %}
+					{% capture shipping %}{{ variant.inventory_quantity }} left!{% endcapture %}
+				{% endif %}
+			{% elsif variant.incoming %}
+				{% assign ship_date = variant.next_incoming_date | date: format:'month_day_year' %}
+				{% capture shipping %}{{ 'products.product.ships_on_if' | t: date: ship_date }}{% endcapture %}
+			{% endif %}
+
+			{% if variant == product.selected_or_first_available_variant %}
+				{% assign current_availability = availability %}
+				{% assign current_shipping = shipping %}
+				{% assign selected = 'selected="selected"' %}
+			{% else %}
+				{% assign selected = '' %}
+			{% endif %}
+
+      {% capture disabledOption %}
+        <option
+          {{ selected }}
+          data-id="{{ variant.id }}"
+          data-availability="{{ availability | escape }}"
+          data-shipping="{{ shipping | escape }}"
+          disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}
+        </option>
+      {% endcapture %}
+
+			{% if variant.available %}
+        {% if variant.inventory_quantity > 0 or variant.incoming %}
+          <option
+  					{{ selected }}
+  					data-id="{{ variant.id }}"
+  					data-availability="{{ availability | escape }}"
+  					data-shipping="{{ shipping | escape }}"
+  					data-incoming="{{ variant.incoming }}"
+  					data-next-date="{{ variant.next_incoming_date }}"
+  					data-sku="{{ variant.sku | escape }}"
+  					value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}
+  				</option>
+        {% else %}
+          {{ disabledOption }}
+        {% endif %}
+			{% else %}
+				{{ disabledOption }}
+			{% endif %}
+		{% endfor %}
+	</select>
+
+  {% unless product.tags contains 'exclude-bindings' %}
+    {% if product.available and product.type == 'Skis' %}
+      <div id="productBundle">
+        <div class="selector-wrapper bindings-selector-wrapper">
+          {% comment %} Add grouped ski and binding products to cart {% endcomment %}
+          {% assign dimensions = model.metafields.c_f.dimensions | split: '-' %}
+          {% assign width = dimensions[1] | plus: 0 %}
+          {% if width > 100 %}
+            {% assign brake_width = 115 %}
+          {% else %}
+            {% assign brake_width = 95 %}
+          {% endif %}
+                     {% assign bindingtile =  product.title  | split: '"' | first %}
+                  {% assign bindingcollection =  bindingtile  | split: ' ' | last | downcase %}
+          <a class="offer-link pull-right" href="#bindingcompare" data-toggle="modal" role="button" data-target="#bindingcompare">Compare Bindings <i class="fa fa-chevron-circle-right"></i></a>
+          <label>Add Bindings</label>
+          <select>
+            <option value="">Select binding</option>
+            <option value="">No bindings + $0.00</option>
+            {% for binding in collections['bindings'].products %}
+              {% for variant in binding.variants %}
+                {% if variant.barcode contains bindingcollection and variant.available %}
+                  {% if variant.incoming or variant.inventory_quantity > 0 %}
+                    {% assign bindingMessage = variant.inventory_quantity | append: " left!" %}
+                    {% if variant.inventory_quantity < 30 and variant.inventory_quantity > 0 %}
+                      {% assign bindingMessage = "Only " | append: variant.inventory_quantity | append: " left!" %}
+                    {% endif %}
+                    {% if variant.inventory_quantity <= 0 %}
+                      {% assign incomingDate = variant.next_incoming_date | date: "%B %d" %}
+                      {% assign bindingMessage = "Ships " | append: incomingDate %}
+                    {% endif %}
+                    <option value="{{ variant.id }}">
+                      {{ binding.title }} ({{ variant.title }}) + ${{ variant.price | money_without_currency }} ({{ bindingMessage }})
+                    </option>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          </select>
+          {% comment %} Size Chart Modal {% endcomment %}
+          <div class="modal fade" id="bindingcompare" tabindex="-1" role="dialog" aria-labelledby="bindingChartTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                  </button>
+                  <h4 class="modal-title" id="bindingChartTitle">Compare Bindings</h4>
+                </div>
+                <div class="modal-body">
+                  {{ pages['compare-bindings'].content }}
+                </div>
+                <div class="modal-footer">
+                  <a href="/pages/compare-bindings" target="_blank" class="pull-left">Open in new window <i class="fa fa-external-link"></i></a>
+                  <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endunless %}
+
+</div>
+{% assign variant = product.selected_or_first_available_variant %}
+<div id="productAvailability" class="product-availability">
+	<p class="stock-status {% if variant.available %} available{% else %} unavailable{% endif %}">
+		{{ current_availability }}
+	</p>
+	<p class="availability-details">
+		{% comment %}<span class="ship-status">{{ current_shipping }}</span>
+		 TODO: Make settings for this. Had to launch ASAP {% endcomment %}
+		<a href="#" tabindex="{{ forloop.index }}"
+			role="button"
+			class="incentive-link"
+			data-target="#incentiveModal"
+			data-toggle="modal"
+			data-title="100% Money Back Guarantee"
+			data-content="I personally guarantee these are the best skis &amp; you'll love them. If for any reason within your first 3 days of skiing on them at the mountain, you don't love them, you can literally send them back, &amp; I'll refund your total product &amp; shipping costs! If you don't like em', send them back &amp; we'll ride them!">
+			{% comment %}100% Money Back Guarantee.{% endcomment %}
+		</a>
+	</p>
+</div>
+
+<script>
+    $('#productSelect-option-0').change(function() {
+      alert( "Handler for .change() called." );
+    });
+    $('.help-details').click(function(){
+      LC_API.open_chat_window();
+      console.log("chat open nu");
+    });
+</script>

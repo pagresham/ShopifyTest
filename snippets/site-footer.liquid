@@ -1,0 +1,109 @@
+<!-- /snippets/footer.liquid -->
+{% comment %}
+	Calculate the number of footer columns shown
+{% endcomment %}
+{% assign num_footer_columns = 0 %}
+{% if settings.footer_quicklinks_enable %}
+	{% assign num_footer_columns = num_footer_columns | plus: 1 %}
+{% endif %}
+{% if settings.footer_social_enable %}
+	{% assign num_footer_columns = num_footer_columns | plus: 1 %}
+{% endif %}
+{% if settings.footer_newsletter_enable %}
+	{% assign num_footer_columns = num_footer_columns | plus: 1 %}
+{% endif %}
+{% if settings.footer_blog_enable and blogs[settings.footer_blog].articles.size > 0 %}
+	{% assign num_footer_columns = num_footer_columns | plus: 1 %}
+{% endif %}
+
+{% case num_footer_columns %}
+{% when 0 %}
+{% when 1 %}
+	{% assign footer_column_width = '' %}
+{% when 2 %}
+	{% assign footer_column_width = 'col-md-6' %}
+{% when 3 %}
+	{% assign footer_column_width = 'col-md-4' %}
+{% when 4 %}
+	{% assign footer_column_width = 'col-md-3' %}
+{% endcase %}
+
+
+<div class="container">
+{% include 'breadcrumb' %}
+</div>
+
+<footer class="site-footer" role="contentinfo">
+
+	<div class="container">
+
+		<div class="row">
+			
+			
+			{% if settings.footer_quicklinks_enable %}
+				<div class="{{ footer_column_width }}">
+					<h4>{{ 'layout.footer.linklist_title' | t }}</h4>
+					<ul class="nav nav-list">
+						{% for link in linklists[settings.footer_quicklinks_linklist].links %}
+							<li class="nav-item"><a class="nav-link" href="{{ link.url }}">{{ link.title }}</a></li>
+						{% endfor %}
+					</ul>
+				</div> 
+			{% endif %}
+
+			{% if settings.footer_blog_enable and blogs[settings.footer_blog].articles.size > 0 %}
+				{% assign article = blogs[settings.footer_blog].articles.first %}
+				<div class="{{ footer_column_width }}">
+					
+					<h4>{{ 'layout.footer.blogpost_title' | t }}</h4>
+					<a href="{{ article.url }}">
+						<p class="m-b-0" style="font-weight: bold;">{{ article.title }}</p>
+						<p>{{ article.content | strip_html | truncatewords: 30 }}</p>
+					</a>
+					
+				</div>
+			{% endif %}
+			
+
+			{% if settings.footer_social_enable %}
+				<div class="{{ footer_column_width }}">
+					<h4>{{ 'layout.footer.social_title' | t }}</h4>
+						{% comment %}
+							Loop through the social network links
+						{% endcomment %}
+						{% include 'social-icons' %} 
+				</div>
+			{% endif %}
+
+			{% if settings.footer_newsletter_enable %}
+				<div class="{{ footer_column_width }}">
+					<h4>{{ 'layout.footer.newsletter_title' | t }}</h4>
+					{% include 'newsletter-form' %}
+				</div>
+			{% endif %}
+
+		</div>
+
+		<hr>
+
+		{% comment %}
+			Loop through available payment methods and show their icons.
+		{% endcomment %}
+		{% unless shop.enabled_payment_types == empty %}
+		<h6 class="text-center">{{ 'layout.footer.accepted_payments' | t }}</h6>
+		<ul class="list-inline payment-icons text-center">
+			{% for type in shop.enabled_payment_types %}
+				<li class="list-inline-item">
+					<span class="icon-fallback-text">
+						<span class="icon icon-{{type}}" aria-hidden="true"></span>
+						<span class="sr-only">{{type | replace: '_',' ' }}</span>
+					</span>
+				</li>
+			{% endfor %}
+		</ul>
+		{% endunless %}
+
+
+	</div>
+
+</footer>

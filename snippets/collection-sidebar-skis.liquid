@@ -1,0 +1,78 @@
+<!-- /snippets/collection-skis-sidebar.liquid -->
+{% comment %}
+
+	Side navigation for skis.
+
+	id attributes are only added to <ul> elements for link attribution in Google Analytics, NOT USED FOR CSS
+
+{% endcomment %}
+
+
+{% comment %}
+	Ski models and limited edition graphics
+{% endcomment %}
+
+
+
+
+{% capture urls %}{{ product.url | within: collection }}|{{ product.url }}{% endcapture %}
+{% for tag in current_tags %}
+    {% assign urls = urls | append: '|/' | append: tag | downcase %}
+{% endfor %}
+{% if page %}
+	{% assign urls = urls | append: '|/pages/' | append: page.handle %}
+{% endif %}
+{% assign here = urls | split: '|' %}
+
+
+<nav class="sidebar-content">
+	<h3 class="h2 sidebar-title">Skis</h3>
+	<ul class="nav nav-list">
+		<li class="nav-item"><a class="nav-link {% if here contains collections['skis'].url %}active{% endif %}" href="{{ collections[settings.collection_all_products].url}}">View All</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains pages['compare'].url %}active{% endif %}" href="{{ pages['compare'].url }}">Compare Models</a></li>
+
+		<li class="nav-item">
+			<h4 class="nav-title">Models</h4>
+
+			<ul class="nav nav-list" id="nav-left-models">
+        {% for link in linklists.ski-sidebar-menu.links %}
+          <li class="nav-item"><a class="nav-link {% if here contains link.url %}active{% endif %}" href="{{link.url}}">{{ link.title }}</a>
+        {% endfor %}
+			</ul>
+
+		</li>
+		<li class="nav-item">
+			<h4 class="nav-title">Ski Type</h4>
+			<ul class="nav nav-list"  id="nav-left-terrain">
+				<li class="nav-item"><a class="nav-link {% if here contains collections['park'].url %}active{% endif %}" href="/collections/park">Park</a></li>
+				<li class="nav-item"><a class="nav-link {% if here contains collections['all-mountain'].url %}active{% endif %}" href="/collections/all-mountain">All-Mountain</a></li>
+				<li class="nav-item"><a class="nav-link {% if here contains collections['powder'].url %}active{% endif %}" href="/collections/powder">Powder</a></li>
+        <li class="nav-item"><a class="nav-link {% if here contains collections['kids'].url %}active{% endif %}" href="/collections/kids">Kids</a></li>
+			</ul>
+		</li>
+	</ul>
+    <div class="collection-sorting sidebar-sorting-option">
+		<div class="form-horizontal pull-right">
+			{% include 'collection-sorting' %}
+			{% include 'collection-filter' %}
+		</div>
+	</div>
+
+
+
+
+</nav>
+<!-- {{ here }} -->
+
+{% comment %}
+<button class="sidebar-handle" data-toggle="sidebar"><span>Browse Skis <i class="fa fa-lg fa-bars"></i></span></button>
+
+<script type="text/javascript">
+(function($) {
+	$('[data-toggle="sidebar"]').click(function(e) {
+		$('body').toggleClass('sidebar-open');
+	});
+
+})(jQuery);
+</script>
+{% endcomment %}

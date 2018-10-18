@@ -1,0 +1,67 @@
+<!-- /templates/blog.liquid -->
+{% comment %} Markup based on Timber 2.1.2 {% endcomment %}
+
+{% paginate blog.articles by 50 %}
+
+<div class="container">
+	<div class="row">
+
+		<div class="col-md-9 push-md-3">
+
+			<header class="page-header">
+				<h1 class="page-title">
+					{% if current_tags %}
+						{{ blog.title | link_to: blog.url }} &mdash; {{ current_tags.first }}
+					{% else %}
+						{{ blog.title }}
+					{% endif %}
+				</h1>
+			</header>
+
+			{% for article in blog.articles %}
+				<h2 class="h3"><span class="first-letter">Q.</span> {{ article.title }}</h2>
+				<button class="btn btn-inline btn-link" type="button" data-toggle="collapse" data-target="#faq-{{ article.id }}" aria-expanded="false" aria-controls="collapseExample">
+					See Answer <i class="fa fa-chevron-circle-down"></i>
+				</button>
+				<div class="collapse" id="faq-{{ article.id }}">
+					<div class="rte ">
+						{{ article.content }}
+					</div>
+				</div>
+
+				{% comment %}
+				Show off meta information like number of comments and tags.
+				{% endcomment %}
+				<ul class="list-inline">
+					{% if blog.comments_enabled? %}
+					<li>
+						<a href="{{ article.url }}#Comments">
+							{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+						</a>
+					</li>
+					{% endif %}
+
+					{% include 'tags-article' %}
+				</ul>
+
+				{% unless forloop.last %}<hr>{% endunless %}
+
+			{% endfor %}
+
+			{% if paginate.pages > 1 %}
+				<hr>
+				{% include 'pagination' %}
+			{% endif %}
+
+		</div>
+
+		<div class="col-md-3 pull-md-9">
+			<aside class="sidebar sidebar-customer-service">
+				{% include 'sidebar.help' %}
+			</aside>
+		</div>
+
+	</div> <!-- /.row -->
+</div> <!-- /.container -->
+
+{% endpaginate %}

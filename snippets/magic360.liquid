@@ -1,0 +1,31 @@
+{% assign MagicToolboxShowMessage = 'Yes' %}
+{% assign MagicToolboxMessage = 'Drag image to spin' %}
+{% assign MagicToolboxBigImageSize = 'master' %}
+{% assign MagicToolboxThumbnailImageSize = 'large' %}
+{% assign MagicToolboxUseCustomWidth = 'No' %}
+{% assign MagicToolboxThumbnailImageWidth = '480' %}
+{% assign MagicToolboxSortImages = 'Yes' %}
+{% if MagicToolboxUseCustomWidth == 'Yes' %}
+<style type="text/css">.MagicToolboxContainer .Magic360 > img { max-width: {{ MagicToolboxThumbnailImageWidth }}px !important; }</style>
+{% endif %}
+<div class="MagicToolboxContainer">
+    {% if product.images.size > 0 %}
+        {% if MagicToolboxSortImages == 'Yes' %}
+            {% assign 360ImagesString = '' %}
+            {% for image in product.images %}
+            {% assign 360ImagesString = 360ImagesString | append: image.src | append: ';' %}
+            {% endfor %}
+            {% assign 360ImagesArray = 360ImagesString | split: ';' | sort %}
+            <a class="Magic360" href="#" data-magic360-options="images:{% for 360Image in 360ImagesArray %} {{ 360Image | product_img_url: MagicToolboxThumbnailImageSize }}{% endfor %}; large-images:{% for 360Image in 360ImagesArray %} {{ 360Image | product_img_url: MagicToolboxBigImageSize }}{% endfor %};">
+                <img src="{{ 360ImagesArray[0] | product_img_url: MagicToolboxThumbnailImageSize }}" />
+            </a>
+        {% else %}
+            <a class="Magic360" href="#" data-magic360-options="images:{% for image in product.images %} {{ image | product_img_url: MagicToolboxThumbnailImageSize }}{% endfor %}; large-images:{% for image in product.images %} {{ image | product_img_url: MagicToolboxBigImageSize }}{% endfor %};">
+                <img src="{{ product.images[0] | product_img_url: MagicToolboxThumbnailImageSize }}" />
+            </a>
+        {% endif %}
+        {% if MagicToolboxShowMessage == 'Yes' %}
+        <div class="MagicToolboxMessage">{{ MagicToolboxMessage }}</div>
+        {% endif %}
+    {% endif %}
+</div>

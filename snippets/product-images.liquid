@@ -1,0 +1,50 @@
+<!-- snippets/product-images.liquid -->
+
+<div class="product-images">
+  {% if settings.magic360_enable %}
+    {% include 'magic360' %}
+  {% endif %}
+  <div class="m-b-3 hidden-md-up">
+    <img src="{{ product_image | img_url: 'grande' }}" alt="{{ product_image.alt | escape }}" id="ProductPhotoImg" class="img-responsive m-x-auto" >
+  </div>
+  <div class="m-b-lg hidden-sm-down hover-zoom">
+    <img src="{{ product_image | img_url: 'grande' }}" alt="{{ product_image.alt | escape }}" id="ProductPhotoImg" class="img-responsive m-x-auto" >
+  </div>
+  {% if product.images.size > 1 %}
+    <div class="offer product-gallery">
+      <div class="row" id="ProductThumbs">
+        {% assign gallery_count = 0 %}
+        {% for image in product.images %}
+          {% unless forloop.index == 1 or image == cover %}
+            {% comment %} Skip cover images if they are enabled {% endcomment %}
+            {% assign gallery_count = gallery_count | plus: 1 %}
+            <div class="col-xs-3">
+              {% if image.alt contains '://' %}
+                {% capture url %}{% include 'extract-url' with image.alt %}{% endcapture %}
+                {% assign url = url | strip %}
+              {% else %}
+                {% assign url = image.src | img_url: '1024x1024' %}
+              {% endif %}
+              {% if image.alt contains 'vimeo' or image.alt contains 'youtu' %}
+                {% assign icon = 'fa fa-play' %}
+              {% else %}
+                {% assign icon = '' %}
+              {% endif %}
+              <a href="{{ url }}" class="{{ icon }} thumbnail" data-toggle="fancybox" data-title="{{ product.title }}" data-fancybox-group="gallery" rel="gallery">
+                <img src="{{ image.src | img_url: 'small' }}" alt="{{ image.alt | escape }}" class="img-fluid">
+              </a>
+            </div>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script type="text/javascript">
+  var imageUrl = "{{ product_image | img_url: '5000x' }}"
+  jQuery(function($) {
+    'use strict';
+    $('.hover-zoom').zoom({url: imageUrl, hover: true});
+  });
+</script>

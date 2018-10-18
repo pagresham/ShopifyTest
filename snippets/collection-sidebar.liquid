@@ -1,0 +1,67 @@
+<!-- /snippets/collection-skis-sidebar.liquid -->
+{% comment %}
+
+	Side navigation for skis.
+
+	id attributes are only added to <ul> elements for link attribution in Google Analytics, NOT USED FOR CSS
+
+{% endcomment %}
+
+
+{% comment %}
+	Ski models and limited edition graphics
+{% endcomment %}
+
+
+
+
+
+<nav class="sidebar-content">
+ 
+	
+	<h3 class="h2 sidebar-title">Bindings</h3>
+	<ul class="nav nav-list"  id="nav-left-bindings">
+		<li class="nav-item"><a class="nav-link {% if here contains collections['bindings'].url %}active{% endif %}" href="{{ collections['bindings'].url }}">View All</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains pages['compare-bindings'].url %}active{% endif %}" href="{{ pages['compare-bindings'].url }}">Compare Bindings</a></li>
+
+	</ul>
+	
+	<h3 class="h2 sidebar-title">Clothing</h3>
+	<ul class="nav nav-list"  id="nav-left-clothing">
+		<li class="nav-item"><a class="nav-link" href="/collections/clothing">View All</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/t-shirts' %}active{% endif %}" href="/collections/clothing/t-shirts">T-Shirts</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/hoodies' %}active{% endif %}" href="/collections/clothing/hoodies">Hoodies</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/headwear' %}active{% endif %}" href="/collections/clothing/headwear">Headwear</a></li>
+	</ul>
+
+	<h3 class="h2 sidebar-title">Accessories</h3>
+	<ul class="nav nav-list"  id="nav-left-accessories">
+		<li class="nav-item"><a class="nav-link" href="/collections/accessories">View All</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/artwork' %}active{% endif %}" href="/collections/accessories/artwork">Artwork</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/stickers' %}active{% endif %}" href="/collections/accessories/stickers">Stickers</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/skateboards' %}active{% endif %}" href="/collections/accessories/skateboards">Skateboards</a></li>
+
+	</ul>
+      <div class="collection-sorting sidebar-sorting-option">
+		<div class="form-horizontal pull-right">
+			{% include 'collection-sorting' %}
+			{% include 'collection-filter' %}
+		</div>
+	</div>
+
+</nav> 
+     {{ here }}
+<!-- {{ here }} -->
+
+{% comment %}
+<button class="sidebar-handle" data-toggle="sidebar"><span>Browse Skis <i class="fa fa-lg fa-bars"></i></span></button>
+
+<script type="text/javascript">
+(function($) {
+	$('[data-toggle="sidebar"]').click(function(e) {
+		$('body').toggleClass('sidebar-open');
+	});
+
+})(jQuery);
+</script>
+{% endcomment %}

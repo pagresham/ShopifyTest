@@ -1,0 +1,25 @@
+<!-- snippets/product-price.liquid -->
+
+
+<div class="product-price {% if product.compare_at_price > product.price %}on-sale {% endif %}">
+  <span class="amount" id="ProductPrice" itemprop="price">
+    {{ product.price | money }}
+  </span>
+          {% comment %}
+<span class="currency">{{ shop.currency }}</span>        {% endcomment %}
+
+  {% if settings.tax_inclusive_enable %}
+    <span class="tax-disclosure">{{ 'cart.taxes.tax_disclosure' | t }}</span>
+  {% endif %}
+  {% if settings.affirm_enable %}
+  <span class="affirm-price">
+    <a id="affirm-learn-more" style="visibility: none" href="#"></a>
+  </span>
+  {% endif %}
+    {% if product.compare_at_price > product.price %}
+    <span class="sales-price">{{ product.compare_at_price_max | money_without_trailing_zeros }}</span> 
+        {% comment %}
+        Save {{ product.compare_at_price_max | minus: product.price | money_without_trailing_zeros }}!
+    {% endcomment %}
+{% endif %} 
+</div>

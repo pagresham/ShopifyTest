@@ -1,0 +1,50 @@
+<ul class="list-inline social-icons">
+	{% if settings.social_twitter_link != blank %}
+		<li class="list-inline-item social-icon">
+			<a class="social-icon-link icon-fallback-text" href="{{ settings.social_twitter_link }}" title="{{ shop.name }} on Twitter">
+				<span class="icon icon-twitter" aria-hidden="true"></span>
+				<span class="sr-only">Twitter</span>
+			</a>
+		</li>
+	{% endif %}
+	{% if settings.social_facebook_link != blank %}
+		<li class="list-inline-item social-icon">
+			<a class="social-icon-link icon-fallback-text" href="{{ settings.social_facebook_link }}" title="{{ shop.name }} on Facebook">
+				<span class="icon icon-facebook" aria-hidden="true"></span>
+				<span class="sr-only">Facebook</span>
+			</a>
+		</li>
+	{% endif %}
+	{% if settings.social_instagram_link != blank %}
+		<li class="list-inline-item social-icon">
+			<a class="social-icon-link icon-fallback-text" href="{{ settings.social_instagram_link }}" title="{{ shop.name }} on Instagram">
+				<span class="icon icon-instagram" aria-hidden="true"></span>
+				<span class="sr-only">Instagram</span>
+			</a>
+		</li>
+	{% endif %}
+	{% if settings.social_vimeo_link != blank %}
+		<li class="list-inline-item social-icon">
+			<a class="social-icon-link icon-fallback-text" href="{{ settings.social_vimeo_link }}" title="{{ shop.name }} on Vimeo">
+				<span class="icon icon-vimeo" aria-hidden="true"></span>
+				<span class="sr-only">Vimeo</span>
+			</a>
+		</li>
+	{% endif %}
+	{% if settings.social_youtube_link != blank %}
+		<li class="list-inline-item social-icon">
+			<a class="social-icon-link icon-fallback-text" href="{{ settings.social_youtube_link }}" title="{{ shop.name }} on Youtube">
+				<span class="icon icon-youtube" aria-hidden="true"></span>
+				<span class="sr-only">YouTube</span>
+			</a>
+		</li>
+	{% endif %}
+	{% if settings.social_google_link != blank %}
+		<li class="list-inline-item social-icon">
+			<a class="social-icon-link icon-fallback-text" href="{{ settings.social_google_link }}" title="{{ shop.name }} on Google">
+				<span class="icon icon-google" aria-hidden="true"></span>
+				<span class="sr-only">Google</span>
+			</a>
+		</li>
+	{% endif %}
+</ul>

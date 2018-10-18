@@ -1,0 +1,597 @@
+<!-- /templates/product.ski_bindings.liquid -->
+
+
+{% comment %} Load parent product, aka "model" {% endcomment %}
+{% for ski_model in collections[settings.collection_grouped_products].products %}
+	{% if ski_model.handle == product.metafields.c_f.parent_product %}
+		{% assign model = ski_model %}
+	{% endif %}
+{% endfor %}
+
+
+{% comment %} Ski "edition" aka graphic {% endcomment %}
+{% if product.metafields.c_f.short_name %}
+	{% assign edition = product.metafields.c_f.short_name %}
+{% else %}
+	{% assign edition = product.title %}
+{% endif %}
+
+
+{% assign product_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+
+
+{% comment %} Image processing {% endcomment %}
+{% for image in product.images %}
+	{% assign alt = image.alt | downcase %}
+	{% capture url %}{% include 'extract-url' with image.alt %}{% endcapture %}
+	{% if url contains "youtu" or url contains "vimeo" %}
+		{% assign video_url = url | strip %}
+		{% assign video_thumbnail = image %}
+	{% endif %}
+
+	{% unless settings.alt_tag_product_cover == blank %}
+		{% if alt contains settings.alt_tag_product_cover %}
+			{% assign cover = image %}
+		{% endif %}
+	{% endunless %}
+
+	{% unless settings.alt_tag_product_featured == blank %}
+		{% if alt contains settings.alt_tag_product_featured %}
+			{% assign featured_image = image %}
+		{% endif %}
+	{% endunless %}
+
+
+	{% if forloop.last %}
+		{% assign graphic = image %}
+	{% endif %}
+{% endfor %}
+
+{% comment %} Pre-order and ship dates {% endcomment %}
+{% assign preorder = false %}
+{% if product.metafields.c_f.ship_date %}
+	{% assign now = 'now' | date: '%Y-%m-%d' %}
+	{% assign ship_date = product.metafields.c_f.ship_date | date: '%Y-%m-%d' %}
+	{% if now < ship_date %}
+		{% assign preorder = true %}
+	{% endif %}
+{% endif %}
+
+{% comment %} Restricted Products {% endcomment %}
+{% assign restricted = false %}
+{% unless customer %}
+	{% if product.metafields.c_f.release_date %}
+		{% assign now = 'now' | date: '%Y-%m-%d' %}
+		{% assign release_date = product.metafields.c_f.release_date | date: '%Y-%m-%d' %}
+		{% if now <= release_date %}
+			{% assign restricted = true %}
+		{% endif %}
+	{% endif %}
+{% endunless %}
+
+
+{% if settings.affirm_enable %}
+	{% include 'affirm' %}
+{% endif %}
+
+
+<div class="drawer-container" id="top">
+
+	<div class="has-drawer">
+
+		<div itemscope itemtype="http://schema.org/Product" {% if restricted %}data-access="restricted" data-access-scope="page" data-release-date="{{ product.metafields.c_f.release_date }}"{% endif %}>
+
+			<meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+			<meta itemprop="image" content="{{ product_image.src | img_url: 'grande' }}">
+
+			<section class="product-overview" id="overview" >
+				<div class="container">
+
+					<div class="row product-single">
+						<div class="col-md-6">
+							{% if model %}
+								<div class="text-center awards">
+									{% include 'product-awards' %}
+								</div>
+							{% endif %}
+							<div class="img-expand hidden-sm-down" id="ProductPhoto">
+								<img src="{{ product_image | img_url: '2048x2048' }}" alt="{{ product_image.alt | escape }}" id="ProductPhotoImg" class="img-responsive" >
+							</div>
+
+							{% comment %} Mobile device product image, hide on container to prevent excess loading {% endcomment %}
+							<div class="m-b-3 hidden-md-up">
+								<img src="{{ product_image | img_url: 'grande' }}" alt="{{ product_image.alt | escape }}" id="ProductPhotoImg" class="img-responsive m-x-auto" >
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<header>
+								<h1 itemprop="name" class="product-title">
+									{% if model %}
+										{{ model.title }} "{{ edition }}"
+									{% else %}
+										{{ product.title }}
+									{% endif %}
+								</h1>
+							</header>
+
+
+							<div class="product-offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+								{% comment %}
+									Get first variant, or deep linked one
+								{% endcomment %}
+								{% assign variant = product.selected_or_first_available_variant %}
+
+								<meta itemprop="priceCurrency" content="{{ shop.currency }}">
+								<link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+								<form action="/cart/add" method="post" enctype="multipart/form-data" id="AddToCartForm">
+
+									<div class="product-pricing">
+										{% include 'product-price' %}
+									</div>
+									{% if model %}
+										<div class="product-reviews-badge">
+											<a href="#reviews"><span class="shopify-product-reviews-badge" data-id="{% if model %}{{ model.id }}{% else %}{{ product.id }}{% endif %}"></span></a>
+										</div>
+									{% endif %}
+
+									<div class="offer product-options">
+										<header class="offer-header">
+											<!-- <h3 class="offer-title">{{ 'products.product.choose_options' | t }}</h3> -->
+											<a class="offer-link pull-right" href="#sizechart" data-toggle="modal" role="button" data-target="#sizechart">Size Chart <i class="fa fa-chevron-circle-right"></i></a>
+										</header>
+
+										{% include 'product-option-selectors' %}
+                                        {% include 'related-binding' %}
+									</div>
+
+									<div>
+										<button type="submit" name="add" id="AddToCart" class="btn btn-lg btn-primary add-to-cart">
+												<span id="AddToCartText" data-available="{{ addtocart }}" data-unavailable="{{ 'products.product.sold_out' | t }}">{{ 'products.product.add_to_cart' | t }}</span>
+										</button>
+									</div>
+								</form>
+
+
+							</div> <!-- /.product-offers -->
+
+							<div class="offer product-incentives">
+										{% include 'product-incentives', handle: model.handle, badge_limit:3 %}
+							</div>
+
+							{% if product.images.size > 1 %}
+
+								<div class="offer product-gallery">
+									<header class="offer-header">
+										<h3 class="offer-title">Gallery</h3>
+										<a href="#" data-toggle="gallery">View Gallery <i class="fa fa-chevron-circle-right"></i></a>
+									</header>
+									<div class="row" id="ProductThumbs">
+										{% assign gallery_count = 0 %}
+										{% for image in product.images %}
+											{% unless forloop.index == 1 %}
+
+												{% comment %} Skip cover images if they are enabled {% endcomment %}
+												{% unless settings.use_product_cover_img and image.alt contains settings.product_cover_alt_tag %}
+													{% assign gallery_count = gallery_count | plus: 1 %}
+													<div class="col-xs-3">
+														{% if image.alt contains '://' %}
+															{% capture url %}{% include 'extract-url' with image.alt %}{% endcapture %}
+															{% assign url = url | strip %}
+														{% else %}
+															{% assign url = image.src | img_url: '1024x1024' %}
+														{% endif %}
+
+														{% if image.alt contains 'vimeo' or image.alt contains 'youtu' %}
+															{% assign icon = 'fa fa-play' %}
+														{% else %}
+															{% assign icon = '' %}
+														{% endif %}
+														<a href="{{ url }}" class="{{ icon }} thumbnail" {% if gallery_count > 4 %} hidden{% endif %} data-toggle="fancybox" data-title="{{ product.title | escape }}" data-fancybox-group="gallery" rel="gallery">
+															<img class="img-fluid" src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
+														</a>
+													</div>
+												{% endunless %}
+											{% endunless %}
+										{% endfor %}
+									</div>
+								</div>
+							{% endif %}
+
+							<div class="offer product-highlights">
+								<header class="offer-header">
+									<h3 class="offer-title">Overview</h3>
+									<a class="offer-link" href="#specs">Specs &amp; Construction <i class="fa fa-chevron-circle-right"></i></a>
+								</header>
+								<div class="table-responsive">
+									<table class="table table-sm">
+										<tbody>
+										{% if model %}
+											<tr>
+												<th>Model:</th>
+												<td>{{ model.title }}</td>
+											</tr>
+										{% endif %}
+										{% if model %}
+											<tr>
+												<th>Graphic:</th>
+												<td>{{ edition }}</td>
+											</tr>
+										{% endif %}
+
+										{% if product.metafields.c_f.release_quantity %}
+											<tr>
+												<th>Total Made:</th>
+												<td>{{ product.metafields.c_f.release_quantity }} Pair</td>
+											</tr>
+										{% endif %}
+
+										{% if product.metafields.c_f.dimensions %}
+											<tr>
+												<th>Dimensions:</th>
+												<td>{{ product.metafields.c_f.dimensions }} (Tip - Waist - Tail)</td>
+											</tr>
+										{% endif %}
+										{% if product.metafields.c_f.release_date %}
+											{% capture date %}<time datetime="{{ product.metafields.c_f.release_date | date: '%Y-%m-%d' }}">{{ product.metafields.c_f.release_date | date: format: 'month_day_year' }}</time>{% endcapture %}
+											<tr>
+												<th>{{ 'products.product.release_date' | t }}:</th>
+												<td>{{ date }}</td>
+											</tr>
+										{% endif %}
+										{% if preorder %}
+											{% capture date %}<time datetime="{{ ship_date | date: '%Y-%m-%d' }}">{{ ship_date | date: format: 'month_day_year' }}</time>{% endcapture %}
+											<tr>
+												<th>{{ 'products.product.ship_date' | t }}:</th>
+												<td>{{ date }}</td>
+											</tr>
+										{% endif %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+
+							{% if product.metafields.c_f.featured_collection %}
+								{% assign featured_collection = product.metafields.c_f.featured_collection %}
+								{% if collections[featured_collection].products.size > 1 %}
+									{% assign current_product = product %}
+
+									<div class="offer product-related-collection">
+										<header class="offer-header">
+											<h3 class="offer-title">{{ collections[featured_collection].title }} Collection</h3>
+											<a class="offer-link" href="{{ collections[featured_collection].url }}" class="pull-right">View All <i class="fa fa-chevron-circle-right"></i></a>
+										</header>
+										<ul class="list-unstyled row">
+										{% assign related_count = 0 %}
+										{% for related_product in collections[featured_collection].products limit: 7 %}
+											{% unless settings.static_product_types contains related_product.type or related_count > 5 %}
+											{% assign related_count = related_count | plus: 1 %}
+											<li class="col-xs-3 {% if related_count > 4 %}hidden-lg-down {% endif %} grid-item grid-item-product">
+												{% include 'card-product', product: related_product, image_only: true %}
+											</li>
+											{% endunless %}
+										{% endfor %}
+										</ul>
+									</div>
+									{% assign product = current_product %}
+								{% endif %}
+							{% endif %}
+
+							{% if collections[model.handle].products.size > 1 %}
+								{% assign current_product = product %}
+
+								<div class="offer product-upsells">
+									<header class="offer-header">
+										<h3 class="offer-title">Other {{ model.title | replace: 'The', '' }} Graphics</h3>
+										<a class="offer-link" href="{{ collections[model.handle].url }}" class="pull-right">View All <i class="fa fa-chevron-circle-right"></i></a>
+									</header>
+									<ul class="list-unstyled row">
+									{% assign related_count = 0 %}
+									{% for related_product in collections[model.handle].products limit: 10 %}
+										{% unless settings.static_product_types contains related_product.type  or related_product.handle == product.handle or related_count > 5 %}
+										{% assign related_count = related_count | plus: 1 %}
+										<li class="col-xl-2 col-xs-3 {% if related_count > 4 %}hidden-lg-down {% endif %} grid-item grid-item-product">
+											{% include 'card-product', product: related_product, image_only: true %}
+
+										</li>
+										{% endunless %}
+									{% endfor %}
+									</ul>
+								</div>
+								{% assign product = current_product %}
+							{% endif %}
+
+													{% include 'product-neighbors-linklist' %}
+
+
+
+
+
+							<button class="btn btn-primary-outline btn-expand hidden-sm-down" data-toggle="image"><i class="fa fa-2x fa-search-plus"></i> </button>
+
+						</div> <!-- .col -->
+					</div> <!-- .row -->
+
+
+				</div> <!-- /.container -->
+			</section>
+
+			<section class="m-b-2 section product-description {% if featured_image %}has-image{% endif %}" id="description" >
+				<div class="container">
+					<div class="row">
+						<div class="section-body">
+							{% if model.title %}
+							<header class="section-header">
+								<h2>{{ model.title }}&trade; "{{ edition }}" Graphic</h2>
+							</header>
+							{% endif %}
+
+							<div class="rte p-x-1">
+								{% if product.metafields.c_f.short_description %}
+									{{ product.metafields.c_f.short_description | newline_to_br }}
+								{% else %}
+									{{ product.description }}
+								{% endif %}
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				{% if featured_image %}
+					<span class="section-bg" style="background-image: url({{ featured_image.src | img_url: '1024x1024' }});"></span>
+				{% endif %}
+			</section>
+
+
+			{% if video_url %}
+			<section class="m-b-2 section product-video" >
+				<span class="section-bg img-desaturate" style="background-image: url({{ video_thumbnail.src | img_url: '1024x1024' }})"></span>
+				<div class="section-bg-overlay">
+					<a href="{{ video_url }}" target="_blank" data-toggle="fancybox" data-fancybox-group="gallery" class="btn-video">
+						<i class="fa fa-play"></i>
+						<br />Play Video
+					</a>
+				</div>
+			</section>
+			{% endif %}
+
+			{% if cover %}
+			<section class="m-y-3">
+				<div class="container">
+					<div class="img-90cw">
+						<img src="{{ product_image | img_url: '2048x2048' }}" alt="{{ product_image.alt | escape }}" id="ProductPhotoImg" class="" >
+					</div>
+					<div>
+						<img src="{{ cover | img_url: '2048x2048' }}" alt="" class="img-responsive" >
+					</div>
+				</div>
+			</section>
+			{% endif %}
+		</div> <!-- itemscope -->
+
+
+
+
+
+		{% if collections[model.handle] != blank %}
+		<section class="section cover product-collection" >
+
+			<div class="container">
+				<div class="row">
+						<div class="col-md-6 offset-md-6">
+							<div class="p-y-1 p-x-1 cover-overlay">
+								<p class="h2 m-b-3 text-center">{{ model.title }}&trade; Model Info</p>
+								{% include 'collection-header', collection: collections[model.handle], model:model %}
+							</div>
+						</div>
+				</div>
+			</div>
+			{% if collections[model.handle].image %}
+				<span class="cover-img" style="background-image: url({{ collections[model.handle].image | img_url: '2048x2048' }})"></span>
+			{% endif %}
+		</section>
+		{% endif %}
+
+		<section id="specs" class="m-y-3 section product-specifications pad-me">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1">
+						{% assign snippet = product.type | downcase | append: '-specifications' %}
+						{% include snippet, model: model %}
+					</div>
+				</div>
+
+			</div>
+		</section>
+
+		<hr />
+
+		<section id="construction" class="m-y-3 section product-features pad-me">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 offset-md-2">
+						{% assign snippet = product.type | downcase | append: '-features' %}
+						{% include snippet, model: model %}
+					</div>
+				</div>
+			</div>
+		</section>
+
+		{% if product.metafields.c_f.instagram_feed %}
+		<section class="p-y-2 bg-gray-lighter text-center section product-instagram" >
+			<div class="container">
+				<!-- SnapWidget -->
+				<h2 class="m-b-0 section-title">{{ 'products.product.instagram_feed' | t }}</h2>
+				<p>
+					{% if model.title %}
+						{{ 'products.skis.model_owners' | t: model: model.title }}
+					{% endif %}
+					{% if product.metafields.c_f.hashtag %}
+						{{ 'products.product.hashtag' | t: hashtag: product.metafields.c_f.hashtag }}
+					{% endif %}
+				</p>
+				<div class="p-y-2 rte-embed">
+					{{ product.metafields.c_f.instagram_feed }}
+				</div>
+			</div>
+		</section>
+		{% endif %}
+
+		{% if product.metafields.c_f.map_data && settings.gmaps_api_key %}
+			{{ 'https://maps.googleapis.com/maps/api/js?key=' | append: settings.gmaps_api_key | script_tag }}
+			<section class="p-t-3 m-b-3 section product-owners pad-me" id="owners">
+				<div class="container">
+					<h2 class="m-b-3 text-center section-title">"{{ edition }}" Limited Edition Owners</h2>
+
+					<ol id="OwnersList" class="m-b-3 row list list-unstyled">
+					</ol>
+
+
+				</div>
+				<div
+					id="OwnersMap"
+					data-map="Google"
+					data-target="#OwnersList"
+					data-map-icon="https:{{'map-marker.png' | asset_url }}"
+					data-map-icon-width="{{ settings.map_icon_width }}"
+					data-map-icon-height="{{ settings.map_icon_height }}"
+					data-map-json="https://spreadsheets.google.com/feeds/list/{{ product.metafields.c_f.map_data }}/1/public/values?alt=json"
+					style="height: 400px; width: 100%"
+					class="hidden-sm-down"
+				>
+				</div>
+				<p class="p-b-1 text-center">Where are you?</p>
+
+			</section>
+
+		{% endif %}
+
+		{% if model %}
+		<section class="m-t-3 section product-reviews pad-me" id="reviews">
+			<div class="container">
+				{% assign reviews_page = model.handle | append: '-reviews' %}
+				<h2 class="text-center section-title">{{ 'products.skis.reviews' | t, model: model.title }}</h2>
+
+
+				<div class="row product-awards">
+					{% assign award_count = 0 %}
+					{% paginate blogs['awards'].articles by 50 %}
+						{% for award in blogs['awards'].articles %}
+							{% assign tags = award.tags | join: ',' | downcase %}
+							{% if tags contains model.handle %}
+								{% assign award_count = award_count | plus: 1 %}
+								<div class="col-md-6 award">
+									<div class="row">
+										<div class="col-xs-4">
+											{% include 'extract-image' with award.excerpt %}
+										</div>
+										<div class="col-xs-8">
+											<h4>{{ award.title }}</h4>
+											{{ award.content }}
+										</div>
+									</div> <!-- .row -->
+								</div> <!-- .col-md-4 -->
+								{% assign mod = award_count | modulo: 2 %}
+								{% if mod == 0 %}
+									<div class="hidden-sm-down clearfix">&nbsp;</div>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					{% endpaginate %}
+				</div>
+
+				{% if pages[reviews_page].content.size > 0 %}
+					<div class="row">
+						<div class="col-md-8 offset-md-2">
+							<div class="text-center rte">
+								{{ pages[reviews_page].content }}
+							</div>
+						</div>
+					</div>
+				{% endif %}
+
+				<div id="shopify-product-reviews" data-id="{{ model.id}}">{{ model.metafields.spr.reviews }}</div>
+
+			</div>
+		</section>
+		{% endif %}
+
+
+
+		<hr />
+
+		<section class="section product-incentives">
+			<div class="container text-center">
+				<h2 class="section-title">Buy With Confidence</h2>
+				<p>J skis are exclusively sold here, factory direct to you!</p>
+
+				<div class="incentives">
+					{% include 'product-incentives', handle: model.handle, badge_limit:50, badge_excerpt: true %}
+				</div>
+			</div>
+          <div class="back-to-top">
+<a href="#top">
+  <button class="btn btn-lg btn-primary ">
+    <span>buy now</span>
+  </button>
+</a>
+                                         </div>
+		</section>
+
+
+
+		{% include 'product-related' %}
+
+
+	</div> <!-- .page-content -->
+
+	<div class="drawer drawer-left">
+		<div class="drawer-inner">
+			<div class="sidebar">
+				{% include 'collection-sidebar' %}
+			</div>
+		</div>
+		{% include 'drawer-toggle' %}
+	</div>
+
+</div> <!-- .drawer-container -->
+
+{% comment %} Size Chart Modal {% endcomment %}
+<div class="modal fade" id="sizechart" tabindex="-1" role="dialog" aria-labelledby="sizeChartTitle" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="sizeChartTitle">{{ 'products.skis.size_chart' | t }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ pages['ski-size-chart'].content }}
+			</div>
+			<div class="modal-footer">
+				<a href="/pages/ski-size-chart" target="_blank" class="pull-left">Open in new window <i class="fa fa-external-link"></i></a>
+				<button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% comment %} Always include restricted popup in case of relatd products on page that are restricted {% endcomment %}
+{% include 'product-restricted' %}
+{% include 'product-incentive-modal' %}
+{% include 'product-js' %}
+<script>
+	(function($) {
+		// Expanding ski image
+		$('[data-toggle="image"]').click(function(e){
+			$('.img-expand').toggleClass('open');
+			$(this).find('.fa').toggleClass('fa-search-plus').toggleClass('fa-search-minus');
+		});
+	})(jQuery);
+</script>
+
+{% include 'klaviyo-webtracking' %}

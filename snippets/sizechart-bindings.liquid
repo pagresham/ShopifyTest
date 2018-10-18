@@ -1,0 +1,61 @@
+{% assign products = collections['bindings'].products %}
+
+<table class="table table-striped table-hover table-bordered">
+	<thead class="thead-inverse">
+		<tr>
+			<th>Brake Width</th>
+			<th>Binding Models</th>
+			<th>Suggested J ski models</th>
+			<th>Suggested ski waist width</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>95mm</th>
+			<td>
+				<a href="{{ collections['bindings'].url }}/products/look-pivot-12">Pivot 12</a>,
+				<a href="{{ collections['bindings'].url }}/products/look-pivot-14">Pivot 14</a>,
+				<a href="{{ collections['bindings'].url }}/products/look-pivot-18">Pivot 18</a>
+			</td>
+			<td>
+				<a href="{{ collections['whipit'].url }}">The Whipit</a>,
+				<a href="{{ collections['allplay'].url }}">The Allplay</a>
+			</td>
+			<td>
+				85 - 104 mm
+			</td>
+		</tr>
+		<tr>
+			<th>100mm</th>
+			<td>
+				<a href="{{ collections['bindings'].url }}/products/look-spx-12">Pivot 12</a>
+			</td>
+			<td>
+				<a href="{{ collections['whipit'].url }}">The Whipit</a>,
+				<a href="{{ collections['allplay'].url }}">The Allplay</a>,
+				<a href="{{ collections['vacation'].url }}">The Vacation</a>,
+				<a href="{{ collections['metal'].url }}">The Metal</a>
+			</td>
+			<td>
+				90 - 110 mm
+			</td>
+		</tr>
+		<tr>
+			<th>115mm</th>
+			<td>
+				<a href="{{ collections['bindings'].url }}/products/look-pivot-12">Pivot 12</a>,
+				<a href="{{ collections['bindings'].url }}/products/look-pivot-14">Pivot 14</a>,
+				<a href="{{ collections['bindings'].url }}/products/look-pivot-18">Pivot 18</a>
+			</td>
+			<td>
+				<a href="{{ collections['vacation'].url }}">The Vacation</a>,
+				<a href="{{ collections['metal'].url }}">The Metal</a>
+				<a href="{{ collections['friend'].url }}">The Friend</a>
+			</td>
+			<td>
+				105 - 125 mm
+			</td>
+		</tr>
+	</tbody>
+</table>
+<a href="{{ collections['bindings'].url }}" class="btn btn-primary-outline">Shop Bindings</a>

@@ -1,0 +1,17 @@
+<!-- /templates/page.liquid -->
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-9 push-md-3">
+			<header class="page-header">
+	    		<h1 class="page-title">{{ page.title }}</h1>
+			</header>
+			{% include 'rte' with page.content %}
+		</div>
+		<div class="col-md-3 pull-md-9">
+			<aside class="sidebar sidebar-customer-service" style="height: 100%;"> 
+				{% include 'sidebar.about' %}
+			</aside>
+		</div>
+	</div>
+</div>

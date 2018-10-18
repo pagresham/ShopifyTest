@@ -1,0 +1,13 @@
+<!-- /templates/collection.liquid -->
+
+{% for ski_model in collections[settings.collection_grouped_products].products %}
+	{% if ski_model.handle == collection.handle %}
+		{% assign model = ski_model %}
+	{% endif %}
+{% endfor %}
+
+{% if model or collection.title contains 'Skis' %}
+  {% include 'collection-skis' %}
+{% else %}
+  {% include 'collection' %}
+{% endif %}

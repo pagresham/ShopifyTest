@@ -1,0 +1,261 @@
+{% assign products = collections['bindings'].products %}
+<section> 
+	<table class="table table-striped table-hover table-bordered">
+		<thead class="thead-inverse">
+			<tr>
+				<th>&nbsp;</th>
+				{% for product in products %}
+					<th>
+						{% if product.metafields.c_f.short_name %}
+							{{ product.metafields.c_f.short_name }}
+						{% else %}
+							{{ product.title }}
+						{% endif %}
+					</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>Price</th>
+				{% for product in products %}
+					<td>
+						{% if product.price_varies %}{{ 'products.general.from' | t }}{% endif %}
+							{{ product.price | money }}
+						{% if on_sale %}
+							{% assign sale_price =  product.compare_at_price | money %}
+							<br>{{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+						{% endif %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>DIN</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								8 - 18
+							{% when 'look-pivot-14' %}
+								5 - 14
+							{% when 'look-pivot-12' %}
+								4 - 12
+							{% when 'look-spx-12' %}
+								3.5 - 12
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Skier Weight</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								175+ lbs / 80+ kg
+							{% when 'look-pivot-14' %}
+								150 - 250 lbs / 70 - 113 kg
+							{% when 'look-pivot-12' %}
+								100 - 200 lbs / 45 - 90 kg
+							{% when 'look-spx-12' %}
+								80 - 200 lbs / 36 - 90 kg
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Skier Weight lb / kg</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								Pro
+							{% when 'look-pivot-14' %}
+								Expert
+							{% when 'look-pivot-12' %}
+								Intermediate - Expert
+							{% when 'look-spx-12' %}
+								Intermediate - Expert
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Color</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								White
+							{% when 'look-pivot-14' %}
+								White
+							{% when 'look-pivot-12' %}
+								Black Chrome
+							{% when 'look-spx-12' %}
+								Black Chrome
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Weight</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								1245g (1/2 pair)
+							{% when 'look-pivot-14' %}
+								1080g (1/2 pair)
+							{% when 'look-pivot-12' %}
+								1080g (1/2 pair)
+							{% when 'look-spx-12' %}
+								1110g (1/2 pair)
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Toe Lateral Elasticity</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								45mm
+							{% when 'look-pivot-14' %}
+								45mm
+							{% when 'look-pivot-12' %}
+								45mm
+							{% when 'look-spx-12' %}
+								45mm
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Glider</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								Teflon racing
+							{% when 'look-pivot-14' %}
+								Wide Teflon
+							{% when 'look-pivot-12' %}
+								Wide Teflon
+							{% when 'look-spx-12' %}
+								Wide Teflon
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Toe Piece</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								Race Aluminum
+							{% when 'look-pivot-14' %}
+								Full Drive
+							{% when 'look-pivot-12' %}
+								Full Drive
+							{% when 'look-spx-12' %}
+								Full Action
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Heel Piece</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								Pivot
+							{% when 'look-pivot-14' %}
+								Pivot
+							{% when 'look-pivot-12' %}
+								Pivot
+							{% when 'look-spx-12' %}
+								SPX
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Heel Interface</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								18
+							{% when 'look-pivot-14' %}
+								16.5
+							{% when 'look-pivot-12' %}
+								16.6
+							{% when 'look-spx-12' %}
+								18
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Heel Vertical Elasticity</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								28mm
+							{% when 'look-pivot-14' %}
+								28mm
+							{% when 'look-pivot-12' %}
+								28mm
+							{% when 'look-spx-12' %}
+								27mm
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>Length Adjustment</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								20mm
+							{% when 'look-pivot-14' %}
+								20mm
+							{% when 'look-pivot-12' %}
+								20mm
+							{% when 'look-spx-12' %}
+								25mm
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th>&nbsp;</th>
+				{% for product in products %}
+					<td>
+						{% case product.handle %}					
+							{% when 'look-pivot-18' %}
+								<a href="{{ collections['bindings'].url }}/products/look-pivot-18" class="btn btn-primary-outline">View Details</a>
+							{% when 'look-pivot-14' %}
+								<a href="{{ collections['bindings'].url }}/products/look-pivot-14" class="btn btn-primary-outline">View Details</a>
+							{% when 'look-pivot-12' %}
+								<a href="{{ collections['bindings'].url }}/products/look-pivot-12" class="btn btn-primary-outline">View Details</a>
+							{% when 'look-spx-12' %}
+								<a href="{{ collections['bindings'].url }}/products/look-spx-12" class="btn btn-primary-outline">View Details</a>
+						{% endcase %}
+					</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+</section>
+
+<hr class="m-y-lg" />
+
+<section id="brake-width">
+	{% include 'sizechart-bindings' %}
+</section>

@@ -1,0 +1,572 @@
+{% assign products = collections['models'].products %}
+
+<table class="table table-striped table-hover table-bordered table-responsive">
+	<thead class="thead-inverse">
+		<tr>
+			<th>Model</th>
+			{% for product in products %}
+				<th>
+					{% if product.metafields.c_f.short_name %}
+						{{ product.metafields.c_f.short_name }}
+					{% else %}
+						{{ product.title }}
+					{% endif %}
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Price</th>
+			{% for product in products %}
+				<td>
+					{% if product.price_varies %}{{ 'products.general.from' | t }}{% endif %}
+						{{ product.price | money }}
+					{% if on_sale %}
+						{% assign sale_price =  product.compare_at_price | money %}
+						<br>{{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+					{% endif %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Performance</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							Lightest, quickest, butteryest park ski that also rips all mountain
+						{% when 'allplay' %}
+							Versatile, best of all worlds, equal park &amp; all mountain performance
+						{% when 'vacation' %}
+							Fattest jib ski for tricks on all terrain groomed to deep pow
+						{% when 'metal' %}
+							Powderful, stable high speed carving, crud blasting, and deep pow surfing
+						{% when 'friend' %}
+							Effortlessly surfs pow, still reliable on firm snow
+						{% when 'masterblaster' %}
+							Quick, nimble, powerful high speed carving, with versatile float in pow
+            {% when 'max' %}
+               Youth freestyle ski built using the same modern construction and specs as an adult ski
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Magazine Test Awards</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+              Blister
+						{% when 'allplay' %}
+               Backcountry, Blister, Freeskier, Powder
+						{% when 'vacation' %}
+               Backcountry, Freeskier, Powder
+						{% when 'metal' %}
+							Backcountry, Blister, Freeskier, Newschoolers, Powder, SKI, Skiing
+						{% when 'friend' %}
+							Backcountry, Blister, Freeskier, Powder, SKI, Skiing
+						{% when 'masterblaster' %}
+							 Blister, Freeskier, Powder, SKI
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Terrain</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							Park, Groomed
+						{% when 'allplay' %}
+							Park, Groomed, Powder under 12"
+						{% when 'vacation' %}
+							Groomed, Deep Powder
+						{% when 'metal' %}
+							Groomed, Deep Powder
+						{% when 'friend' %}
+							Bottomless Pow
+						{% when 'masterblaster' %}
+							Groomed, Bumps, Trees, Up to 10" powder
+            {% when 'max' %}
+              Park, Groomer, Powder under 12”
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Flex (5 = Stiffest)</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							2
+						{% when 'allplay' %}
+							1
+						{% when 'vacation' %}
+							3
+						{% when 'metal' %}
+							4
+						{% when 'friend' %}
+							4
+						{% when 'masterblaster' %}
+							4
+            {% when 'max' %}
+              2
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			{% for product in products %}
+				<td><a href="{{ collections[product.handle].url }}" class="btn btn-secondary">View Skis</a></td>
+			{% endfor %}
+		</tr>
+	</tbody>
+</table>
+
+<h3 class="text-center h2">Shape</h3>
+<table class="table table-striped table-hover table-bordered table-responsive">
+	<thead class="thead-inverse">
+		<tr>
+			<th>Model</th>
+			{% for product in products %}
+				<th>
+					{% if product.metafields.c_f.short_name %}
+						{{ product.metafields.c_f.short_name }}
+					{% else %}
+						{{ product.title }}
+					{% endif %}
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Waist Width</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							90mm
+						{% when 'allplay' %}
+							98mm
+						{% when 'vacation' %}
+							104mm
+						{% when 'metal' %}
+							106mm
+						{% when 'friend' %}
+							117mm
+						{% when 'masterblaster' %}
+							96mm
+            {% when 'max' %}
+							90mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Available Lengths</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							157, 164, 171, 178, 184cm
+						{% when 'allplay' %}
+							164, 171, 178, 184cm
+						{% when 'vacation' %}
+							173, 180, 186cm
+						{% when 'metal' %}
+							173, 180, 186cm
+						{% when 'friend' %}
+							177, 183, 189cm
+						{% when 'masterblaster' %}
+							168, 175, 181, 187cm
+            {% when 'max' %}
+							140, 150cm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Tip / Waist / Tail Dimensions</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							113 / 90 / 110mm
+						{% when 'allplay' %}
+							119 / 98 / 117mm
+						{% when 'vacation' %}
+							127 / 104 / 122mm
+						{% when 'metal' %}
+							136 / 106 / 125mm
+						{% when 'friend' %}
+							143 / 117 / 133mm
+						{% when 'masterblaster' %}
+							125 / 96 / 114mm
+            {% when 'max' %}
+							118 / 90 / 113mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Sidecut</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							20.1m
+						{% when 'allplay' %}
+							20.1m
+						{% when 'vacation' %}
+							18.5m
+						{% when 'metal' %}
+							18.0m
+						{% when 'friend' %}
+							18.5m
+						{% when 'masterblaster' %}
+							18m
+            {% when 'max' %}
+							11.5m
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Camber</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							3mm
+						{% when 'allplay' %}
+							3mm
+						{% when 'vacation' %}
+							3mm
+						{% when 'metal' %}
+							3mm
+						{% when 'friend' %}
+							3mm
+						{% when 'masterblaster' %}
+							4mm
+            {% when 'max' %}
+							3mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Rocker Height Tip / Tail</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							4 / 4mm
+						{% when 'allplay' %}
+							4 / 4mm
+						{% when 'vacation' %}
+							10 / 2mm
+						{% when 'metal' %}
+							9 / 3mm
+						{% when 'friend' %}
+							9 / 3mm
+						{% when 'masterblaster' %}
+							6 / 3mm
+            {% when 'max' %}
+  						2 / 2mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Rocker Length Tip / Tail</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							255 / 255mm
+						{% when 'allplay' %}
+							280 / 280mm
+						{% when 'vacation' %}
+							450 / 400mm
+						{% when 'metal' %}
+							445 / 285mm
+						{% when 'friend' %}
+							325 / 90mm
+						{% when 'masterblaster' %}
+							380 / 280mm
+            {% when 'max' %}
+              120 / 120mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Tip / Tail Height</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							60 / 60mm
+						{% when 'allplay' %}
+							60 / 60mm
+						{% when 'vacation' %}
+							70 / 45mm
+						{% when 'metal' %}
+							75 / 55mm
+						{% when 'friend' %}
+							75 / 40mm
+						{% when 'masterblaster' %}
+							65 / 35mm
+            {% when 'max' %}
+              48 / 48mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+    <tr>
+			<th>Boot from Tail</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							870mm
+						{% when 'allplay' %}
+							850mm
+						{% when 'vacation' %}
+							860mm
+						{% when 'metal' %}
+							840mm
+						{% when 'friend' %}
+							835mm
+						{% when 'masterblaster' %}
+							825mm
+            {% when 'max' %}
+  						708mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+    <tr>
+			<th>Boot Mount</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							-2cm back from center
+						{% when 'allplay' %}
+							-4cm back from center
+						{% when 'vacation' %}
+							-4cm back from center
+						{% when 'metal' %}
+							-6cm back from center
+						{% when 'friend' %}
+							n/a
+						{% when 'masterblaster' %}
+							n/a
+            {% when 'max' %}
+  						-4cm back from center
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Weight per ski</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							1,780g
+						{% when 'allplay' %}
+							1,860g
+						{% when 'vacation' %}
+							2015g
+						{% when 'metal' %}
+							2,180g
+						{% when 'friend' %}
+							2,280g
+						{% when 'masterblaster' %}
+							2,160
+            {% when 'max' %}
+							1500g
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			{% for product in products %}
+				<td><a href="{{ collections[product.handle].url }}" class="btn btn-secondary">View Skis</a></td>
+			{% endfor %}
+		</tr>
+	</tbody>
+</table>
+
+<h3 class="text-center h2">Construction</h3>
+<table class="table table-striped table-hover table-bordered table-responsive">
+	<thead class="thead-inverse">
+		<tr>
+			<th>Model</th>
+			{% for product in products %}
+				<th>
+					{% if product.metafields.c_f.short_name %}
+						{{ product.metafields.c_f.short_name }}
+					{% else %}
+						{{ product.title }}
+					{% endif %}
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Special Laminate</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							Carbon 5-tring pre-cured
+            {% when 'max' %}
+							Carbon 5-tring pre-cured
+						{% when 'allplay' %}
+							Carbon 5-tring pre-cured
+						{% when 'vacation' %}
+							Carbon 5-tring pre-cured
+						{% when 'metal' %}
+							Titanal metal top &amp; bottom
+						{% when 'friend' %}
+							Carbon 5-tring pre-cured
+						{% when 'masterblaster' %}
+							Titanal metal top &amp; bottom
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Fiberglass</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							4 Axis 0, 90, 45, -45
+            {% when 'max' %}
+							4 Axis 0, 90, 45, -45
+						{% when 'allplay' %}
+							4 Axis 0, 90, 45, -45
+						{% when 'vacation' %}
+							4 Axis 0, 90, 45, -45
+						{% when 'metal' %}
+							4 Axis 0, 90, 45, -45
+						{% when 'friend' %}
+							4 Axis 0, 90, 45, -45
+						{% when 'masterblaster' %}
+							4 Axis 0, 90, 45, -45
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Base</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							Sintered extra thick 2mm
+            {% when 'max' %}
+							Sintered extra thick 2mm
+						{% when 'allplay' %}
+							Sintered extra thick 2mm
+						{% when 'vacation' %}
+							Sintered extra thick 2mm
+						{% when 'metal' %}
+							Sintered extra thick 2mm
+						{% when 'friend' %}
+							Sintered extra thick 2mm
+						{% when 'masterblaster' %}
+							Sintered extra thick 2mm
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Edges</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							2mm extra thick
+            {% when 'max' %}
+							2mm extra thick
+						{% when 'allplay' %}
+							2mm extra thick
+						{% when 'vacation' %}
+							2mm extra thick
+						{% when 'metal' %}
+							2mm extra thick
+						{% when 'friend' %}
+							2mm extra thick
+						{% when 'masterblaster' %}
+							2mm extra thick
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Core</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							Canadian maple wood
+            {% when 'max' %}
+							Canadian maple wood
+						{% when 'allplay' %}
+							Canadian maple wood
+						{% when 'vacation' %}
+							Canadian maple wood
+						{% when 'metal' %}
+							Canadian maple wood
+						{% when 'friend' %}
+							Canadian maple wood
+						{% when 'masterblaster' %}
+							Canadian Maple wood
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th>Sidewalls</th>
+			{% for product in products %}
+				<td>
+					{% case product.handle %}
+						{% when 'whipit' %}
+							Full height UHMW
+            {% when 'max' %}
+							Full height UHMW
+						{% when 'allplay' %}
+							Full height UHMW
+						{% when 'vacation' %}
+							Full height UHMW
+						{% when 'metal' %}
+							Full height UHMW
+						{% when 'friend' %}
+							Full height UHMW
+						{% when 'masterblaster' %}
+							Full height UHMW
+					{% endcase %}
+				</td>
+			{% endfor %}
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			{% for product in products %}
+				<td><a href="{{ collections[product.handle].url }}" class="btn btn-secondary">View Skis</a></td>
+			{% endfor %}
+		</tr>
+	</tbody>
+</table>

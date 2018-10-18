@@ -1,0 +1,87 @@
+<!-- snippets/collection-skis.liquid -->
+
+{% for ski_model in collections[settings.collection_grouped_products].products %}
+  {% if ski_model.handle == collection.handle %}
+    {% assign model = ski_model %}
+  {% endif %}
+{% endfor %}
+
+<div class="container collection-skis">
+  <div class="row">
+    <div class="col-sm-12">
+      {% include 'collection-header' %}
+    </div>
+  </div>
+  {% unless model %}
+    <div class="row">
+      <div class="col-sm-12">
+        {% include 'collection-ski-filter' %}
+      </div>
+    </div>
+  {% endunless %}
+  <div class="row">
+    {% if collection.products.size > 0 and collection.handle != 'skis' %}
+      {% assign group = '' %}
+      {% assign count = 0 %}
+      {% assign static_types = settings.static_product_types | split: ',' %}
+      <div class="product-grid">
+        {% assign show_ski_parents = false %}
+        {% for product in collection.products %}
+          {% for parent_collection in collections['models'].products %}
+            {% assign handalize = parent_collection.handle | lowercase | replace: "The ", "" %}
+            {% if handalize == product.handle %}
+              {% assign show_ski_parents = true %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+
+        {% if show_ski_parents %}
+          {% comment %}We need to print these out in the same order that they have chosen in the menu.{% endcomment %}
+          {% for ski_collection in linklists['ski-model-order'].links %}
+            {% for product in collection.products %}
+              {% assign collection_handle = ski_collection.handle | replace: "the-", "" %}
+              {% if collection_handle == product.handle %}
+                <div class="cli col-xs-12 {{ grid_item_class }}">
+                  {% include 'collection-list-item', collection: collections[product.handle], ad_first: forloop.first %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% else %}
+          {% for product in collection.products %}
+            {% capture card_snippet %}{% if static_types contains product.type %}card-banner{% else %}card-product{% endif %}{% endcapture %}
+            {% assign grid_item_class = 'grid-item grid-item-product' %}
+            {% if card_snippet contains 'static' %}
+              {% assign grid_item_class = grid_item_class | append: ' grid-item-static' %}
+            {% endif %}
+            {% comment %} Some special spacing for different collections and lengths{% endcomment %}
+            {% if forloop.length == 1 %}
+              <div class="col-md-4 offset-md-4 {{ grid_item_class }}">
+                {% include card_snippet %}
+              </div>
+            {% elsif forloop.length == 2 %}
+              <div class="col-md-6 {{ grid_item_class }}">
+                {% include card_snippet %}
+              </div>
+            {% else %}
+              <div class="col-lg-3 col-sm-4 col-xs-6 {{ grid_item_class }}">
+                {% include card_snippet %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% elsif collection.handle == 'skis' %}
+      {% for ski_collection in linklists['ski-model-order'].links %}
+        <div class="cli col-xs-12 {{ grid_item_class }}">
+          {% assign collection_handle = ski_collection.handle | replace: "the-", "" %}
+          {% include 'collection-list-item', collection: collections[collection_handle], ad_first: forloop.first %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-warning text-center" role="alert">
+        {{ 'collections.general.no_matches' | t }}
+      </div>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,162 @@
+{% comment %}
+
+ID formats follow Shopify Google APP format: 
+	Item Group ID: shopify_US_{{ product.id }}
+	Id: shopify_US_{{ product.id }}1110418116_4187926724
+
+{% endcomment %}<!-- /snippets/google-products-feed-item.liquid -->
+<item>
+	{% assign id = product.id | prepend: 'shopify_US_' | append: '_' | append: variant.id %}
+	{% if preorder %}
+		{% assign availability_date = product.metafields.c_f.ship_date | date: '%F' | append: 'T4:20-0500' %}
+		{% assign availability = 'preorder' %}
+	{% elsif variant.available %}
+		{% assign availability = 'in stock' %}
+	{% else %}
+		{% assign availability = 'out of stock' %}
+	{% endif %}
+	{% assign size = false %}
+	{% for option in product.options %}
+		{% assign option_label = option | downcase %}
+		{% if 'size' == option_label %} 
+			{% assign option_size = 'option' | append: forloop.index %}
+			{% assign size = variant[option_size] %}
+		{% endif %} 
+	{% endfor %}
+	{% assign color = false %}
+	{% for option in product.options %}
+		{% assign option_label = option | downcase %}
+		{% if 'color' == option_label %} 
+			{% assign option_color = 'option' | append: forloop.index %}
+			{% assign color = variant[option_color] %}
+		{% endif %}
+	{% endfor %}
+	{% if product.metafields.jskis.feed_title %} 
+		{% assign title = product.metafields.jskis.feed_title %}
+	{% elsif product.metafields.global.title_tag %}
+		{% assign title = product.metafields.global.title_tag %}
+	{% comment %}
+	{% elsif product.type == 'Skis' and product.metafields.c_f.parent_product %}
+		{% assign title = product.metafields.c_f.parent_product | capitalize | prepend: 'J Skis - The ' | append: ' "' | append: product.metafields.c_f.short_name | append: '"' %}
+	{% endcomment %}
+	{% else %}
+		{% assign title = product.title %}
+	{% endif %}
+
+	{% comment %} Description priority: 1. Google-specific meta tag. 2. Meta description. 3. Full product description {% endcomment %}
+	{% if product.metafields.jskis.feed_description %}
+		{% assign description = product.metafields.jskis.feed_description %}
+	{% elsif product.metafields.global.description_tag %}
+		{% assign description = product.metafields.global.description_tag | strip_html %}
+	{% else %}
+		{% assign description = product.description | strip_html %}
+	{% endif %}
+
+	<!-- Basic Product Information -->
+	<g:id>{{ id }}</g:id>
+	<g:title><![CDATA[{{ title | append: ' ' | append: variant.title | strip_html | strip_newlines }}]]></g:title>
+	<g:description><![CDATA[{{ description }}]]></g:description>
+	
+	{% if product.metafields.google.google_product_type %}
+		<g:google_product_category><![CDATA[{{ product.metafields.google.google_product_type }}]]></g:google_product_category>
+		<g:product_type><![CDATA[{{ product.metafields.google.google_product_type }}]]></g:product_type>
+	{% endif %}
+
+	<g:link>{{ shop.url }}{{ variant.url }}</g:link>
+	<g:mobile_link>{{ shop.url }}{{ variant.url }}</g:mobile_link>
+	{% assign featured_image = product.featured_image %}
+	{% unless page.metafields.leantu.disable_feed_images %}
+		{% unless settings.alt_tag_feed == blank %}
+			{% for image in product.images %}
+				{% if image.alt contains settings.alt_tag_feed %}
+					{% assign featured_image = image %}
+					{% break %}
+				{% endif %}
+			{% endfor %}
+		{% endunless %}
+	{% endunless %}
+
+	<g:image_link>{{ featured_image | product_img_url: '1600x1600'}}</g:image_link>
+	{% assign images_count = 0 %}
+	{% for image in product.images %}
+		{% unless image == featured_image or images_count >= 10 %}
+			{% assign images_count = images_count | plus: 1 %}
+			<g:additional_image_link>{{ image.src | img_url: '1600x1600' }}</g:additional_image_link>
+		{% endunless %}
+	{% endfor %}
+
+	{% if product.metafields.google.condition %}
+		<g:condition>{{ product.metafields.google.condition }}</g:condition>
+	{% else %}
+		<g:condition>new</g:condition>
+	{% endif %}
+
+	<!-- Availability & Price -->
+	<g:availability>{{ availability }}</g:availability>
+	{% if preorder %}
+		<g:availability_date>{{ availability_date }}</g:availability_date>
+	{% endif %}
+	
+	{% if variant.compare_at_price > variant.price %}
+		<g:price>{{ variant.compare_at_price | money_without_currency | remove: ',' }} {{ shop.currency }}</g:price>
+		<g:sale_price>{{ variant.price | money_without_currency | remove: ',' }} {{ shop.currency }}</g:sale_price>
+	{% else %}
+		<g:price>{{ variant.price | money_without_currency | remove: ',' }} {{ shop.currency }}</g:price>
+	{% endif %} 
+
+	<!-- Unique Product Identifiers -->
+	{% if variant.barcode %}
+		<g:gtin>{{ variant.barcode }}</g:gtin>
+	{% else %}
+		<g:identifier_exists>FALSE</g:identifier_exists>
+	{% endif %}
+	<g:brand><![CDATA[{{ product.vendor }}]]></g:brand>
+	{% if variant.metafields.global.MPN %}
+		<g:mpn>{{ variant.metafields.global.MPN }}</g:mpn>
+	{% elsif variant.sku %}
+		<g:mpn>{{ variant.sku }}</g:mpn>
+	{% endif %}
+
+	<!-- Detailed Product Attributes -->
+	
+
+	<!-- Item Groupings  -->					
+	<g:item_group_id>{{ product.id | prepend: 'shopify_US_' }}</g:item_group_id>
+	{% if size %}
+		<g:size><![CDATA[{{ size }}]]></g:size>
+	{% endif %}
+	{% if color %}
+		<g:color><![CDATA[{{ color }}]]></g:color>
+	{% endif %}
+
+	{% if product.metafields.google.gender %}
+		<g:gender>{{ product.metafields.google.gender }}</g:gender>
+	{% endif %}
+	{% if product.metafields.google.age_group %}
+		<g:age_group>{{ product.metafields.google.age_group }}</g:age_group>
+	{% endif %}
+
+	<!-- Tax and shipping -->
+	{% if variant.weight %}
+		<g:shipping_weight>{{ variant.weight_in_unit }} {{ variant.weight_unit }}</g:shipping_weight>
+	{% endif %}
+
+	<!-- Specify in Google Merchant Center account settings
+	<g:shipping>
+		<g:country>US</g:country>
+		<g:service>Standard</g:service>
+		<g:price>0.00 USD</g:price>
+	</g:shipping>
+	<g:tax>
+		<g:country>US</g:country>
+		<g:rate>0.00</g:rate>
+		<g:tax_ship>y</g:tax_ship>
+	</g:tax>
+	-->
+	
+	<!-- Labels -->
+	{% if product.type %}
+	<g:custom_label_0>{{ product.type }}</g:custom_label_0>
+	{% endif %}
+
+</item>

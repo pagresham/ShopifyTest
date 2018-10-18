@@ -1,0 +1,71 @@
+<!-- /templates/blog.liquid -->
+{% comment %} Markup based on Timber 2.1.2 {% endcomment %}
+
+
+{% paginate blog.articles by 24 %}
+{% assign image_size = 'large' %}
+
+<div class="container">
+	<header class="page-header">
+				<h1 class="page-title">
+					{% if current_tags %}
+						{{ blog.title | link_to: blog.url }} &mdash; {{ current_tags.first }}
+					{% else %}
+						{{ blog.title }}
+					{% endif %}
+				</h1>
+			</header>
+	<div class="row">
+
+		<div class="col-md-9">
+			<ul class="list-unstyled row" >
+				{% for article in blog.articles %}
+						<li class="col-xl-4 col-md-6 col-sm-6">
+							<a href="{{ article.url }}" class="card article-grid-item">
+								{% assign have_image = false %}
+								{% if article.image %}
+									{% assign have_image = true %}
+									{% assign src = article.image.src | img_url: image_size %}
+								{% elsif article.content contains '<img' %}
+									{% assign have_image = true %}
+									{% assign src = article.content | split: '<img ' %}
+									{% assign src = src[1] | split: 'src="' %}
+									{% assign src = src[1] | split: '"' | first %}
+									{% capture image_suffix %}_{{ image_size }}.{% endcapture %}
+									{% assign src = src | replace: '_small.', image_suffix | replace: '_compact.', image_suffix | replace: '_medium.', image_suffix | replace: '_large.', image_suffix | replace: '_grande.', image_suffix %}
+								{% endif %}
+
+								<div class="card-img card-img-hover" {% if have_image %}style="background-image: url('{{ src }}');"{% endif %}>
+									{% if have_image %}
+										<img src="{{ src }}" alt="" />
+									{% else %}
+										{% include 'placeholder' %}
+									{% endif %}
+									<div class="card-img-overlay">
+										<div class="card-text">
+											<h2 class="card-title">{{ article.title }}</h2>
+										</div>
+									</div>
+								</div>
+							</a>
+						</li>
+					{% cycle 'clear-3': '', '', '<li class="clearfix hidden-lg-down"></li>' %}
+					{% cycle 'clear-2': '', '<li class="clearfix hidden-xl-up hidden-xs-down"></li>' %}
+				{% endfor %} 
+			</ul>
+
+			{% if paginate.pages > 1 %}
+				<hr>
+				{% include 'pagination' %}
+			{% endif %}
+
+		</div>
+
+		<div class="col-md-3 ">
+			{% include 'sidebar.blog' %}
+		</div>
+
+	</div> <!-- /.row -->
+</div> <!-- /.container -->
+
+{% endpaginate %}

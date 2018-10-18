@@ -1,0 +1,20 @@
+<!-- /snippets/pagination-links.liquid -->
+{% comment %}
+
+	Pagination links for site header
+	- See: https://support.google.com/webmasters/answer/1663744?hl=en
+{% endcomment %}
+
+
+{% if template contains 'collection' %}
+	{% paginate collection.products by 50 %}
+		{% if paginate.pages > 1 %}
+			{% if paginate.next %}
+				<link rel="next" href="{{ paginate.next.url }}">
+			{% endif %}
+			{% if paginate.previous %}
+				<link rel="prev" href="{{ paginate.previous.url }}">
+			{% endif %}
+		{% endif %}
+	{% endpaginate %}
+{% endif %}

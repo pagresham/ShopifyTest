@@ -1,0 +1,11 @@
+<!-- snippets/add-to-cart-buttons.liquid -->
+<div class="add-to-cart-buttons">
+  <div class="normal-add-to-cart">
+    <button type="submit" name="add" id="AddToCart" class="btn btn-lg btn-primary add-to-cart" style="width:100%;     height: 50px;">
+      <span id="AddToCartText" data-available="{{ addtocart }}" data-unavailable="{{ 'products.product.sold_out' | t }}">{{ 'products.product.add_to_cart' | t }}</span>
+    </button>
+  </div>
+  <div class="bread-add-to-cart">
+    <div id="bread-checkout-btn-product"><div class="extra-div">Get Financing</div></div>
+  </div>
+</div>

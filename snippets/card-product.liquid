@@ -1,0 +1,131 @@
+<!-- /snippets/card-product.liquid -->
+
+
+{% comment %}
+Check if the product is on sale and set a variable to be used below.
+{% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+
+{% unless image_only %}
+  {% assign image_only = false %}
+{% endunless %}
+
+{% comment %}
+Check if the product is sold out and set a variable to be used below.
+{% endcomment %}
+{% assign sold_out = true %}
+{% if product.available %}
+  {% assign sold_out = false %}
+{% endif %}
+
+{% comment %} Load ski model information {% endcomment %}
+{% assign parent_product = false %}
+{% if product.metafields.c_f.parent_product %}
+  {% for ski_model in collections[settings.collection_grouped_products].products %}
+    {% if ski_model.handle == product.metafields.c_f.parent_product %}
+      {% assign parent_product = ski_model %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if product.metafields.c_f.short_name %}
+  {% assign title = product.metafields.c_f.short_name %}
+  {% if product.type | downcase == "skis" %}
+    {% assign title = title %}
+    {% assign title_parts = title | split: " - " %}
+    {% assign title = title_parts[0] %}
+    {% assign collab = title_parts[1] %}
+  {% endif %}
+{% else %}
+  {% assign title = product.title %}
+{% endif %}
+
+
+{% comment %} Restricted Products {% endcomment %}
+{% assign restricted = false %}
+{% if product.metafields.c_f.release_date %}
+  {% assign now = 'now' | date: '%Y-%m-%d' %}
+  {% assign release_date = product.metafields.c_f.release_date | date: '%Y-%m-%d' %}
+  {% if now <= release_date %}
+    {% assign restricted = true %}
+  {% endif %}
+{% endif %}
+
+
+{% comment %} Using long variable names to not override variables on parent pages that include this snippet (ie product.liquid) {% endcomment %}
+{% assign product_grid_image = product.featured_image %}
+{% assign product_grid_image_restricted = false %}
+{% if settings.use_collection_alt_img %}
+  {% for image in product.images %}
+    {% unless settings.alt_tag_collection == blank %}
+      {% if image.alt contains settings.alt_tag_collection %}
+        {% assign product_grid_image = image %}
+      {% endif %}
+    {% endunless %}
+
+    {% unless settings.alt_tag_restircted %}
+      {% if image.alt contains settings.alt_tag_restricted %}
+        {% assign product_grid_image_restricted = image %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% comment %} TODO: Image sizes {% endcomment %}
+{% assign image_size = 'large' %}
+{% if product.type == 'Skis' %}
+  {% assign image_size = 'large' %}
+{% endif %}
+
+<a href="{{ product.url | within: collection }}" {% if restricted %}data-access="restricted" data-release-date="{{ product.metafields.c_f.release_date }}"{% endif %}
+   class="card card-product product-type-{{ product.type | handleize | downcase }} {% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %} text-center {% if restricted %} restricted {% endif %}">
+  {% if restricted and product_grid_image_restricted != false %}
+    <span class="restricted-block card-thumbnail" style="background-image: url('{{ product_grid_image_restricted.src | img_url: image_size }}')">
+      <img class="img-fluid card-img" src="{{ product_grid_image_restricted.src | img_url: image_size }}" alt="{{ product.featured_image.alt | escape }}">
+    </span>
+    <div class="early-access-block card-thumbnail" style="background-image: url('{{ product_grid_image.src | img_url: image_size }}')">
+      <img class="img-fluid card-img" src="{{ product_grid_image.src | img_url: image_size }}" alt="{{ product.featured_image.alt | escape }}">
+    </div>
+  {% else %}
+    <div class="card-thumbnail" style="background-image: url('{{ product_grid_image.src | img_url: image_size }}')">
+      <img class="img-fluid card-img" src="{{ product_grid_image.src | img_url: image_size }}" alt="{{ product.featured_image.alt | escape }}">
+    </div>
+  {% endif %}
+
+  <div class="card-block text-center">
+    {% if sold_out %}
+      {%comment %} Sold out {% endcomment %}
+      <span class="card-overlay badge sold-out"><img src="{{ 'logo-soldout.png' | asset_url }}" alt="Sold Out!" class="img-fluid m-x-auto" /></span>
+    {% else %}
+      {% if restricted %}
+        <div class="restricted">
+          <span class="card-overlay badge team-only"><img src="{{ 'restricted-badge.png' | asset_img_url: '200x' }}" alt="Team only access" class="img-fluid m-x-auto" /></span>
+        </div>
+      {% endif %}
+    {% endif %}
+    {% unless image_only %}
+      <div class="availability">
+        {% include 'product-sell-out-risk' %}
+      </div>
+    {% endunless %}
+    {% unless image_only %}
+      {% if parent_product %}
+        <p class="card-text">{{ title }}</p>
+        <h5 class="card-title">{{ collab }}</h5>
+      {% else %}
+        <h5 class="card-title">{{ title }}</h5>
+        <p class="card-text">
+          {% if product.price_varies %}{{ 'products.general.from' | t }}{% endif %}
+          {{ product.price | money }}
+          {% if on_sale %}
+            {% assign sale_price =  product.compare_at_price | money %}
+            <span class="sales-price">{{sale_price}}</span>
+          {% endif %}
+        </p>
+      {% endif %}
+    {% endunless %}
+  </div>
+</a>

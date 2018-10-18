@@ -1,0 +1,79 @@
+<!-- snippets/collection-header.liquid -->
+
+{% assign has_image = false %}
+{% if collection.image %}
+  {% assign has_image = true %}
+{% endif %}
+
+{% if template contains 'collection' %}
+  {% if has_image %}
+    {% assign readmore = true %}
+  {% endif%}
+{% endif%}
+
+<header id="collection-header" class="collection-header {% if has_image %}has-image {% endif %}" {% if has_image %}style="background-image: url({{ collection.image | img_url: '1920x' }}"{% endif %}>
+  <div class="card card-fluid collection-overview">
+    {% if model %}
+      <div class="m-b awards">
+      {% paginate blogs['awards'].articles by 50 %}
+        {% for award in blogs['awards'].articles %}
+          {% assign tags = award.tags | join: ',' | downcase %}
+          {% if tags contains model.handle %}
+            <span class="award">
+              {% include 'extract-image' with award.excerpt %}
+            </span>
+          {% endif %}
+        {% endfor %}
+      {% endpaginate %}
+      </div>
+    {% endif %}
+    <header class="card-header">
+      <h1 class="h1 card-title">{{ collection.title }}{% if model %}&trade;{% endif %}</h1>
+      {% if model.metafields.c_f.dimensions != blank  %}
+        {% assign dimensions = model.metafields.c_f.dimensions | split: '-' %}
+        {% if model.metafields.c_f['dimensions_2018'] %}
+          {% assign dimensions = model.metafields.c_f['dimensions_2018'] | split: '-' %}
+        {% endif %}
+        <small class="h2 card-subtitle dimensions">
+          {% comment %} One long line to prevent whitepsace {% endcomment %}
+          {% for dim in dimensions %}{% cycle '', '<b>', '' %}{{ dim | strip }}{% cycle '', '</b>', '' %}{% unless forloop.last %}-{% endunless %}{% endfor %}
+        </small>
+      {% endif %}
+    </header>
+
+    <div class="card-body" >
+      {% if collection.description != blank %}
+        {% assign copy = collection.description %}
+        {% if copy contains '</p>' %}
+          {% assign lead = copy | split: '</p>' | first | append: '</p>' %}
+        {% endif %}
+        {% assign description = copy | remove_first: lead %}
+        <div class="lead">
+          {{ lead | strip_html }}
+          {% if readmore %}
+            <span class="extra-text"><a href="#">Read more...</a></span>
+          {% endif %}
+        </div>
+        {% if readmore %}
+          <div class="readmore" style="display:none;" >
+            {{ description }}
+            <div class="reduce-text"  style="display:none;">
+              <a  href="#">Read less...</a>
+            </div>
+          </div>
+        {% else %}
+          {{ description }}
+        {% endif %}
+
+        {% if collection.metafields.c_f.video_url %}
+          <p>
+            <a href="{{ collection.metafields.c_f.video_url }}" target="_blank" data-toggle="fancybox" class="btn-video">
+              <i class="fa fa-2x fa-play"></i>
+              <br />Play Video
+            </a>
+          </p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</header>

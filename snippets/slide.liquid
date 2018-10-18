@@ -1,0 +1,36 @@
+{% assign enabled = "use_" | append: slide %}
+
+{% unless settings[enabled] == blank %}
+  {% assign title = slide | append: "_title" %}
+  {% assign subtitle = slide | append: "_subtitle" %}
+  {% assign cta = slide | append: "_cta" %}
+  {% assign url = slide | append: "_url" %}
+  {% assign align = slide | append: "_align" %}
+  {% assign valign = slide | append: "_valign" %}
+  {% assign theme = slide | append: "_theme" %}
+  {% assign text_transform = slide | append: "_text_transform" %}
+
+  {% unless settings[theme] == blank %}
+    {% assign theme = settings[theme] %}
+  {% else %}
+    {% assign theme = 'highlight' %}
+  {% endunless %}
+    
+
+  <div class="slide {{ slide }}  slide-{{ theme }} text-{{ settings[text_transform] }}" >
+    <a href="{{ settings[url] }}" class="slide-overlay-container" style="background-image: url({{ slide | append: '.jpg' | asset_url }})">
+      {% unless settings[title] == blank && settings[subtitle] == blank %}
+      <span class="slide-overlay slide-overlay-{{ settings[align] }}">
+        <span class="slide-overlay-inner valign-{{ settings[valign] }}">
+          <h2 class="slide-title">{{ settings[title] }}</h2>
+          <p class="slide-subtitle">{{ settings[subtitle] }}</p>
+          {% unless settings[cta] == blank %}
+            <span href="{{ settings[url] }}" class="btn btn-primary-outline">{{ settings[cta] }}</span>
+          {% endunless %}
+        </span>
+      </span>
+      {% endunless %}
+    </a>
+    <img src="{{ slide | append: '.jpg' | asset_url }}" class="slide-image" />
+  </div>
+{% endunless %}

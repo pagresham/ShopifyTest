@@ -1,0 +1,131 @@
+<!-- /templates/collection.liquid -->
+
+
+<div class="container">
+	<div class="sidebar-container">
+		<div class="has-sidebar">
+			<header class="page-header">
+				<h1 class="page-title">{{ page.title }}</h1>
+				<div class="m-t row">
+					<div class="col-md-8 offset-md-2">
+						<div class="rte">
+							{{ page.content }}
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<section class="section page-section">
+				<header class="section-header">
+					<h2 class="section-title">Browse by Model</h2>
+				</header>
+
+				<div class="row">
+				{% for model in collections[settings.collection_grouped_products].products %}
+					<div class="col-lg-2 {% if forloop.first %} col-lg-offset-1 {% endif %} col-md-4 col-sm-4 col-xs-6 text-center model-card ">
+						<a class="model-link" href="{{ collections[model.handle].url }}">
+							{% comment %}
+							<div  class="model-thumbnail justthetip">
+						    	<img src="{{ model.featured_image | img_url: 'large' }}" alt="{{ model.featured_image.alt | escape }}" title="{{ model.title }}">	
+							</div> 
+							{% endcomment %}
+							<h2 class="h1 model-title">{{ model.title | replace_first: 'The ', '<span class="first-word the">The</span>' }}</h2>
+							{% unless model.metafields.c_f.dimensions == blank %}
+								{% assign dimensions = model.metafields.c_f.dimensions | split: '-' %}
+								<p class="model-dimensions">{% for dimension in dimensions %}<span class="dimension">{{ dimension }}</span>{% endfor %}</p>
+							{% endunless %}
+						</a>
+					</div>
+				{% endfor %}
+				</div>
+				{% comment %}
+				<p class="text-center"><a href="{{ pages['compare'].url }}" class="btn btn-primary-outline">Compare Models</a></p>
+				{% endcomment %}
+			</section>
+
+			<section class="section page-section">
+				<header class="section-header">
+					<h2 class="section-title">Browse by Riding Style</h2>
+				</header>
+				
+				<div class="row">
+					<div class="col-sm-4">
+						{% assign image = collections['park'].image.src | img_url: 'grande' %}
+						{% include 'banner' with image, classes: 'banner-terrain', cta: 'Park', url: $collections['park'].url %}
+					</div>
+					<div class="col-sm-4">
+						{% assign image = collections['all-mountain'].image.src | img_url: 'grande' %}
+						{% include 'banner' with image, classes: 'banner-terrain', cta: 'All Mtn', url: $collections['all-mountain'].url %}
+					</div>
+					<div class="col-sm-4">
+						{% assign image = collections['powder'].image.src | img_url: 'grande' %}
+						{% include 'banner' with image, classes: 'banner-terrain', cta: 'Powder', url: $collections['powder'].url %}
+					</div>
+				
+				</div>
+			</section>
+
+			<section class="section page-section">
+				<header class="section-header">
+					<h2 class="section-title">Browse Recent Graphic Releases</h2>
+				</header>
+
+
+				{% comment %}No producdts found {%endcomment%}
+				<div class="row">
+					{% for product in collections['skis'].products limit:5 %}
+						{% assign visible = '' %}
+						{% if forloop.index > 1 %} 
+							{% assign visible = ' hidden-xs' | append: visible %}
+						{% endif %}
+						{% if forloop.index > 2 %}
+							{% assign visible = ' hidden-sm' | append: visible %}
+						{% endif %}
+						{% if forloop.index > 3 %}
+							{% assign visible = ' hidden-md' | append: visible %}
+						{% endif %}
+						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 {{ visible }}">
+							<a href="{{ product.url | within: collections['skis'] }}" class="product-thumbnail">
+								<img src="{{ product.featured_image | img_url: 'large' }}" class="img-responsive" alt="{{ product.featured_image.alt | escape }}" title="{{ product.title }}">	
+							</a>
+						</div>
+					{% endfor %}
+						
+						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 m-t">
+							<a href="{{ collections['skis'].url }}" class="btn-svg bg-arrow-right">View All</a>
+						</div>
+				</div>
+
+					
+			</section>
+
+
+			{% unless settings.use_banners_product == blank %}
+			<section class="section page-section">
+				<header class="section-header">
+					<h2 class="section-title">Browse Collaborations</h2>
+				</header>
+					
+				<div class="row">
+					{% assign sequence = settings.banners_product_sequence | split: ',' %}
+					{% for count in sequence %}
+						<div class="col-sm-4">
+							{% assign title = "product" | append: count | append: "_title" %}
+							{% assign caption = "product" | append: count | append: "_caption" %}
+							{% assign cta = "product" | append: count | append: "_cta" %}
+							{% assign url = "product" | append: count | append: "_url" %}
+							{% assign image = "product" | append: count | append: ".jpg" | asset_url %}
+							{% include 'banner' with image, title: settings[title], caption: settings[caption], cta: settings[cta], url: settings[url] %}
+						</div>
+					{% endfor %}
+				</div>
+			</section>
+			{% endunless %}
+		</div> <!-- /.has-sidebar -->
+
+		<div class="sidebar">
+			{% include 'collection-sidebar' %}
+		</div>
+	</div>
+</div>
+		

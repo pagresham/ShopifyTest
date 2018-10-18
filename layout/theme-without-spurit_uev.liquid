@@ -1,0 +1,220 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if IE 9 ]><html class="ie9 no-js"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta name="google-site-verification" content="q1UC4ex9vxdwSb54PkBer_v2gtKSMOfzCNntBYS3_CI" />
+	<script src="//cdn.optimizely.com/js/2617620866.js"></script>
+	<!-- Basic page needs ================================================== -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="msvalidate.01" content="1353FB721E221B342108C98D0966102C" />
+	{% if settings.favicon_enable %}
+	<link rel="shortcut icon" href="{{ 'favicon.png' | asset_url }}" type="image/png" />
+	{% endif %}
+
+	<!-- Title and description ================================================== -->
+	<title>
+	{{ page_title }}{% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title.size > 50 or page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+	</title>
+
+	{% if page_description %}
+	<meta name="description" content="{{ page_description | escape }}">
+	{% endif %}
+
+	{% if current_tags and template == 'blog' %} 
+	<meta name="robots" content="noindex, follow">
+	{% endif %}
+	{% if template == 'article' and blog.handle == 'faq' %} 
+	<meta name="robots" content="noindex, follow">
+	{% endif %}
+
+	<script src="//use.typekit.net/rfq8woz.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+
+
+	<!-- Product meta ================================================== -->
+	{% include 'open-graph-tags' %}
+	{% include 'twitter-card' %}
+	{% include 'pagination-links' %}
+
+	<!-- Helpers ================================================== -->
+	<link rel="canonical" href="{{ canonical_url }}">
+	{% assign request_uri = canonical_url | split: '://' | last | replace: shop.domain, '' %}
+	{% for i in (1..3) %}
+		{% capture enable %}shop{{i}}_enable{% endcapture %}
+		{% if settings[enable] or i == 1 %}
+			{% capture title %}shop{{i}}_title{% endcapture %}
+			{% capture url %}shop{{i}}_url{% endcapture %} 
+			{% capture cc %}shop{{i}}_country_code{% endcapture %}
+			{% capture lang %}shop{{i}}_language_code{% endcapture %}
+			{% if settings[url] %}
+				{% if i == 1 %}
+					<link rel="alternate" hreflang="x-default" href="{{ settings[url] }}{{ request_uri }}" title="{{ settings[title] }}" />
+				{% endif %}
+				<link rel="alternate" hreflang="{{ settings[lang] | downcase }}-{{ settings[cc] | downcase }}" href="{{ settings[url] }}{{ request_uri }}" title="{{ settings[title] }}" />
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="theme-color" content="{{ settings.color_primary }}">
+
+
+
+	{% if settings.ajax_cart_enable %}
+	<!-- Ajaxify Cart Plugin ================================================== -->
+	{{ 'ajaxify.scss.css' | asset_url | stylesheet_tag }}
+	{% endif %}
+
+	<!-- CSS ================================================== -->
+	{{ 'font-awesome.css' | asset_url | stylesheet_tag }}
+
+	{{ 'main.css?v=2016050201' | asset_url | stylesheet_tag }}
+
+	<!-- Header hook for plugins ================================================== -->
+	{{ content_for_header }}
+
+	{% include 'oldIE-js' %}
+
+	
+	<script>
+		// Config
+		var template = '{{ template }}';
+	</script>  
+
+	{{ '//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' | script_tag }}
+	{{ 'modernizr.js' | asset_url | script_tag }}
+	{{ 'jquery.countdown.js' | asset_url | script_tag }}
+	{{ 'moment.js' | asset_url | script_tag }}
+	{{ 'moment-timezone.js' | asset_url | script_tag }}
+	{{ 'jquery.cookie.js' | asset_url | script_tag }} 
+
+	{{ 'main.js' | asset_url | script_tag }}
+	{% if template contains 'customers' %}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+  {% if settings.magic360_enable %}
+  	{% include 'magic360.headers' %}
+  {% endif %}
+
+  {% include 'mailchimp-goal' %}
+  
+  <script type="text/javascript" id="stamped-script-widget" src="https://cdn-stamped-io.azureedge.net/files/widget.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="//cdn-stamped-io.azureedge.net/files/widget.min.css">
+
+</head>
+<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }} {% if body_class %}{{ body_class }}{% endif %} {% if template | split: '.' | size > 1 %}template-{{ template | replace: '.', '_' }}{% endif %}" >
+	{% if settings.gtm_enable %}{{ settings.gtm_snippet }}{% endif %}
+	{% include 'facebook-sdk' %}
+
+	{% if settings.ajax_cart_method == "drawer" %}
+    <div id="CartDrawer" class="drawer drawer--right">
+      <div class="drawer__header">
+        <div class="drawer__title h3"><a href="/cart">{{ 'cart.general.title' | t }}</a></div>
+        <div class="drawer__close js-drawer-close">
+          <button type="button">
+            <span class="fa fa-times" aria-hidden="true"></span>
+            <span class="sr-only">{{ 'cart.general.close_cart' | t | json }}</span>
+          </button>
+        </div>
+      </div>
+      <div id="CartContainer"></div>
+    </div>
+  {% endif %}
+  <div id="PageContainer" class="is-moved-by-drawer">
+		<div class="viewport">
+			{% include 'site-header' %}
+			
+			<main class="main-content" role="main">
+				{{ content_for_layout }}
+			</main>
+
+			{% include 'site-footer' %}
+		</div>
+
+	</div>
+	{{ 'timber.js' | asset_url | script_tag }}
+
+	{% comment %}
+		Template-specific js
+	{% endcomment %}
+	<script>
+		{% if newHash %}
+			$(function() {
+				timber.updateHash('{{ newHash }}');
+			});
+		{% endif %}
+		{% if resetPassword %}
+			$(function() {
+				timber.resetPasswordSuccess();
+			});
+		{% endif %}
+
+	</script>
+
+	<script>
+		// Translations
+		// 
+	
+		var i18n = {
+			"general": {
+				"international": {
+      		"your_location": '{{ 'general.international.your_location' | t: country: '%s' }}',
+      		"go_to_store": '{{ 'general.international.go_to_store' | t: url: '%s' }}',
+      		"lets_go": '{{ 'general.international.lets_go' | t }}',
+      		"no_thanks": '{{ 'general.international.no_thanks' | t }}'
+      	}
+    	} 
+		}
+	</script>
+
+
+	{{ 'fastclick.min.js' | asset_url | script_tag }}
+  {{ 'timber.js' | asset_url | script_tag }}
+
+	{% comment %}
+    Ajaxify your cart with this plugin.
+    Documentation:
+      - http://shopify.com/timber#ajax-cart
+  {% endcomment %}
+
+  {% if settings.ajax_cart_method == "drawer" %}
+    {{ 'handlebars.min.js' | asset_url | script_tag }}
+    {% include 'ajax-cart-template' %}
+    {{ 'ajax-cart.js' | asset_url | script_tag }}
+    <script>
+      jQuery(function($) {
+        ajaxCart.init({
+          formSelector: '#AddToCartForm',
+          cartContainer: '#CartContainer',
+          addToCartSelector: '#AddToCart',
+          cartCountSelector: '#CartCount',
+          cartCostSelector: '#CartCost',
+          moneyFormat: {{ shop.money_format | json }}
+        });
+      });
+
+      jQuery(document.body).on('afterCartLoad.ajaxCart', function(evt, cart) {
+        // Bind to 'afterCartLoad.ajaxCart' to run any javascript after the cart has loaded in the DOM
+        timber.RightDrawer.open();
+      });
+    </script>
+  {% endif %}
+
+
+
+	{% comment %}
+		If you store has customer accounts disabled, you can remove the following JS file
+	{% endcomment %}
+	{{ 'jquery.rwdImageMaps.min.js' | asset_url | script_tag }}
+	{{ 'fastclick.min.js' | asset_url | script_tag }}
+	{% include 'google-adwords' %}
+	{% include 'adroll' %}
+	{% include 'avantlink' %} 
+	{% include 'optinmonster' %}
+
+</body>
+</html>

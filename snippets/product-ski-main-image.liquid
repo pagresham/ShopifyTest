@@ -1,0 +1,20 @@
+<!-- snippets/product-ski-main-image.liquid -->
+
+{% if model %}
+  <div class="text-center awards">
+    {% include 'product-awards' %}
+  </div>
+{% endif %}
+<div class="hidden-sm-down hover-enlarge" id="ProductPhotoMain" style="background-image: url({{ product_image | img_url: '2048x2048' }});"></div>
+{% comment %} Mobile device product image, hide on container to prevent excess loading {% endcomment %}
+<div class="m-b-3 hidden-md-up">
+  <img src="{{ product_image | img_url: 'grande' }}" alt="{{ product_image.alt | escape }}" id="ProductPhotoImg" class="img-responsive m-x-auto" >
+</div>
+
+<script type="text/javascript">
+  var imageUrl = "{{ product_image | img_url: '5000x' }}"
+  jQuery(function($) {
+    'use strict';
+    $('#ProductPhotoMain').zoom({url: imageUrl, hover: true});
+  });
+</script>

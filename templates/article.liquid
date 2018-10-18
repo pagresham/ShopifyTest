@@ -1,0 +1,191 @@
+<!-- /templates/article.liquid -->
+{% comment %} Markup based on Timber 2.1.2 {% endcomment %}
+{% comment %}
+
+	Comments will not appear right after they are submitted, either to be checked for spam
+	or to await moderation. When a comment is submitted, the browser is redirected to a page
+	that includes the new comment id in its URL.
+		Example: http://shopname.myshopify.com/blogs/news/2022072-my-post?comment=3721372
+
+	More information:
+		- http://docs.shopify.com/themes/liquid-variables/comment
+
+{% endcomment %}
+
+{% assign number_of_comments = article.comments_count %}
+
+{% comment %}
+	If a comment was just submitted and it has no blank fields, we have an extra comment to count.
+{% endcomment %}
+{% if comment and comment.created_at %}
+	{% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+			<article class="article" itemscope itemtype="http://schema.org/Article">
+
+				<header class="page-header">
+					<h1 class="page-title">{{ article.title }}</h1>
+				</header>
+				
+				<div class="rte article-content" itemprop="articleBody">
+					{{ article.content }}
+				</div>
+
+				
+
+				
+				<footer class="article-footer">
+					{% if blog.next_article or blog.previous_article %}
+						<nav>
+							<ul class="nav nav-neighbors">
+								{% if blog.previous_article %}
+									<li class="nav-item">
+										<a href="{{ blog.previous_article }}" class="nav-link">&larr; {{ 'blogs.article.older_post' | t }}</a>
+									</li>
+								{% endif %}
+								{% if blog.next_article %}
+									<li class="nav-item">
+										<a href="{{ blog.next_article }}" class="nav-link">{{ 'blogs.article.newer_post' | t }} &rarr;</a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
+					{% endif %}
+					{% capture author %}<strong>{{ article.author }}</strong>{% endcapture %}
+					{% capture date %}<time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>{% endcapture %}
+					<p class="article-byline">{{ 'blogs.article.author_on_date_html' | t: author: author, date: date }}</p>
+
+					<div class="text-xs-center">
+						{% include 'share-this' %}
+					</div>
+					
+				</footer>
+			
+
+				{% if blog.comments_enabled? %}
+						
+					{% paginate article.comments by 25 %}
+					{% comment %}
+						#Comments is required, it is used as an anchor link by Shopify.
+					{% endcomment %}
+					<div id="Comments" class="card article-comments">
+						<h2 class="card-header">{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }}</h2>
+						{% if comment and comment.created_at %}
+							<div class="card-block">
+							<p class="note form-success">
+								{% if blog.moderated? %}
+									{{ 'blogs.comments.success_moderated' | t }}
+								{% else %}
+									{{ 'blogs.comments.success' | t }}
+								{% endif %}
+							</p>
+							</div>
+						{% endif %}
+
+						{% if number_of_comments > 0 %}
+							<ul class="list-group list-group-flush list-group-comments">
+								{% comment %}
+									If a comment was just submitted with no blank field, show it.
+								{% endcomment %}
+								{% if comment and comment.created_at %}
+									<li id="{{ comment.id }}" class="list-group-item first{% if article.comments_count == 0 %} last{% endif %}" class="media">
+										{% include 'comment' %}
+									</li>
+								{% endif %}
+
+								{% comment %}
+									Showing the rest of the comments.
+								{% endcomment %}
+								{% for comment in article.comments %}
+									<li id="{{ comment.id }}" class="list-group-item {% unless number_of_comments > article.comments_count %}{% if forloop.first %} first{% endif %}{% endunless %}{% if forloop.last %} last {% endif %}" class="media">
+										{% include 'comment' %}
+									</li>
+								{% endfor %}
+							</ul>
+
+
+
+							{% if paginate.pages > 1 %}
+								<div class="card-block">
+							
+									{% include 'pagination' %}
+								</div>
+							{% endif %}
+
+							
+
+						{% endif %}
+
+						{% comment %}
+							Comment submission form
+						{% endcomment %}
+						<div class="card-block comment-form" >
+							{% form 'new_comment', article %}
+
+								{% comment %}
+									#AddCommentTitle is used simply as an anchor link
+								{% endcomment %}
+								<h3 id="AddCommentTitle">{{ 'blogs.comments.title' | t }}</h3>
+
+								{{ form.errors | default_errors }}
+
+								<div class="row">
+
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="CommentAuthor" class="sr-only">{{ 'blogs.comments.name' | t }}</label>
+											<input type="text" name="comment[author]" id="CommentAuthor" class="form-control {% if form.errors contains 'author' %} error{% endif %}" placeholder="{{ 'blogs.comments.name' | t }}" value="{{ form.author }}" autocapitalize="words">
+										</div>
+
+										<div class="form-group">
+											<label for="CommentEmail" class="sr-only">{{ 'blogs.comments.email' | t }}</label>
+											<input type="email" name="comment[email]" id="CommentEmail" class="form-control {% if form.errors contains 'email' %} error{% endif %}" placeholder="{{ 'blogs.comments.email' | t }}" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="CommentBody" class="sr-only">{{ 'blogs.comments.message' | t }}</label>
+											<textarea name="comment[body]" id="CommentBody" class="form-control {% if form.errors contains 'body' %} error{% endif %}" placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
+										</div>
+									</div>
+
+								</div>
+
+								{% if blog.moderated? %}
+									<p>{{ 'blogs.comments.moderated' | t }}</p>
+								{% endif %}
+
+								<input type="submit" class="btn btn-primary-outline" value="{{ 'blogs.comments.post' | t }}">
+
+								{% comment %}
+									Assign variable to be used after timber.init() is run in theme.liquid
+								{% endcomment %}
+								{% if form.errors %}
+									{% assign newHash = 'AddCommentTitle' %}
+								{% endif %}
+
+								{% if form.posted_successfully? %}
+									{% assign newHash = 'Comments' %}
+								{% endif %}
+
+							{% endform %}
+						</div>
+
+					</div>
+					{% endpaginate %}
+				{% endif %}
+			</article>
+
+			
+		</div>
+
+		<aside class="col-md-3" role="complementary">
+			{% include 'sidebar.blog' %}
+		</aside>
+	</div>
+</div>

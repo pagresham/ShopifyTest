@@ -1,0 +1,485 @@
+<!-- /templates/product.ski.liquid -->
+
+{% assign ski_year = false %}
+{% for tag in product.tags %}
+  {% if tag == '2018' %}
+    {% assign ski_year = 2018 %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Load parent product, aka "model" {% endcomment %}
+{% for ski_model in collections[settings.collection_grouped_products].products %}
+  {% if ski_model.handle == product.metafields.c_f.parent_product %}
+    {% assign model = ski_model %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Ski "edition" aka graphic {% endcomment %}
+{% if product.metafields.c_f.short_name %}
+  {% assign edition = product.metafields.c_f.short_name %}
+{% else %}
+  {% assign edition = product.title %}
+{% endif %}
+
+{% assign product_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+
+{% comment %} Image processing {% endcomment %}
+{% for image in product.images %}
+  {% assign alt = image.alt | downcase %}
+  {% capture url %}{% include 'extract-url' with image.alt %}{% endcapture %}
+  {% if url contains "youtu" or url contains "vimeo" %}
+    {% assign video_url = url | strip %}
+    {% assign video_thumbnail = image %}
+  {% endif %}
+
+  {% unless settings.alt_tag_product_cover == blank %}
+    {% if alt contains settings.alt_tag_product_cover %}
+      {% assign cover = image %}
+    {% endif %}
+  {% endunless %}
+
+  {% unless settings.alt_tag_product_featured == blank %}
+    {% if alt contains settings.alt_tag_product_featured %}
+      {% assign featured_image = image %}
+    {% endif %}
+  {% endunless %}
+
+  {% if forloop.last %}
+    {% assign graphic = image %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Pre-order and ship dates {% endcomment %}
+{% assign preorder = false %}
+{% if product.metafields.c_f.ship_date %}
+  {% assign now = 'now' | date: '%Y-%m-%d' %}
+  {% assign ship_date = product.metafields.c_f.ship_date | date: '%Y-%m-%d' %}
+  {% if now < ship_date %}
+    {% assign preorder = true %}
+  {% endif %}
+{% endif %}
+
+{% comment %} Restricted Products {% endcomment %}
+{% assign restricted = false %}
+{% unless customer %}
+  {% if product.metafields.c_f.release_date %}
+    {% assign now = 'now' | date: '%Y-%m-%d' %}
+    {% assign release_date = product.metafields.c_f.release_date | date: '%Y-%m-%d' %}
+    {% if now <= release_date %}
+      {% assign restricted = true %}
+    {% endif %}
+  {% endif %}
+{% endunless %}
+
+<div class="drawer-container" id="top">
+  <div class="has-drawer">
+    <div itemscope itemtype="http://schema.org/Product" {% if restricted %}data-access="restricted" data-access-scope="page" data-release-date="{{ product.metafields.c_f.release_date }}"{% endif %} {% if restricted %} id="restricted-ski" {% endif %}>
+      <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+      <meta itemprop="image" content="{{ product_image.src | img_url: 'grande' }}">
+      <section class="product-overview" id="overview" >
+        <div class="container">
+          <div class="row product-single">
+            <div class="col-md-6">
+              <div class="product-main-image">
+                {% include 'product-ski-main-image', model: model %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="product-main-information">
+                {% include 'product-ski-main-information', model: model, edition: edition %}
+              </div>
+
+              {% include 'questions-contact-us' %}
+
+              {% include 'product-incentives', handle: model.handle, badge_limit:4 %}
+
+              <div class="offer product-gallery">
+                {% include 'product-ski-gallery' %}
+              </div>
+
+              <div class="offer product-highlights">
+                {% include 'product-ski-highlights' %}
+              </div>
+
+              {% include 'product-neighbors-linklist' %}
+
+            </div> <!-- .col -->
+          </div> <!-- .row -->
+        </div> <!-- /.container -->
+      </section>
+
+      <section class="section product-description {% if featured_image %}has-image{% endif %}" id="description" >
+        <div class="container" id="graphic">
+          <div class="row">
+            <div class="section-body">
+              {% if model.title %}
+                <header class="section-header">
+                  <h2>{{ model.title }}&trade; "{{ edition }}" Graphic</h2>
+                </header>
+              {% endif %}
+
+              <div class="rte p-x-1">
+                {% if product.metafields.c_f.short_description %}
+                  {{ product.metafields.c_f.short_description | newline_to_br }}
+                {% else %}
+                  {{ product.description }}
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {% if featured_image %}
+          <a href="#" target="_blank" class="openfancyboxvideo">
+            <div class="section-bg" style="background-image: url({{ featured_image.src | img_url: '1024x1024' }});">
+              {% if video_url %}
+                <div class="section-bg-overlay section-bg-overlay-product btn-video">
+                  <div class="btn-video">
+                    <i class="fa fa-play "></i>
+                    <br />Play Video
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </a>
+          <script>
+            // trigger the video button form the gallery
+            $('.openfancyboxvideo').click(function(e) {
+              e.preventDefault();
+              $(".playbutton:eq(0)").trigger("click");
+            });
+          </script>
+        {% endif %}
+      </section>
+
+      {% if cover %}
+        {% if product_image.alt contains '://'%}
+          <section>
+            <div class="container">
+              {% if ski_year %}
+                <a href="{{ product_image.alt | escape }}" class="fa fa-play playbutton product_image_m-y-3 thumbnail" data-toggle="fancybox">
+                  <img src="{{ cover | img_url: '2048x2048' }}" alt="" class="img-responsive" >
+                </a>
+              {% else %}
+                <a href="{{ product_image.alt | escape }}" class="fa fa-play playbutton product_image_m-y-3 thumbnail" data-toggle="fancybox">
+                  <div class="img-90cw">
+                    <img src="{{ product_image | img_url: '2048x2048' }}" alt="{{ product_image.alt | escape }}">
+                  </div>
+                </a>
+                <div>
+                  <img src="{{ cover | img_url: '2048x2048' }}" alt="" class="img-responsive" >
+                </div>
+              {% endif %}
+            </div>
+          </section>
+        {% else %}
+          <section>
+            <div class="container">
+              {% if ski_year %}
+                <div>
+                  <img src="{{ cover | img_url: '2048x2048' }}" alt="" class="img-responsive" >
+                </div>
+              {% else %}
+                <div class="img-90cw">
+                  <img src="{{ product_image | img_url: '2048x2048' }}" alt="{{ product_image.alt | escape }}">
+                </div>
+                <div>
+                  <img src="{{ cover | img_url: '2048x2048' }}" alt="" class="img-responsive" >
+                </div>
+              {% endif %}
+            </div>
+          </section>
+        {% endif %}
+      {% endif %}
+    </div> <!-- itemscope -->
+
+    <section id="related-collections">
+      <div class="container">
+        <div class="j-related-collections">
+          <div class="j-related-collection">
+            {% if collections[model.handle].products.size > 1 %}
+              {% include 'product-ski-other-graphics', model: model %}
+            {% endif %}
+          </div>
+          <div class="j-related-collection">
+            {% if product.metafields.c_f.featured_collection %}
+              {% assign featured_collection = product.metafields.c_f.featured_collection %}
+              {% if collections[featured_collection].products.size > 1 %}
+                {% include 'product-ski-featured-collection', featured_collection: featured_collection %}
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% if collections[model.handle] != blank %}
+      <section class="section cover product-collection" >
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 offset-md-6">
+              <div class="p-y-1 p-x-1 cover-overlay">
+                <p class="h2 m-b-3 text-center">{{ model.title }}&trade; Model Info</p>
+                {% include 'collection-header', collection: collections[model.handle], model: model, year: ski_year %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if collections[model.handle].image %}
+          <span class="cover-img" style="background-image: url({{ collections[model.handle].image | img_url: '2048x2048' }})"></span>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    <section id="specs" class="m-y-3 section product-specifications pad-me">
+      <div id="anchor"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-10 offset-lg-1">
+            {% assign snippet = product.type | downcase | append: '-specifications' %}
+            {% include snippet, model: model, year: ski_year %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <section id="construction" class="m-y-3 section product-features pad-me">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 offset-md-2">
+            {% assign snippet = product.type | downcase | append: '-features' %}
+            {% include snippet, model: model %}
+          </div>
+        </div>
+      </div>
+      <div id="awards-anchor"></div>
+    </section>
+    {% if model %}
+      <hr />
+      <section class="m-t-3 section product-reviews pad-me" id="awards">
+        <div class="container">
+          {% assign reviews_page = model.handle | append: '-reviews' %}
+          {% assign showAwards = false %}
+          {% assign award_count_car = 0 %}
+          {% for award_car in blogs['awards'].articles %}
+            {% assign tags_car = award_car.tags | join: ',' | downcase %}
+            {% if tags_car contains model.handle %}
+              {% assign award_count_car = award_count_car| plus: 1 %}
+              {% assign showAwards = true %}
+            {% endif %}
+          {% endfor %}
+          {% assign award_check = award_count_car | abs %}
+          {% if showAwards %}
+            <h2 class="text-center section-title">{{ model.title }}™ Awards</h2>
+            <div class="row product-awards">
+              {% assign award_count == 0 %}
+              {% paginate blogs['awards'].articles by 50 %}
+                {% if award_check > 2  %}
+                  <div id="owl-carousel" class="owl-carousel owl-theme">
+                {% endif %}
+                {% for award in blogs['awards'].articles %}
+                  {% assign tags = award.tags | join: ',' | downcase %}
+                  {% if tags contains model.handle %}
+                    {% assign award_count = award_count | plus: 1 %}
+                    <div class="award">
+                      <div class="row {% if award_check < 3  %}col-xl-6{% endif %}">
+                        <div class="col-xs-4">
+                          <img src="{{ award.image | img_url: '125x' }}">
+                        </div>
+                        <div class="col-xs-8">
+                          <h4>{{ award.title }}</h4>
+                          {{ award.content }}
+                        </div>
+                      </div> <!-- .row -->
+                    </div> <!-- .col-md-4 -->
+                  {% endif %}
+                {% endfor %}
+                {% if award_check > 2  %}
+                  </div>
+                {% endif %}
+              {% endpaginate %}
+            </div>
+          {% endif %}
+
+          <div id="reviews" class="pad-me"></div>
+
+          <hr />
+
+          <div class="m-t-3 row">
+            <div class="m-t-3col-md-8">
+              <h2 class="text-center section-title">{{ 'products.skis.reviews' | t, model: model.title }}</h2>
+              {{ pages[reviews_page].content }}
+            </div>
+          </div>
+
+          {% assign reviews_page = product.handle | append: '-reviews' %}
+
+          {% if pages[reviews_page].content.size > 0 %}
+            <div class="row">
+              <div class="col-md-8 offset-md-2">
+                <h2 class="text-center section-title">{{ 'products.skis.reviews' | t, model: model.title }}</h2>
+                <div class="text-center rte">
+                  {{ pages[reviews_page].content }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if settings.usestamped == true %}
+            <div id="stamped-main-widget"
+            data-product-id="{{ model.id }}"
+            data-name="{{ product.title | escape }}"
+            data-url="{{ shop.url }}{{ product.url }}"
+            data-image-url="{{ product.featured_image | product_img_url: "large" |replace: '?', '%3F' | replace: '&','%26'}}"
+            data-de$ion="{{ product.de$ion | escape }}"
+            data-product-sku="{{product.handle}}">
+            </div>
+          {% else %}
+            {% if pages[reviews_page].content.size > 0 %}
+              <div class="row">
+                <div class="col-md-8 offset-md-2">
+                  <div class="text-center rte">
+                    {{ pages[reviews_page].content }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            <div id="shopify-product-reviews" data-id="{{ model.id}}">{{ model.metafields.spr.reviews }}</div>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+
+    {% if product.metafields.c_f.instagram_feed %}
+      <section class="p-y-2 bg-gray-lighter text-center section product-instagram" >
+        <div class="container">
+          <!-- SnapWidget -->
+          <h2 class="m-b-0 section-title">{{ 'products.product.instagram_feed' | t }}</h2>
+          <p>
+            {% if model.title %}
+              {{ 'products.skis.model_owners' | t: model: model.title }}
+            {% endif %}
+            {% if product.metafields.c_f.hashtag %}
+              {{ 'products.product.hashtag' | t: hashtag: product.metafields.c_f.hashtag }}
+            {% endif %}
+          </p>
+          <div class="p-y-2 rte-embed">
+            {{ product.metafields.c_f.instagram_feed }}
+          </div>
+        </div>
+      </section>
+    {% endif %}
+
+    {% if product.metafields.c_f.map_data && settings.gmaps_api_key %}
+      {{ 'https://maps.googleapis.com/maps/api/js?key=' | append: settings.gmaps_api_key | script_tag }}
+      <section class="p-t-3 m-b-3 section product-owners" id="owners">
+        <div class="container">
+          <h2 class="m-b-3 text-center section-title">"{{ edition }}" Limited Edition Owners</h2>
+          <ol id="OwnersList" class="m-b-3 row list list-unstyled"></ol>
+        </div>
+        <div  id="OwnersMap"
+              data-map="Google"
+              data-target="#OwnersList"
+              data-map-icon="https:{{'map-marker.png' | asset_url }}"
+              data-map-icon-width="{{ settings.map_icon_width }}"
+              data-map-icon-height="{{ settings.map_icon_height }}"
+              data-map-json="https://spreadsheets.google.com/feeds/list/{{ product.metafields.c_f.map_data }}/1/public/values?alt=json"
+              style="height: 400px; width: 100%"
+              class="hidden-sm-down">
+        </div>
+        <p class="p-b-1 text-center">Where are you?</p>
+      </section>
+    {% endif %}
+
+    <hr />
+
+    <section class="section product-incentives">
+      <div class="container text-center">
+        <h2 class="section-title">Buy With Confidence</h2>
+        <p>J skis are exclusively sold here, factory direct to you!</p>
+        <div class="incentives">
+          {% include 'product-incentives', handle: model.handle, badge_limit:50, badge_excerpt: true %}
+        </div>
+      </div>
+      <div class="back-to-top">
+        <a href="#top">
+          <button class="btn btn-lg btn-primary ">
+            <span>buy now</span>
+          </button>
+        </a>
+      </div>
+    </section>
+
+    {% include 'product-related' %}
+
+  </div>
+
+  <div class="drawer drawer-left">
+    <div class="drawer-inner">
+      <div class="sidebar">
+        {% include 'collection-sidebar' %}
+      </div>
+    </div>
+    {% include 'drawer-toggle' %}
+  </div>
+</div> <!-- .drawer-container -->
+
+{% comment %} Size Chart Modal {% endcomment %}
+<div class="modal fade" id="sizechart" tabindex="-1" role="dialog" aria-labelledby="sizeChartTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="sizeChartTitle">{{ 'products.skis.size_chart' | t }}</h4>
+      </div>
+      <div class="modal-body">
+        {{ pages['ski-size-chart'].content }}
+      </div>
+      <div class="modal-footer">
+        <a href="/pages/ski-size-chart" target="_blank" class="pull-left">Open in new window <i class="fa fa-external-link"></i></a>
+        <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %} Always include restricted popup in case of relatd products on page that are restricted {% endcomment %}
+{% include 'product-restricted' %}
+{% include 'product-incentive-modal' %}
+{% include 'product-js' %}
+
+<script>
+  $(document).ready(function(){
+    var owl = $('#owl-carousel');
+    owl.owlCarousel({
+      loop:true,
+      items:10,
+      nav:true,
+      autoplayHoverPause:true,
+      responsive:{
+        0:{
+          items:1
+        },
+        476:{
+          items:1
+        },
+        767:{
+          items:2
+        },
+        919:{
+          items:2
+        }
+      }
+    });
+     $( ".owl-next").html('<button type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button" style="display: block;"><i class="fa fa-chevron-right"></i> <span class="sr-only">Next</span></button>');
+     $( ".owl-prev").html('<button type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button" style="display: block;"><i class="fa fa-chevron-left"></i> <span class="sr-only">Previous</span></button>');
+  });
+</script>
+
+{% include 'klaviyo-webtracking' %}

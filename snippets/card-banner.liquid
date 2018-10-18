@@ -1,0 +1,19 @@
+{% if product.metafields.c_f.rewrite_url %}
+	<a class="card card-banner" href="{{ product.metafields.c_f.rewrite_url }}" style="background-image: url('{{ product.featured_image | img_url: '400x900' }}');">
+{% else %}
+	<div class="card card-banner" >
+{% endif %}
+	{% if product.featured_image %}
+		<img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title }}" class="img-fluid card-img" style="visibility: hidden">
+	{% endif %}
+	{% if product.metafields.c_f.rewrite_anchor %}
+		<div class="card-overlay">
+			<span class="btn btn-secondary m-y-1">{{ product.metafields.c_f.rewrite_anchor }}</span>
+		</div>
+	{% endif %}
+
+{% if product.metafields.c_f.rewrite_url %}
+	</a>
+{% else %}
+	</div>
+{% endif %}

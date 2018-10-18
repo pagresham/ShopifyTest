@@ -1,0 +1,73 @@
+<!-- /snippets/collection-skis-sidebar.liquid -->
+{% comment %}
+
+	Side navigation for skis.
+
+	id attributes are only added to <ul> elements for link attribution in Google Analytics, NOT USED FOR CSS
+
+{% endcomment %}
+
+
+{% comment %}
+	Ski models and limited edition graphics
+{% endcomment %}
+
+{% capture urls %}{{ product.url | within: collection }}|{{ product.url }}{% endcapture %}
+{% for tag in current_tags %}
+    {% assign urls = urls | append: '|/' | append: tag | downcase %}
+       {% assign noviewall = "yes" %} 
+{% endfor %}
+{% if page %}
+     {% assign noviewall = True %} 
+	{% assign urls = urls | append: '|/pages/' | append: page.handle %}
+
+{% endif %}
+{% assign here = urls | split: '|' %}
+
+
+<nav class="sidebar-content">
+ 
+	
+	<h3 class="h2 sidebar-title">Bindings</h3>
+	<ul class="nav nav-list"  id="nav-left-bindings">
+		<li class="nav-item"><a class="nav-link {% if here contains collections['bindings'].url %}{% if noviewall  !=  'yes' %}active{% endif %}{% endif %}" href="{{ collections['bindings'].url }}">View All</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains pages['compare-bindings'].url %}active{% endif %}" href="{{ pages['compare-bindings'].url }}">Compare Bindings</a></li>
+
+	</ul>
+	
+	<h3 class="h2 sidebar-title">Brands</h3>
+	<ul class="nav nav-list"  id="nav-left-clothing">
+		<li class="nav-item"><a class="nav-link {% if here contains '/look' %}active{% endif %}" href="/collections/bindings/look">Look</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/marker' %}active{% endif %}" href="/collections/bindings/marker">Marker</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/daymaker' %}active{% endif %}" href="/collections/bindings/daymaker">Daymaker</a></li>
+	</ul>
+
+	<h3 class="h2 sidebar-title">Type</h3>
+	<ul class="nav nav-list"  id="nav-left-accessories">
+		<li class="nav-item"><a class="nav-link {% if here contains '/downhill' %}active{% endif %}" href="/collections/bindings/downhill">Downhill</a></li>
+		<li class="nav-item"><a class="nav-link {% if here contains '/touring' %}active{% endif %}" href="/collections/bindings/touring">Touring</a></li>
+
+	</ul>
+      <div class="collection-sorting sidebar-sorting-option">
+		<div class="form-horizontal pull-right">
+			{% include 'collection-sorting' %}
+			{% include 'collection-filter' %}
+		</div>
+	</div>
+
+</nav> 
+     {{ here }}
+<!-- {{ here }} -->
+
+{% comment %}
+<button class="sidebar-handle" data-toggle="sidebar"><span>Browse Skis <i class="fa fa-lg fa-bars"></i></span></button>
+
+<script type="text/javascript">
+(function($) {
+	$('[data-toggle="sidebar"]').click(function(e) {
+		$('body').toggleClass('sidebar-open');
+	});
+
+})(jQuery);
+</script>
+{% endcomment %}

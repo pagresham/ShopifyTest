@@ -1,0 +1,12 @@
+ <button class="drawer-toggle"><i class="fa fa-bars"></i> {{ 'products.general.more_products' | t }}</button>
+
+ <script> 
+ 	(function($) {
+
+		$('.drawer-toggle').click(function() {
+			var $this = $(this);
+			$this.closest('.drawer-container').toggleClass('open');
+		});
+
+	})(jQuery);
+ </script>

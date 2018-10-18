@@ -1,0 +1,40 @@
+<!-- snippets/product-incentives.liquid -->
+
+{% assign badge_limit = badge_limit | default: 50 %}
+{% assign badge_count = 0 %}
+{% assign badge_excerpt = badge_excerpt | default: false %}
+
+{% assign has_incentives = false %}
+{% for incentive in blogs['product-incentives'].articles %}
+  {% assign tags = incentive.tags | join: ',' | downcase %}
+  {% if tags contains handle and badge_count < badge_limit %}
+    {% assign has_incentives = true %}
+  {% endif %}
+{% endfor %}
+
+{% if has_incentives %}
+  <div class="offer product-incentives">
+    {% for incentive in blogs['product-incentives'].articles %}
+      {% assign tags = incentive.tags | join: ',' | downcase %}
+      {% if tags contains handle and badge_count < badge_limit %}
+        {% assign badge_count = badge_count | plus: 1 %}
+        {% if incentive.image %}
+          <span class="incentive {% if incentive.tags contains 'US' %} us-only {% elsif incentive.tags contains 'CA' %} ca-only {% endif %}">
+            <a href="#" tabindex="{{ forloop.index }}"
+            role="button"
+            class="incentive-link"
+            data-target="#incentiveModal"
+            data-toggle="modal"
+            data-title="{{ incentive.title | escape }}"
+            data-content="{{ incentive.content | escape }}">
+              <span class="incentive-image"><img src="{{ incentive.image.src | img_url: 'medium' }}" alt="{{ incentive.title }}" ></span>
+              {% if badge_excerpt %}
+                <span class="incentive-excerpt">{{ incentive.excerpt | strip_html }}</span>
+              {% endif %}
+            </a>
+          </span>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}

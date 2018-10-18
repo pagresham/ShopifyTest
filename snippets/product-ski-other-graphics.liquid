@@ -1,0 +1,19 @@
+<!-- snippets/product-ski-other-graphics.liquid -->
+
+<div class="offer product-upsells">
+  <header class="offer-header">
+    <h3 class="offer-title">Other {{ model.title | replace: 'The', '' }} Graphics</h3>
+    <a class="offer-link" href="{{ collections[model.handle].url }}" class="pull-right">View All <i class="fa fa-chevron-circle-right"></i></a>
+  </header>
+  <ul class="list-unstyled j-related-products">
+    {% assign related_count = 0 %}
+    {% for related_product in collections[model.handle].products limit: 10 %}
+      {% unless settings.static_product_types contains related_product.type  or related_product.handle == product.handle or related_count > 4 %}
+        {% assign related_count = related_count | plus: 1 %}
+        <li class="j-related-product grid-item grid-item-product">
+          {% include 'card-product', product: related_product, image_only: true %}
+        </li>
+      {% endunless %}
+    {% endfor %}
+  </ul>
+</div>

@@ -1,0 +1,23 @@
+<!-- /templates/collection.liquid -->
+<div class="container">
+	<div class="sidebar-container">
+		<div class="has-sidebar">
+			<header class="page-header">
+			    <h1 class="page-title">{{ page.title }}</h1>
+			</header>
+
+			{% include 'rte' with page.content %}
+		</div> <!-- /.has-sidebar -->
+
+		<div class="sidebar">
+  {% assign thecollection = page.handle  | prepend: 'collection-sidebar-' %}
+        {% if thecollection contains 'bindings' %}
+            {% include 'collection-sidebar-bindings' %}
+           {% elsif thecollection contains 'compare' %}
+            {% include 'collection-sidebar-skis' %}  
+        {% else %}
+            {% include 'collection-sidebar'%}
+        {% endif %}
+        </div>
+	</div>
+</div>

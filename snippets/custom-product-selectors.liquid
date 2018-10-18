@@ -1,0 +1,96 @@
+var $productSelectBtns = $('#productSelectBtns').first();
+var $productSelectRemote = $('.productSelectRemote').first();
+var count = 0;
+var btn = '';
+var select = '';
+$('.single-option-selector option').each(function() {
+  var $masterSelect = $('#productSelect option:nth-child(' + ($(this).index() + 1) + ')');
+  var disabled = '';
+  if ($masterSelect.is(":disabled") && $('.single-option-selector').length == 1) {
+    disabled = ' disabled';
+  }
+  if( $(this).index() == 0 && count != 0 ) {
+    btn += '</div>';
+    select += '</select></div>';
+  }
+  if ($(this).index() == 0) {
+    btn += '<div class="option-group">';
+    btn += '<p class="option-btns-label">Select a ';
+    btn += $(this).parent().prev('label').html();
+    btn += ':</p>';
+    select += '<div class="option-group remote-select">'
+    select += '<p class="option-select-label">Select a ' + $(this).parent().prev('label').html() + '</p>';
+    select += '<select name="product-select-remote"  data-option-id="' + $(this).parent().data('option') + '">';
+    select += '<option value="default">Select Option</option>';
+  }
+  if ($(this).html().indexOf('Choose') < 0) {
+    btn += '<div class="option-button ' + disabled + '">';
+    var htmlInner = $(this).html().replace(" -- Sold Out", "");
+    htmlInner = htmlInner.replace("cm", "<span>cm</span>");
+    var optionVal = $(this).attr('value').replace(/"/g, "&quot;");
+    btn += '<a href="#" class="btn btn-secondary" data-option-id="' + $(this).parent().data('option') + '" data-option-val="' + optionVal + '" ' + disabled + '>' + htmlInner + '</a>';
+    if ($masterSelect.data('availability') && $('.single-option-selector').length == 1) {
+      var message = $masterSelect.data('availability');
+      var messageClass = '';
+      if (message.indexOf('Ships') >= 0) {
+        message = 'Pre-order';
+      }
+      if (message.indexOf('Only') >= 0) {
+        messageClass = ' class="danger" ';
+      }
+      if (message.indexOf('stock') >= 0) {
+        message = message;
+      }
+      btn += '<span' + messageClass + '>' + message + '</span>';
+      var secondMessage = 'Ships Now';
+      if (message == 'Pre-order') {
+        secondMessage = $masterSelect.data('availability');
+      }
+      if ($masterSelect.data('availability') != 'Sold Out') {
+        btn += '<span class="selected-message">' + secondMessage + '</span>';
+      }
+    }
+    btn += '</div>';
+  }
+  var extraText = '';
+  if (disabled == ' disabled') {
+    extraText = ' - Sold Out';
+  }
+  select += '<option value="' + $(this).attr('value') + '" ' + disabled + '>' + $(this).html() + extraText + '</option>'
+  count++;
+});
+$('')
+$productSelectBtns.append(btn + '</div>');
+$productSelectRemote.append(select + '</select>');
+$productSelectBtns.find('a.btn').on('click', function(e) {
+  e.preventDefault();
+  $(this).closest('.option-group').find('a').removeClass('selected');
+  $(this).addClass('selected');
+  var selectVal = $(this).data('option-val');
+  var selectOption = $(this).data('option-id');
+  $('.single-option-selector[data-option=' + selectOption + ']').val(selectVal);
+  $('.single-option-selector[data-option=' + selectOption + ']').change();
+  $productSelectRemote.find('select[data-option-id="' + selectOption + '"]').val(selectVal);
+  $('#AddToCart').removeClass('need-to-choose-option');
+});
+$productSelectRemote.find('select').on('change', function(event) {
+  var $this = $(this);
+  var selectOption = $this.data('option-id');
+  var selectVal = $this.val();
+  if (selectVal != 'default') {
+    $('.single-option-selector[data-option=' + selectOption + ']').val(selectVal);
+    $('.single-option-selector[data-option=' + selectOption + ']').change();
+    $productSelectBtns.find('a[data-option-id="' + selectOption + '"]').removeClass('selected');
+    $productSelectBtns.find('a[data-option-val="' + selectVal + '"]').addClass('selected');
+  }
+});
+if ($('.single-option-selector').length == 1) {
+  if ($('.single-option-selector').find('option').length > 1) {
+    $('#productAvailability').css('display', 'none');
+    setTimeout(function() {
+      $('#AddToCart').addClass('need-to-choose-option');
+      $('#AddToCart').prop('disabled', true);
+      $('#AddToCart').prepend('<span class="disabled-for-reason">Select a size to add to cart.</span>');
+    }, 200);
+  }
+}

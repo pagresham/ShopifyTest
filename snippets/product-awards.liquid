@@ -1,0 +1,16 @@
+{% paginate blogs['awards'].articles by 50 %}
+	{% for award in blogs['awards'].articles %}
+		{% assign tags = award.tags | join: ',' | downcase %}
+		{% if tags contains model.handle %}
+		{% if tags contains 'aboveski' %}
+
+			{% if award.image %}
+				<a href="javascript:void(0)" class="award awardscroll">
+					<img src="{{ award.image.src | img_url: 'medium'}}" alt="{{ award.title }}">
+				</a>
+			{% endif %}
+			{% endif %}
+
+		{% endif %} 
+	{% endfor %}
+{% endpaginate %}

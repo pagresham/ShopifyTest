@@ -1,0 +1,236 @@
+<!-- /templates/product.liquid -->
+
+{% comment %} Load parent product, aka "model" {% endcomment %}
+{% for ski_model in collections[settings.collection_grouped_products].products %}
+  {% if ski_model.handle == product.metafields.c_f.parent_product %}
+    {% assign model = ski_model %}
+  {% endif %}
+{% endfor %}
+
+
+{% comment %} Ski "edition" aka graphic {% endcomment %}
+{% if product.metafields.c_f.short_name %}
+  {% assign edition = product.metafields.c_f.short_name %}
+{% else %}
+  {% assign edition = product.title %}
+{% endif %}
+
+
+{% assign product_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+
+
+{% comment %} Image processing {% endcomment %}
+{% for image in product.images %}
+  {% assign alt = image.alt | downcase %}
+  {% capture url %}{% include 'extract-url' with image.alt %}{% endcapture %}
+  {% if url contains "youtu" or url contains "vimeo" %}
+    {% assign video_url = url | strip %}
+    {% assign video_thumbnail = image %}
+  {% endif %}
+
+  {% unless settings.alt_tag_product_cover == blank %}
+    {% if alt contains settings.alt_tag_product_cover %}
+      {% assign cover = image %}
+    {% endif %}
+  {% endunless %}
+
+  {% unless settings.alt_tag_product_featured == blank %}
+    {% if alt contains settings.alt_tag_product_featured %}
+      {% assign featured_image = image %}
+    {% endif %}
+  {% endunless %}
+
+
+  {% if forloop.last %}
+    {% assign graphic = image %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Pre-order and ship dates {% endcomment %}
+{% assign preorder = false %}
+{% if product.metafields.c_f.ship_date %}
+  {% assign now = 'now' | date: '%Y-%m-%d' %}
+  {% assign ship_date = product.metafields.c_f.ship_date | date: '%Y-%m-%d' %}
+  {% if now < ship_date %}
+    {% assign preorder = true %}
+  {% endif %}
+{% endif %}
+
+{% comment %} Restricted Products {% endcomment %}
+{% assign restricted = false %}
+{% unless customer %}
+  {% if product.metafields.c_f.release_date %}
+    {% assign now = 'now' | date: '%Y-%m-%d' %}
+    {% assign release_date = product.metafields.c_f.release_date | date: '%Y-%m-%d' %}
+    {% if now <= release_date %}
+      {% assign restricted = true %}
+    {% endif %}
+  {% endif %}
+{% endunless %}
+
+
+<div itemscope itemtype="http://schema.org/Product" {% if restricted %}data-access="restricted" data-access-scope="page" data-release-date="{{ product.metafields.c_f.release_date }}"{% endif %}>
+
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+  <meta itemprop="image" content="{{ product_image.src | img_url: 'grande' }}">
+
+  <section class="product-overview" id="overview">
+    <div class="container">
+
+      <div class="row product-single">
+        <div class="col-md-6">
+          {% include 'product-images' %}
+        </div>
+        <div class="col-md-6">
+          {% include 'product-main-information' %}
+
+          {% include 'product-incentives', handle: product.handle, badge_limit:4 %}
+
+          {% include 'product-neighbors-linklist' %}
+
+          {% unless product.description contains '[J_2_COLUMN]' %}
+            <div class="offer product-description">
+              <div class="rte">{{ product.description }}</div>
+            </div>
+          {% endunless %}
+
+        </div> <!-- .col -->
+      </div> <!-- .row -->
+      {% if product.description contains '[J_2_COLUMN]' %}
+        {% assign columns = product.description | split: '[J_2_COLUMN]' %}
+        <div class="row">
+          <div class="col-md-6">
+            <div class="rte">
+              {{ columns[0] }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="rte">
+              {{ columns[1] }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div> <!-- /.container -->
+  </section>
+
+
+  {% if cover %}
+    <section class="m-y-lg">
+      <div class="container">
+        <div>
+          <img src="{{ cover | img_url: '2048x2048' }}" alt="{{ featured_image.alt | escape }}" class="img-responsive" >
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if product.metafields.c_f.instagram_feed %}
+    <section class="p-y-md bg-gray-lighter text-center section product-instagram" >
+      <div class="container">
+        <!-- SnapWidget -->
+        <h2 class="m-b-0 section-title">{{ 'products.product.instagram_feed' | t }}</h2>
+        <p>
+          {% if model.title %}
+            {{ 'products.skis.model_owners' | t: model: model.title }}
+          {% endif %}
+          {% if product.metafields.c_f.hashtag %}
+            {{ 'products.product.hashtag' | t: hashtag: product.metafields.c_f.hashtag }}
+          {% endif %}
+        </p>
+        <div class="p-y-md rte-embed">
+          {{ product.metafields.c_f.instagram_feed }}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="m-t-3 section product-reviews" id="reviews">
+    <div class="container">
+      {% assign reviews_page = product.handle | append: '-reviews' %}
+      {% if pages[reviews_page].content.size > 0 %}
+        <div class="row">
+          <div class="col-md-8 offset-md-2">
+            <div class="text-center rte">
+              {{ pages[reviews_page].content }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      <div id="shopify-product-reviews" data-id="{{ product.id}}">{{ product.metafields.spr.reviews }}</div>
+    </div>
+  </section>
+
+  {% if collection %}
+    <aside class="product-neighbors">
+      <div class="container">
+        <header>
+        <h2 class="related-products-title">More {{ collection.title }}</h2>
+        </header>
+        <ul class="list-unstyled row">
+          {% if collection.previous_product %}
+            {% assign previous_handle = collection.previous_product | split: '/' | last %}
+            {% assign previous_url = collection.previous_product %}
+          {% else %}
+            {% assign last_product = collection.products | last %}
+            {% assign previous_url = last_product.url | within: collection %}
+            {% assign previous_handle = last_product.handle %}
+          {% endif %}
+          {% if collection.next_product %}
+            {% assign next_handle = collection.next_product | split: '/' | last %}
+            {% assign next_url = collection.next_product %}
+          {% else %}
+            {% assign first_product = collection.products | first %}
+            {% assign next_url = first_product.url | within: collection %}
+            {% assign next_handle = first_product.handle %}
+          {% endif %}
+          <li class="col-xs-6">
+            {% include 'card-product', product: all_products[previous_handle] %}
+          </li>
+          <li class="col-xs-6">
+            {% include 'card-product', product: all_products[next_handle] %}
+          </li>
+        </ul>
+        <div class="text-center">
+          <a href="{{ collection.url }}" class="btn btn-secondary">View All {{ collection.title }}</a>
+        </div>
+      </div>
+    </aside>
+  {% endif %}
+
+  {% include 'product-related' %}
+
+  {% comment %} Size Chart Modal {% endcomment %}
+  {% if product.metafields.jskis.size_chart %}
+    <div class="modal fade" id="sizechart" tabindex="-1" role="dialog" aria-labelledby="sizeChartTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title" id="sizeChartTitle">{{ pages[product.metafields.jskis.size_chart].title }}</h4>
+          </div>
+          <div class="modal-body">
+            <div class="rte">
+              {{ pages[product.metafields.jskis.size_chart].content }}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="{{ pages[product.metafields.jskis.size_chart].url }}" target="_blank" class="pull-left">Open in new window <i class="fa fa-external-link"></i></a>
+            <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+</div> <!-- itemscope -->
+
+{% comment %} Always include restricted popup in case of relatd products on page that are restricted {% endcomment %}
+{% include 'product-restricted' %}
+
+{% include 'product-incentive-modal' %}
+{% include 'product-js' %}
+{% include 'klaviyo-webtracking' %}

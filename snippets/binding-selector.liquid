@@ -1,0 +1,247 @@
+<!-- Recommended bindings -->
+		{% comment %} Add grouped ski and binding products to cart {% endcomment %}
+		{% assign dimensions = model.metafields.c_f.dimensions | split: '-' %}
+		{% assign width = dimensions[1] | plus: 0 %}
+		{% if width > 100 %}
+			{% assign brake_width = 115 %}
+		{% else %}
+			{% assign brake_width = 95 %}
+		{% endif %}
+		<section id="bindings" class="related-products cross-sell">
+			<div class="container">
+				<header>
+					<h2 class="related-products-title">Binding Selector</h2>
+				</header>
+				<div class="row">
+					<div class="col-md-6">
+						<fieldset class="form-group row">
+							<label class="col-sm-4 form-control-label">Skier Weight (lbs)</label>
+								<div class="col-sm-4">
+									<input id="skier-weight" 
+										type="range" 
+										min="100" 
+										max="250" 
+										step="5" 
+										value="175" 
+										list="skier-weight-list"
+										class="form-control"
+									>
+								</div>
+							<div class="col-sm-4">
+								<output for="skier-weight">175</output>
+							</div>
+							<datalist id="skier-weight-list">
+									<option value="100">100</option>
+									<option value="150">150</option>
+									<option value="200">200</option>
+									<option value="250">250+</option>
+							</datalist>
+						</fieldset>
+						<fieldset class="form-group row">
+							<label class="col-sm-4 form-control-label">Skier Ability</label>
+							<div class="col-sm-4">
+								<input id="skier-ability" 
+								type="range" 
+								min="1" 
+								max="4" 
+								step="1" 
+								value="2" 
+								list="skier-ability-list"
+								class="form-control"
+								>
+							</div>
+							<div class="col-sm-4">
+								<output for="skier-ability">◆ Advanced</output>
+							</div>
+							<datalist id="skier-ability-list">
+									<option value="1"><span style="color: blue">■</span> Intermediate</option>
+									<option value="2">◆ Advanced</option>
+									<option value="3">◆◆ Expert</option>
+									<option value="4">◆◆◆ Pro</option>
+							</datalist>
+						</fieldset>
+						<fieldset class="form-group row">
+							<label class="col-sm-4 form-control-label">Ski Width (mm)</label>
+							<div class="col-sm-4">
+								<input id="ski-width" 
+								type="range" 
+								min="90" 
+								max="120" 
+								step="5" 
+								value="100" 
+								list="ski-width-list"
+								class="form-control"
+								>
+							</div>
+							<div class="col-sm-4">
+								<output for="ski-width">100mm</output>
+							</div>
+							<datalist id="ski-width-list">
+									<option value="90">90mm or less</option>
+									<option value="100">100mm</option>
+									<option value="120">120mm+</option>
+							</datalist>
+						</fieldset>
+
+						{% assign featured_binding = collections['bindings'].products.first %}
+						<hr />
+					
+						<ul class="list-unstyled" id="binding-details">
+						{% for binding in collections['bindings'].products %}
+							<li id="binding-{{ binding.id }}" class="binding" style="{% unless binding.id == featured_binding.id %}display: none{% endunless %}">
+								<h3>Recommended: {{ binding.title }}</h3>
+								<p>Short 1-2 line description of binding</p>
+								<ul class="list-unstyled">
+								{% for variant in binding.variants %}
+										<li id="variant-{{ variant.id }}" class="binding-variant" style="{% unless forloop.first %}display: none{% endunless %}">
+											
+											<p>{{ variant.title }} - ${{ variant.price | money_without_currency }}</p>
+											<p>
+												<button class="btn btn-primary btn-sm">Add to cart</button>
+												&nbsp; &nbsp; <button class="btn btn-link btn-sm" onclick="$('#bindings-table').toggle()"><i class="fa fa-th-list"></i> Compare bindings</button>
+											</p>
+										</li>
+								{% endfor %}
+								</ul>
+							</li>
+						{% endfor %}
+						</ul>
+
+
+					</div> <!-- .col -->
+					<div class="col-md-6">
+						<img id="binding-image" src="{{ featured_binding.featured_image.src | img_url: 'grande' }}" alt="{{ featured_binding.image.alt }}" class="img-fluid">
+					</div> <!-- .col -->
+				</div> <!-- .row -->
+			
+				<table id="bindings-table" class="table table-bordered m-t-2" style="display: none">
+					<tr>
+						<th>Model</th>
+						<th>Weight Range</th>
+						<th>DIN</th>
+						<th>Brake Width</th>
+						<th>Price</th>
+						<th>&nbsp;</th>
+					</tr>
+				{% for binding in collections['bindings'].products limit:3 %}
+					{% capture din_min %}{% if binding.title contains 18 %}8{% elsif binding.title contains 14 %}5{% elsif binding.title contains 12 %}4{% endif %}{% endcapture %}
+					{% capture din_max %}{% if binding.title contains 18 %}18{% elsif binding.title contains 14 %}14{% elsif binding.title contains 12 %}12{% endif %}{% endcapture %}
+
+					{% capture weight_min %}{% if binding.title contains 18 %}175{% elsif binding.title contains 14 %}150{% elsif binding.title contains 12 %}100{% endif %}{% endcapture %}
+					{% capture weight_max %}{% if binding.title contains 18 %}275{% elsif binding.title contains 14 %}250{% elsif binding.title contains 12 %}200{% endif %}{% endcapture %}
+					
+					{% for variant in binding.variants %}
+							<tr value="{{ variant.id }}" 
+									data-image-src="{{ binding.featured_image.src | img_url: 'grande' }}"
+									data-product-id="binding-{{ binding.id }}" 
+									data-variant-id="variant-{{ variant.id }}" 
+									data-brake="{{ variant.title | plus: 0}}" 
+									data-din-min="{{ din_min }}" 
+									data-din-max="{{ din_max }}" 
+									data-weight-min="{{ weight_min }}" 
+									data-weight-max="{{ weight_max }}">
+								<td>{{ binding.title }}</td>
+								<td>{{ weight_min }} - {{ weight_max }}</td>
+								<td>{{ din_min }} - {{ din_max }}</td>
+								<td>{{ variant.title | plus: 0}}</td>
+								<td>${{ variant.price | money_without_currency }}</td>
+								<td><button class="btn btn-primary btn-sm">Add to cart</button></td>
+							</tr>
+					{% endfor %}
+				{% endfor %}
+				</table>
+			</div>
+
+
+			<script>
+
+				function recommendBindings() {
+					var din = 0,
+							weight = parseInt($('#skier-weight').val()),
+							ability = parseInt($('#skier-ability').val()),
+							width = parseInt($('#ski-width').val())
+					;
+
+					// rough din estimation for 27.5, does not consider boot size or height
+					if(weight >= 210) {
+						din = 7;
+					} else if (weight >= 175 && weight <= 209) {
+						din = 6;
+					} else if (weight >= 148 && weight <= 174) {
+						din = 5;
+					} else if (weight >= 126 && weight <= 147) {
+						din = 4;
+					} else if (weight >= 108 && weight <= 125) {
+						din = 3.5;
+					} else if (weight >= 92 && weight <= 107) {
+						din = 2.75;
+					}
+					din += ability; // overcompensate ability
+
+					if(ability >= 4) {
+						din += 2;
+					}
+
+					$('#bindings tr[data-weight-min][data-weight-max]').css({backgroundColor: 'transparent'});
+					var bestRank = 0;
+					var bestBrake = 0;
+					var $bestRow = false;
+					$('#bindings tr[data-weight-min][data-weight-max]').each(function(i, row) {
+						$row = $(row), 
+							weightMax = $row.data('weight-max'),
+							weightMin = $row.data('weight-min'),
+							dinMin = $row.data('din-min'),
+							dinMax = $row.data('din-max'),
+							brake = $row.data('brake')
+						;
+						if( weight >= weightMin && weight <= weightMax 
+								&& din >= dinMin && din <= dinMax
+								&& width <= (brake + 5) // allow 5mm of brake bending
+							){ 
+
+							// Binding is within weight and approximated DIN range, rank it based on offset from limits
+
+							// 1. Relative weight from center, as a percentage
+							weightDelta = weightMin + ((weightMax - weightMin) / 2); // center of weigh range
+							weightOffset = 1 - Math.abs((weightDelta - weight) / weightDelta); // offset from center, lower is better
+							// 2. Relative DIN from center, as a percentage
+							dinDelta = dinMin + ((dinMax - dinMin) * .5); // center of din range
+							dinOffset = 1 - Math.abs((dinDelta - din) / dinDelta); // offset from center
+							brakeOffset = Math.abs((brake - width) / brake); // brake width different from ski as a percentage, could be negative
+							rank = dinOffset + weightOffset;
+							
+							// If better ranking, or same ranking and better brake fit					
+							if (rank > bestRank || (rank == bestRank && brakeOffset < bestBrake)) {
+								bestBrake = brakeOffset; 
+								bestRank = rank;
+								$bestRow = $row;
+							}
+						} 
+						
+					});
+
+					if($bestRow !== false) {
+						console.log($bestRow);
+						$('#binding-details .binding, #binding-details .binding-variant').hide();
+						$bestRow.css({backgroundColor: 'rgba(0,0,0,.05)'});
+						$('#binding-image').attr({
+							src: $bestRow.data('image-src'),
+							alt: $bestRow.find('> td:first').html()
+						});
+						$('#' + $bestRow.data('product-id')).show();
+						$('#' + $bestRow.data('variant-id')).show();
+					}
+
+				}
+				// Use HTML5 datalist for range output
+				$("input[type=range][list]").on("input", function(i){
+					$option = $('#' + $(this).attr('list') + ' option[value=' + this.value + ']');
+					$('output[for='+ this.id + ']').html( $option.length ? $option.html() : this.value );
+
+					// Rough DIN calculation - NOT PRECISE
+					recommendBindings();
+				});
+
+				
+			</script>
+		</section>

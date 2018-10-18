@@ -1,0 +1,29 @@
+<div class="banner {{ classes }}">
+	{% unless url == blank %}
+		<a href="{{ url }}" {% unless id == blank %}id="{{ id }}"{% endunless %}>
+	{% endunless %}
+		{% unless banner == blank %}
+
+			<img class="banner-image" src="{{ banner }}" />
+		{% endunless %}
+		<span class="banner-overlay-container">
+			<span class="banner-overlay">
+				<span class="banner-overlay-inner">
+					{% unless title == blank %}
+						<h3 class="banner-title">{{ title }}</h3>
+					{% endunless %}
+					
+					{% unless caption == blank %}
+						<p class="banner-caption">{{ caption] }}</p>
+					{% endunless %}
+					{% unless cta == blank %}
+						<span class="banner-cta">{{ cta }}</span>
+					{% endunless %}
+				</span>
+			</span>
+		</span>
+	{% unless url == blank %}
+		</a>
+	{% endunless %}
+
+</div>

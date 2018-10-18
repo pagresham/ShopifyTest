@@ -1,0 +1,283 @@
+{% if model %}
+
+{% case model.handle %}
+	{% when 'whipit' %}
+    {% if year == 2018 %}
+      {% assign available_lengths = '157, 164, 171, 178, 184cm' %}
+      {% assign ski_length = '178' %}
+      {% assign ski_sidecut = '20.1' %}
+      {% assign ski_dimensions = '113 / 90 / 110' %}
+      {% assign ski_mount = '-2' %}
+      {% assign ski_height = '60 / 60' %}
+      {% assign boot_from_tail = '870' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '4 / 4' %}
+      {% assign ski_rocker_length =  '255 / 255' %}
+      {% assign ski_weight = '1,780' %}
+    {% else %}
+      {% assign ski_length = '178' %}
+      {% assign ski_sidecut = '20' %}
+      {% assign ski_dimensions = '113 / 90 / 110' %}
+      {% assign ski_mount = '-2' %}
+      {% assign ski_height = '62 / 62' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '2 / 2' %}
+      {% assign ski_rocker_length =  '28 / 28' %}
+      {% assign ski_weight = '1,760' %}
+    {% endif %}
+	{% when 'allplay' %}
+    {% if year == 2018 %}
+      {% assign available_lengths = '164, 171, 178, 184cm' %}
+      {% assign ski_length = '178' %}
+      {% assign ski_sidecut = '20.1' %}
+      {% assign ski_dimensions = '119 / 98 / 117' %}
+      {% assign ski_mount = '-4' %}
+      {% assign ski_height = '60 / 60' %}
+      {% assign boot_from_tail = '850' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '4 / 4' %}
+      {% assign ski_rocker_length =  '280 / 280' %}
+      {% assign ski_weight = '1,860' %}
+    {% else %}
+      {% assign ski_length = '178' %}
+      {% assign ski_sidecut = '21' %}
+      {% assign ski_dimensions = '120 / 98 / 117' %}
+      {% assign ski_mount = '-4' %}
+      {% assign ski_height = '62 / 62' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '3 / 3' %}
+      {% assign ski_rocker_length =  '28 / 28' %}
+      {% assign ski_weight = '1,905' %}
+    {% endif %}
+	{% when 'metal' %}
+    {% if year == 2018 %}
+      {% assign available_lengths = '173, 180, 186cm' %}
+      {% assign ski_length = '180' %}
+      {% assign ski_sidecut = '18.0' %}
+      {% assign ski_dimensions = '136 / 106 / 125' %}
+      {% assign ski_mount = 'n/a ' %}
+      {% assign ski_height = '75 / 55' %}
+      {% assign boot_from_tail = '840' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '9 / 3' %}
+      {% assign ski_rocker_length =  '445 / 285' %}
+      {% assign ski_weight = '2,180' %}
+    {% else %}
+      {% assign ski_length = '180' %}
+      {% assign ski_sidecut = '17' %}
+      {% assign ski_dimensions = '135 / 106 / 124' %}
+      {% assign ski_mount = '-6' %}
+      {% assign ski_height = '65 / 50' %}
+      {% assign ski_camber = '2' %}
+      {% assign ski_rocker_height = '8 / 3' %}
+      {% assign ski_rocker_length =  '48 / 40' %}
+      {% assign ski_weight = '2,250' %}
+    {% endif %}
+	{% when 'vacation' %}
+    {% if year == 2018 %}
+      {% assign available_lengths = '173, 180, 186cm' %}
+      {% assign ski_length = '180' %}
+      {% assign ski_sidecut = '18.5' %}
+      {% assign ski_dimensions = '127 / 104 / 122' %}
+      {% assign ski_mount = '-4' %}
+      {% assign ski_height = '70 / 45' %}
+      {% assign boot_from_tail = '860' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '10 / 2' %}
+      {% assign ski_rocker_length =  '450 / 400 ' %}
+      {% assign ski_weight = '2,015' %}
+    {% else %}
+      {% assign ski_length = '180' %}
+      {% assign ski_sidecut = '17' %}
+      {% assign ski_dimensions = '135 / 106 / 124' %}
+      {% assign ski_mount = '-4' %}
+      {% assign ski_height = '65 / 50' %}
+      {% assign ski_camber = '2' %}
+      {% assign ski_rocker_height = '8 / 3' %}
+      {% assign ski_rocker_length =  '48 / 40' %}
+      {% assign ski_weight = '2086' %}
+    {% endif %}
+	{% when 'friend' %}
+    {% if year == 2018 %}
+      {% assign available_lengths = '177, 183, 189cm' %}
+      {% assign ski_length = '183' %}
+      {% assign ski_sidecut = '18.5' %}
+      {% assign ski_dimensions = '143 / 117 / 133' %}
+      {% assign ski_mount = 'n/a ' %}
+      {% assign ski_height = '75 / 40' %}
+      {% assign boot_from_tail = '835' %}
+      {% assign ski_camber = '3' %}
+      {% assign ski_rocker_height = '9 / 3' %}
+      {% assign ski_rocker_length =  '325 / 90 ' %}
+      {% assign ski_weight = '2,280' %}
+    {% else %}
+      {% assign ski_length = '180' %}
+      {% assign ski_sidecut = '19.5' %}
+      {% assign ski_dimensions = '136 / 114 / 125' %}
+      {% assign ski_mount = '-6' %}
+      {% assign ski_height = '65 / 50' %}
+      {% assign ski_camber = '2' %}
+      {% assign ski_rocker_height = '8 / 3' %}
+      {% assign ski_rocker_length =  '48 / 40' %}
+      {% assign ski_weight = '2,200' %}
+    {% endif %}
+	{% when 'masterblaster' %}
+    {% if year == 2018 %}
+      {% assign available_lengths = '168, 175, 181, 187cm' %}
+      {% assign ski_length = '181' %}
+      {% assign ski_sidecut = '18.0' %}
+      {% assign ski_dimensions = '125 / 96 / 114' %}
+      {% assign ski_mount = 'n/a ' %}
+      {% assign ski_height = '65 / 35' %}
+      {% assign boot_from_tail = '825' %}
+      {% assign ski_camber = '4' %}
+      {% assign ski_rocker_height = '6 / 3' %}
+      {% assign ski_rocker_length =  '380 / 280 ' %}
+      {% assign ski_weight = '2,160' %}
+    {% else %}
+      {% assign ski_length = '181' %}
+      {% assign ski_sidecut = '17' %}
+      {% assign ski_dimensions = '125 / 96 / 114' %}
+      {% assign ski_mount = '-6' %}
+      {% assign ski_height = '65 / 35' %}
+      {% assign ski_camber = '2' %}
+      {% assign ski_rocker_height = '6 / 3' %}
+      {% assign ski_rocker_length =  '38 / 28' %}
+      {% assign ski_weight = '2,100' %}
+    {% endif %}
+  {% when 'max' %}
+    {% assign available_lengths = '140cm, 150cm' %}
+		{% assign ski_length = '150' %}
+		{% assign ski_sidecut = '11.5' %}
+		{% assign ski_dimensions = '118 / 90 / 113' %}
+		{% assign ski_mount = '-4 ' %}
+		{% assign ski_height = '48 / 48' %}
+    {% assign boot_from_tail = '708' %}
+		{% assign ski_camber = '3' %}
+		{% assign ski_rocker_height = '2 / 2 ' %}
+		{% assign ski_rocker_length =  '120 / 120 ' %}
+		{% assign ski_weight = '1500 ' %}
+{% endcase %}
+
+<header class="m-b-lg section-header">
+	<h2>{{ model.title }}&trade; Ski Specs</h2>
+	<p><a href="/pages/compare">{{ 'products.skis.compare' | t }} <i class="fa fa-external-link"></i></a></p>
+</header>
+<div class="row">
+	<div class="col-lg-6 col-md-8">
+		<table class="m-b-md table table-sm table-dl table-hover table-striped">
+			<caption>Top Shape:</caption>
+			<tbody>
+				<tr>
+					<th>Lengths Available (cm):</th>
+          {% if available_lengths %}
+            <td>{{ available_lengths }}</td>
+          {% else %}
+            <td>{% for v in model.variants %}{{ v.option1 }}{% unless forloop.last %}, {% endunless %}{% endfor %}</td>
+          {% endif %}
+				</tr>
+				<tr>
+					<th>Ski Length (cm):</th>
+					<td>{{ ski_length }}cm</td>
+				</tr>
+				<tr>
+					<th>5 Sidecut Avg. (m):</th>
+					<td>{{ ski_sidecut }}m</td>
+				</tr>
+				<tr>
+					<th>Tip / Waist / Tail (mm):</th>
+					<td>{{ ski_dimensions }}mm</td>
+				</tr>
+        {% if boot_from_tail %}
+          <tr>
+            <th>Boot from Tail (mm):</th>
+            <td>{{ boot_from_tail }}mm</td>
+          </tr>
+        {% endif %}
+				<tr>
+					<th>Boot From Center (cm):</th>
+					<td>{{ ski_mount }}cm</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="m-b-md table table-sm table-dl  table-hover table-striped">
+			<caption>Profile Shape:</caption>
+			<tbody>
+        {% if ski_camber %}
+          <tr>
+            <th>Camber (mm)</th>
+            <td>{{ ski_camber }}mm</td>
+          </tr>
+        {% endif %}
+				<tr>
+					<th>Tip / Tail Height (mm):</th>
+					<td>{{ ski_height }}mm</td>
+				</tr>
+				<tr>
+					<th>Rocker Height Tip / Tail (mm):</th>
+					<td>{{ ski_rocker_height }}mm</td>
+				</tr>
+				<tr>
+					<th>Rocker Length Tip / Tail (mm):</th>
+					<td>{{ ski_rocker_length }}mm</td>
+				</tr>
+				<tr>
+					<th>Weight per ski (g):</th>
+					<td>{{ ski_weight }}g</td>
+				</tr>
+			</tbody>
+		</table>
+		{% paginate blogs['specs'].articles by 50 %}
+		{% for spec in blogs['specs'].articles %}
+			{% assign tags = spec.tags | join: ',' | downcase %}
+				{% if tags contains model.handle %}
+					<div>
+						<h4>{{ spec.title }}</h4>
+						<div class="rte">{{ spec.content }}</div>
+						{% if spec.image %}
+							<img src="{{ spec.image.src | img_url: 'large' }}" alt="{{ spec.title }}" class="img-fluid">
+						{% endif %}
+					</div>
+				{% endif %}
+		{% endfor %}
+		{% endpaginate %}
+	</div> <!-- /.col -->
+	{% comment %} Find specs image {% endcomment %}
+	{% if settings.alt_tag_product_specs != blank %}
+		{% assign specs_image = false %}
+		{% for image in product.images %}
+		    {% if image.alt contains settings.alt_tag_product_specs %}
+		    	{% assign specs_image = image %}
+		    {% endif %}
+		{% endfor %}
+		{% unless specs_image %}
+			{% if model %}
+				{% for image in model.images %}
+            {% if year == 2018 %}
+              {% if image.alt contains settings.alt_tag_product_specs %}
+                {% assign specs_image = image %}
+              {% endif %}
+              {% if image.alt contains '#2018' %}
+                {% assign specs_image_2018 = image %}
+              {% endif %}
+            {% else %}
+              {% if image.alt contains settings.alt_tag_product_specs %}
+                {% assign specs_image = image %}
+              {% endif %}
+            {% endif %}
+				{% endfor %}
+			{% endif %}
+		{% endunless %}
+	{% endif %}
+	{% if specs_image %}
+		<div class="text-right col-lg-6 col-md-4 ski-diagram">
+      {% if specs_image_2018 %}
+			   <img src="{{ specs_image_2018 | img_url: '1024x1024' }}" alt="{{ specs_image.alt | replace: settings.alt_tag_product_specs, '' | escape }}" height="600"  />
+      {% else %}
+        <img src="{{ specs_image | img_url: '1024x1024' }}" alt="{{ specs_image.alt | replace: settings.alt_tag_product_specs, '' | escape }}" height="600"  />
+      {% endif %}
+		</div>
+	{% endif %}
+</div>
+{% endif %}

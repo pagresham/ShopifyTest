@@ -1,0 +1,83 @@
+{% if model %}
+
+<header class="m-b-md section-header">
+	<h2> {{ 'products.skis.construction' | t: model: model.title }}</h2> 
+	<p><a href="/pages/compare">{{ 'products.skis.compare' | t }} <i class="fa fa-external-link"></i></a></p> 
+</header>
+
+<div class="section-block text-center">
+	<p class="text-left">I’ve spent over two decades designing, developing, and continually refining the industries most innovative and award winning skis ever created. Now that I’m selling skis directly to you, I’m able to invest more money into using the most expensive, highest quality materials possible, sparing no expense like never before in the name of premium ski performance & durability. You’ll literally feel the difference the moment you make your first turn and still be stoked, years later like it was still your first day on them! This is why I confidently back all my skis with a money back 100% satisfaction guarantee. Learn more about this ski’s construction below…</p>
+	<a href="https://youtu.be/gyVj2l3fgjo?list=UUrvR-mLcVQwXdKK2wSDbEDA" data-toggle="fancybox" class="btn-video">
+		<i class="fa fa-2x fa-play"></i>
+		<br />Play Video 
+	</a>
+</div> 
+
+<div class="section-block">
+	{% if model.handle == 'metal' or model.handle == 'masterblaster' %}
+			{% assign image = 'ski-construction-metal.jpg'  %}
+	{% else %}
+		{% assign image = 'ski-construction.jpg' %}
+
+	{% endif %}
+	<img src="{{ image | asset_url }}" alt="3d ski construction" class="m-y-lg img-responsive" />
+
+	<ul role="tablist" class="nav features-list" >
+	{% paginate blogs['features'].articles by 50 %}
+	{% assign feature_count = 0 %}
+	{% for feature in blogs['features'].articles %}
+		{% assign tags = feature.tags | join: ',' | downcase %}
+		{% if tags contains model.handle %}
+			{% assign feature_count = feature_count | plus: 1 %}
+			<li class="nav-item" >
+				<a href="#feature{{ feature.id }}" role="tab" data-toggle="tab" class="nav-link {% if feature_count == 1 %}active{% endif %}">{{ feature.title }}</a>
+			</li>
+		{% endif %}
+	{% endfor %}
+	{% endpaginate %}
+	</ul>
+	
+	<div class="tab-content">
+		{% paginate blogs['features'].articles by 50 %}
+		{% assign feature_count = 0 %}
+		{% for feature in blogs['features'].articles %}
+			{% assign tags = feature.tags | join: ',' | downcase %}
+			{% if tags contains model.handle %}
+				{% assign feature_count = feature_count | plus: 1 %}
+				<div class="tab-pane features-block {% if feature_count == 1 %}active{% endif %}" role="tabpanel" id="feature{{feature.id}}">
+					<div class="row">
+						<div class="col-md-6">
+							{% capture image %}{% include 'extract-image' with feature.excerpt, output: 'src' %}{% endcapture %}
+							{% capture alt %}{% include 'extract-image' with feature.excerpt, output: 'alt' %}{% endcapture %}
+							{% assign url = false %}
+							{% if feature.excerpt contains 'alt=' %}
+									{% capture url %}{% include 'extract-url' with alt %}{% endcapture %}
+									{% assign url = url | strip %}
+							{% endif %}
+							{% if url %}
+								<a href="{{ url }}" {% if url contains "youtube" || url contains "vimeo" %} data-toggle="fancybox" class="video-link" {% endif %}>
+									<img src="{{ image | strip }}" alt="{{ alt | strip | escape }}" class="img-responsive img-video" />
+									{% if url contains "youtube" || url contains "vimeo" %}
+										<span class="btn-video">
+											<i class="fa fa-2x fa-play"></i>
+											<br />Play Video 
+										</span>
+									{% endif %}
+								</a>
+							{% else %}
+								<img src="{{ image | strip }}" alt="{{ alt | strip | escape }}" class="img-responsive" />
+							{% endif %}
+						</div> 
+						<div class="col-md-6">
+							<h3>{{ feature.title }}</h3>
+							{{ feature.content }}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+		{% endpaginate %}
+	</div>
+
+</div>
+{% endif %}

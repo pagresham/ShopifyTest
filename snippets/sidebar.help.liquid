@@ -1,0 +1,29 @@
+<!-- /snippets/sidebar-customer-service.liquid -->
+{% comment %}
+
+	Side navigation for customer service.
+
+{% endcomment %}
+
+
+<nav class="sidebar-content">
+	<h4 class="sidebar-title">Customer Service</h4>
+
+  <ul class="nav nav-list">
+    {% for link in linklists['customer-service-navigation'].links %}
+      <li class="nav-item">
+        <h5 class="nav-title">{{ link.title }}</h5>
+        <ul class="nav nav-list">
+          {% for sub_link in link.links %}
+            <li class="nav-item">
+              <a href="{{ sub_link.url }}" class="nav-link {% if sub_link.active %}active {% endif %}">
+                {{ sub_link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
+
+</nav>

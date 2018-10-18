@@ -1,0 +1,33 @@
+<!-- snippets/product-sell-out-risk.liquid -->
+
+{% comment %} Sell out risk {% endcomment %}
+{% assign total_qty = 0 %}
+{% assign has_incoming = false %}
+
+{% comment %}
+{% assign warning = settings.sell_out_risk_warning | plus: 0 %}
+{% assign danger = settings.sell_out_risk_danger | plus: 0 %}
+{% endcomment %}
+
+{% assign danger = 50 %}
+
+{% for variant in product.variants %}
+	{% assign total_qty = total_qty | plus: variant.inventory_quantity %}
+	{% if variant.incoming %}{% assign has_incoming = true %}{% endif %}
+{% endfor %}
+
+<div class="stock-status-badge">
+  {% if total_qty > 0 %}
+    {% if total_qty < danger %}
+      <span class="danger">
+        Only {{ total_qty }} left!
+      </span>
+    {% else %}
+      {{ total_qty }} available
+    {% endif %}
+  {% elsif has_incoming %}
+    Preorder
+  {% else %}
+    <hr>
+  {% endif %}
+</div>

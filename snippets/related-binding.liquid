@@ -1,0 +1,82 @@
+     
+{% assign grid-lenght =  product.title  | split: '|' | last | strip  %}
+       
+     
+
+        <div id="product-options">
+            <select id="product-selectors" class="select-beast" >
+                {% for product in collections.losse-grids.products %}
+                    {% assign grid-lenght-select =  product.title  | split: '|' | last | strip  %}
+                    {{ grid-lenght-select }}
+                    {% for variant in product.variants %}
+                        {% if product.handle contains 'black' %}
+                            <option {% if product.handle contains grid-lenght %}  selected="selected" {% endif %} value="{{ grid-lenght-select }}">{{ grid-lenght-select }} mm</option>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+
+                    <div class="divider"></div>
+ 
+ <div class="swatch  clearfix">
+                  
+                        <div class="product-captions"><h4>color</h4></div>
+     <div class="colorselected">
+
+                                           {% for product in collections.losse-grids.products %}
+
+                        {% for variant in product.variants %}
+                        {% assign grid-color-lenght =  product.title  | split: '-' | last | strip  %}
+                        {% assign grid-color =  grid-color-lenght  | split: '|' | first | strip  %}
+                    {% if product.handle contains '2000' %}
+
+                      <div class="swatch-element coloroptions">
+                        <input required id="swatch{{ grid-color }}" type="radio" name="gridcolor" value="{{ grid-color }}" >
+                        <label class="product-colors" for="swatch{{ grid-color }}" style="background-color: 
+    {% if grid-color == 'Black' %}black{% elsif grid-color == 'Bronze' %}#907854;{% else %}#a49a91 {% endif %};" >
+                        </label>
+                          <span class="swatch-title">{{ grid-color }}</span>
+
+                      </div>
+                    
+
+                     {% endif %}
+
+                    {% endfor %}{% endfor %} </div>
+                </div> 
+                  
+
+    {% assign grid-color-lenght =  product.title  | split: '-' | last | strip  %}
+    {% assign grid-color =  grid-color-lenght  | split: '|' | first | strip | downcase   %}
+    {% assign link-title =  product.title  | split: '-' | first | strip  %}
+
+<script>
+  
+    $('.select-beast').selectize({
+    create: true,
+    sortField: 'text'
+    });
+    
+   
+    {% if product.handle contains grid-color %}
+        $("#swatch{{grid-color | camelcase }}").prop("checked", true)
+     //debugger
+    {% endif %}
+     
+    function gotoselectedproduct() {
+          var coloroptions = $(".colorselected input[type='radio']:checked").val();
+          var lenghtoption = $("#product-selectors").val();
+          console.log(coloroptions);
+        var link = "{{ link-title | handleize }}-" + coloroptions + "-" + lenghtoption; 
+                  console.log(link);
+
+        location.href=link;   
+        
+    }
+     
+    jQuery('.coloroptions').on('change', gotoselectedproduct);
+    jQuery('#product-selectors').on('change', gotoselectedproduct);
+
+    
+</script>

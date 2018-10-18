@@ -1,0 +1,49 @@
+<!-- snippets/product-js.liquid -->
+{% comment %} Inline javascript common to all product templates (references product liquid object) {% endcomment %}
+
+{{ 'option_selection.js' | shopify_asset_url | script_tag }}
+<script>
+	var OptionSelectors;
+	var selectCallback = function(variant, selector) {
+		ShopifyTheme.onVariantSelected({
+			money_format: "{{ shop.money_format }}",
+			variant: variant,
+			selector: selector
+		});
+	};
+
+	(function($) {
+
+		OptionSelectors = new Shopify.OptionSelectors('productSelect', {
+		 	product: {{ product | json }},
+			onVariantSelected: selectCallback,
+			enableHistoryState: true
+		});
+		// Hide default selector label
+		$('label[for=productSelect]').hide();
+
+		// Hide selectors if we only have 1 variant and its title contains 'Default'.
+		{% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
+			$('.product-options .product-options-selects').hide();
+		{% endif %}
+
+		// Always add labels to selects
+		{% if product.options.size == 1 and product.options.first != 'Title' %}
+			$('.selector-wrapper:eq(0)').prepend('<label>' + {{ product.options.first | json }} + '</label>');
+		{% endif %}
+
+    {% assign custom_product_selectors = true %}
+    {% for tag in product.tags %}
+      {% if tag contains 'dropdown-select' %}
+        {% assign custom_product_selectors = false %}
+      {% endif %}
+    {% endfor %}
+    {% if custom_product_selectors %}
+      {% include 'custom-product-selectors' %}
+    {% else %}
+      $('.product-options-selects .selector-wrapper:not(.bindings-selector-wrapper)').css('display', 'block');
+    {% endif %}
+
+	})(jQuery);
+
+</script>

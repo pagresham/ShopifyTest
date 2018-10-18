@@ -1,0 +1,50 @@
+<!-- snippets/product-ski-highlights.liquid -->
+
+<header class="offer-header">
+  <h3 class="offer-title">Overview</h3>
+  <a class="offer-link specscroll" href="javascript:void(0)">Specs &amp; Construction <i class="fa fa-chevron-circle-right"></i></a>
+</header>
+<div class="table-responsive">
+  <table class="table table-sm">
+    <tbody>
+      {% if model %}
+        <tr>
+          <th>Model:</th>
+          <td>{{ model.title }}</td>
+        </tr>
+      {% endif %}
+      {% if model %}
+        <tr>
+          <th>Graphic:</th>
+          <td>{{ edition }}</td>
+        </tr>
+      {% endif %}
+      {% if product.metafields.c_f.release_quantity %}
+        <tr>
+          <th>Total Made:</th>
+          <td>{{ product.metafields.c_f.release_quantity }} Pair</td>
+        </tr>
+      {% endif %}
+      {% if product.metafields.c_f.dimensions %}
+        <tr>
+          <th>Dimensions:</th>
+          <td>{{ product.metafields.c_f.dimensions }} (Tip - Waist - Tail)</td>
+        </tr>
+      {% endif %}
+      {% if product.metafields.c_f.release_date %}
+        {% capture date %}<time datetime="{{ product.metafields.c_f.release_date | date: '%Y-%m-%d' }}">{{ product.metafields.c_f.release_date | date: format: 'month_day_year' }}</time>{% endcapture %}
+        <tr>
+          <th>{{ 'products.product.release_date' | t }}:</th>
+          <td>{{ date }}</td>
+        </tr>
+      {% endif %}
+      {% if preorder %}
+        {% capture date %}<time datetime="{{ ship_date | date: '%Y-%m-%d' }}">{{ ship_date | date: format: 'month_day_year' }}</time>{% endcapture %}
+        <tr>
+          <th>{{ 'products.product.ship_date' | t }}:</th>
+          <td>{{ date }}</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>

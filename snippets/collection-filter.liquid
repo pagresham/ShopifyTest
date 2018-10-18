@@ -1,0 +1,79 @@
+
+
+{% assign tags = 'In Stock, Pre-order, Sold Out' | split: ',' %}
+
+	<label>Availability</label>
+	<select class="coll-filter">
+		<option value="">All</option>
+		{% for t in tags %}
+		{% assign tag = t | strip %}
+		{% assign tag_lower = tag | downcase %}
+
+		{% if current_tags contains tag or current_tags contains tag_lower %}
+		<option value="{{ tag | handle }}" selected>{{ tag }}</option>
+		{% else %}
+		<option value="{{ tag | handle }}">{{ tag }}</option>
+		{% endif %}
+		{% endfor %}
+	</select>
+
+<script>
+	/* Product Tag Filters - Good for any number of filters on any type of collection page.
+		 Give you product tag filter select element a class of coll-filter.
+		 Give your collection select a class of coll-picker.
+		 Brought to you by Caroline Schnapp. */
+	Shopify.queryParams = {};
+	if (location.search.length) {
+		for (var aKeyValue, i = 0, aCouples = location.search.substr(1).split('&'); i < aCouples.length; i++) {
+			aKeyValue = aCouples[i].split('=');
+			if (aKeyValue.length > 1) {
+				Shopify.queryParams[decodeURIComponent(aKeyValue[0])] = decodeURIComponent(aKeyValue[1]);
+			}
+		}
+	}
+
+	var collFilters = jQuery('.coll-filter');
+	collFilters.change(function() {
+		location.href = getFilteredURL();
+	});
+	
+	function getFilteredURL() {
+		delete Shopify.queryParams.page;
+		{% if current_tags %}
+			var newTags = ['{{ current_tags | join: "','" | downcase | replace: ' ', '-' }}'];
+		{% else %}
+			var newTags = [];
+		{% endif %}
+		collFilters.each(function() {
+			// Remove existing filter tags in URL
+			jQuery(this).find('option').each(function() { 
+				var val = jQuery(this).attr('value');
+				if(val.length) {
+					newTags = $.grep(newTags, function(value) {
+						return value != val;
+					});
+				}
+			});
+			if (jQuery(this).val()) {
+				newTags.push(jQuery(this).val());
+			}
+		});
+		
+		var url = '#'
+		{% if collection.handle %}
+			url = '{{ collection.url }}';
+			if (newTags.length) {
+				url += '/' + newTags.join('+');
+			}
+			var search = jQuery.param(Shopify.queryParams);
+			if (search.length) {
+				url += '?' + search;
+			}
+		{% else %}
+			{% comment %} Filtering outside of collection pages not yet supported {% endcomment %}
+		{% endif %}
+
+		return url;
+	}
+	
+</script>

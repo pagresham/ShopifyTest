@@ -1,0 +1,93 @@
+<!-- /templates/page.liquid -->
+<div class="container">
+	<div class="row">
+		<div class="col-sm-10 push-sm-2">
+			{% assign skis = collections[settings.collection_grouped_products].products %}
+			<h1>{{ page.title }}</h1>
+
+			    {% comment %}
+			      Regular page content goes here.
+			    {% endcomment %}
+			    <div class="rte">
+			      {{ page.content }}
+			    </div>
+			<table class="table table-hover table-responsive"> 
+				<thead>
+					<tr>
+						<th >Model</th>
+						{% for ski in skis %}
+							<th style="width: 30%">{{ ski.title }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>&nbsp;</th>
+						{% for ski in skis %}
+							{% assign release = collections[ski.handle].products | first %}
+							{% assign featured_image = release.selected_or_first_available_variant.featured_image | default: release.featured_image %}
+							<td class="text-center"><img src="{{ featured_image | img_url: 'medium' }}" alt="{{ featured_image.alt | escape }}" class="img-responsive"></td>
+							
+							
+						{% endfor %}
+					</tr>
+					
+					<tr>
+						<th>Overview</th>
+						{% for ski in skis %}
+							<td>{{ ski.metafields.c_f.tagline }}</td>
+						{% endfor %}
+					</tr>
+					<tr>
+						<th>Customer Reviews</th>
+						{% for ski in skis %}
+							<td><span class="shopify-product-reviews-badge" data-id="{{ ski.id }}"></span></td>
+						{% endfor %}
+					</tr>
+					<tr>
+						<th style="white-space: nowrap"># Of Limited Editions</th>
+						{% for ski in skis %}
+							<td><a href="{{ collections[ski.handle].url}}">{{ collections[ski.handle].products | size }}</a></td>
+						{% endfor %}
+					</tr>
+					<tr>
+						<th>Dimensions</th>
+						{% for ski in skis %}
+							<td>{{ ski.metafields.c_f.dimensions }}</td>
+						{% endfor %}
+					</tr>
+					
+					<tr>
+						<th>Flex</th>
+						{% for ski in skis %}
+							<td>(Flex rating scale/meter)</td>
+						{% endfor %}
+					</tr>
+					
+					<tr>
+						<th style="white-space: nowrap">First Released</th>
+						{% for ski in skis %}
+							<td>2014</td>
+						{% endfor %}
+					</tr>
+					<tr>
+						<th>Price</th>
+						{% for ski in skis %}
+							<td>{{ ski.price | money }}</td>
+						{% endfor %}
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						{% for ski in skis %}
+							<td><a href="{{ collections[ski.handle].url}}" class="btn btn-primary">View Skis</a></td>
+						{% endfor %}
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		<div class="col-sm-2 pull-sm-10">
+			{% include 'collection-sidebar.skis' %}
+		</div>
+	</div>
+</div>
